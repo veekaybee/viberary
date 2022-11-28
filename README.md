@@ -1,4 +1,7 @@
 # Viberary
+
+![](viberary-logo.png)
+
 Viberary is a project that will eventually recommend you books based not on genre or title, but vibe. 
 The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" something like that, like a prompt, and get back a list of books
