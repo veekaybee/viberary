@@ -477,6 +477,7 @@ UCSD Book Graph, with the critical part being the [user-generated shelf labels.]
   "title": "The Te Of Piglet",
   "title_without_series": "The Te Of Piglet"
 }
+```
 
 ## Processing
 
