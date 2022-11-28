@@ -1,7 +1,5 @@
 # Viberary
 Viberary is a project that will eventually recommend you books based not on genre or title, but vibe. 
-See this paper for more details on potential future implementation. 
-
 The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" something like that, like a prompt, and get back a list of books
 
@@ -9,6 +7,11 @@ Reference implementation:
 ![](viberary.png)
 
 Right now it's just all BigQuery and vibes.
+
+## Lit Review
+
++ ["Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning"](https://arxiv.org/abs/2006.02282)
++ ["PinnerSage"](https://arxiv.org/abs/2007.03634)
 
 
 ## Input Data
