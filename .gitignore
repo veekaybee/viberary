@@ -12,6 +12,9 @@ jsonparquet/jsontoparquet.iml
 # IDEA
 jsonparquet/.idea/*
 
+# Target
+jsonparquet/target/*
+
 #IML
 jsonparquet/iml*
 
