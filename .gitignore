@@ -1,0 +1,35 @@
+# Data files
+
+goodreads_books.json
+
+# JAVA
+# Compiled class file
+*.class
+
+# IML
+jsonparquet/jsontoparquet.iml
+
+# IDEA
+jsonparquet/.idea/*
+
+#IML
+jsonparquet/iml*
+
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+
