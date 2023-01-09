@@ -34,16 +34,16 @@ public class JSONParquetConverter
 
     public static <T> void main(String[] args ) throws Exception {
 
-        InputStream is = JSONParquetConverter.class.getClassLoader().getResourceAsStream("goodreads_books.json");
-        String jsonString = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        InputStream sampleStream = JSONParquetConverter.class.getClassLoader().getResourceAsStream("goodreads_sample.json");
+        InputStream totalStream = JSONParquetConverter.class.getClassLoader().getResourceAsStream("goodreads_books.json");
+        String jsonString = new String(sampleStream.readAllBytes(), StandardCharsets.UTF_8);
 
         File outputPath = new File("/resources/goodreads_books.avro");
-        InputStream targetStream = new FileInputStream(String.valueOf(is));
 
         Schema schema = getAvroSchema(jsonString, "mySchema");
 
         try (JSONFileReader<Record> reader = new JSONFileReader<>(
-                targetStream, schema, Record.class)) {
+                totalStream, schema, Record.class)) {
 
             reader.initialize();
 
