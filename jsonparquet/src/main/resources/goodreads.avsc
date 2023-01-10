@@ -1,0 +1,193 @@
+{
+   "type":"record",
+   "name":"mySchema",
+   "fields":[
+      {
+         "name":"isbn",
+         "type":"string",
+         "doc":"Type inferred from '\"0743509986\"'"
+      },
+      {
+         "name":"text_reviews_count",
+         "type":"string",
+         "doc":"Type inferred from '\"6\"'"
+      },
+      {
+         "name":"series",
+         "type":{
+            "type":"array",
+            "items":"string"
+         },
+         "doc":"Type inferred from '[]'"
+      },
+      {
+         "name":"country_code",
+         "type":"string",
+         "doc":"Type inferred from '\"US\"'"
+      },
+      {
+         "name":"language_code",
+         "type":"string",
+         "doc":"Type inferred from '\"\"'"
+      },
+      {
+         "name":"popular_shelves",
+         "type":{
+            "type":"array",
+            "items":{
+               "type":"record",
+               "name":"popular_shelves",
+               "fields":[
+                  {
+                     "name":"count",
+                     "type":"string",
+                     "doc":"Type inferred from '\"2634\"'"
+                  },
+                  {
+                     "name":"name",
+                     "type":"string",
+                     "doc":"Type inferred from '\"to-read\"'"
+                  }
+               ]
+            }
+         },
+         "doc":"Type inferred from '[{\"count\":\"2634\",\"name\":\"to-read\"},{\"count\":\"160\",\"name\":\"fiction\"},{\"count\":\"92\",\"name\":\"currently-reading\"},{\"count\":\"25\",\"name\":\"contemporary-fiction\"},{\"count\":\"22\",\"name\":\"owned\"},{\"count\":\"19\",\"name\":\"book-club\"},{\"count\":\"17\",\"name\":\"chick-lit\"},{\"count\":\"16\",\"name\":\"friendship\"},{\"count\":\"15\",\"name\":\"books-i-own\"},{\"count\":\"12\",\"name\":\"novel\"},{\"count\":\"12\",\"name\":\"general-fiction\"},{\"count\":\"11\",\"name\":\"anita-diamant\"},{\"count\":\"10\",\"name\":\"owned-books\"},{\"count\":\"10\",\"name\":\"contemporary\"},{\"count\":\"10\",\"name\":\"women\"},{\"count\":\"8\",\"name\":\"adult\"},{\"count\":\"7\",\"name\":\"default\"},{\"count\":\"7\",\"name\":\"favorites\"},{\"count\":\"7\",\"name\":\"didn-t-finish\"},{\"count\":\"6\",\"name\":\"own-it\"},{\"count\":\"6\",\"name\":\"library\"},{\"count\":\"6\",\"name\":\"new-england\"},{\"count\":\"6\",\"name\":\"bookclub\"},{\"count\":\"6\",\"name\":\"women-s-fiction\"},{\"count\":\"5\",\"name\":\"breast-cancer\"},{\"count\":\"5\",\"name\":\"beach-ocean\"},{\"count\":\"5\",\"name\":\"audio-book\"},{\"count\":\"5\",\"name\":\"historical-fiction\"},{\"count\":\"5\",\"name\":\"my-library\"},{\"count\":\"5\",\"name\":\"2006\"},{\"count\":\"5\",\"name\":\"literature\"},{\"count\":\"5\",\"name\":\"audiobook\"},{\"count\":\"4\",\"name\":\"read-2015\"},{\"count\":\"4\",\"name\":\"diamant\"},{\"count\":\"4\",\"name\":\"audio-books\"},{\"count\":\"4\",\"name\":\"diamant-anita\"},{\"count\":\"4\",\"name\":\"adult-fiction\"},{\"count\":\"4\",\"name\":\"my-books\"},{\"count\":\"4\",\"name\":\"jewish\"},{\"count\":\"4\",\"name\":\"novels\"},{\"count\":\"4\",\"name\":\"library-book\"},{\"count\":\"4\",\"name\":\"2002\"},{\"count\":\"3\",\"name\":\"read-2016\"},{\"count\":\"3\",\"name\":\"relationships\"},{\"count\":\"3\",\"name\":\"female-friendship\"},{\"count\":\"3\",\"name\":\"favorite-authors\"},{\"count\":\"3\",\"name\":\"kindle\"},{\"count\":\"3\",\"name\":\"have\"},{\"count\":\"3\",\"name\":\"strong-women\"},{\"count\":\"3\",\"name\":\"cancer\"},{\"count\":\"3\",\"name\":\"own-to-read\"},{\"count\":\"3\",\"name\":\"audiobooks\"},{\"count\":\"3\",\"name\":\"read-2011\"},{\"count\":\"3\",\"name\":\"audio\"},{\"count\":\"3\",\"name\":\"drama\"},{\"count\":\"3\",\"name\":\"read-2009\"},{\"count\":\"3\",\"name\":\"i-own\"},{\"count\":\"3\",\"name\":\"book-group\"},{\"count\":\"3\",\"name\":\"american\"},{\"count\":\"3\",\"name\":\"fiction-general\"},{\"count\":\"3\",\"name\":\"chicklit\"},{\"count\":\"3\",\"name\":\"book-club-books\"},{\"count\":\"2\",\"name\":\"hardback\"},{\"count\":\"2\",\"name\":\"my-personal-library\"},{\"count\":\"2\",\"name\":\"read-in-2017\"},{\"count\":\"2\",\"name\":\"read-2017\"},{\"count\":\"2\",\"name\":\"the-lewis-library\"},{\"count\":\"2\",\"name\":\"ficton\"},{\"count\":\"2\",\"name\":\"home\"},{\"count\":\"2\",\"name\":\"books\"},{\"count\":\"2\",\"name\":\"read-in-2015\"},{\"count\":\"2\",\"name\":\"listened\"},{\"count\":\"2\",\"name\":\"ebook\"},{\"count\":\"2\",\"name\":\"bookclub-books\"},{\"count\":\"2\",\"name\":\"to-buy\"},{\"count\":\"2\",\"name\":\"my-home-library\"},{\"count\":\"2\",\"name\":\"summer-reading\"},{\"count\":\"2\",\"name\":\"home-bookshelf\"},{\"count\":\"2\",\"name\":\"family\"},{\"count\":\"2\",\"name\":\"tbi-book-club\"},{\"count\":\"2\",\"name\":\"wish-list\"},{\"count\":\"2\",\"name\":\"own-book\"},{\"count\":\"2\",\"name\":\"unfinished\"},{\"count\":\"2\",\"name\":\"fiction-contemporary\"},{\"count\":\"2\",\"name\":\"adult-books\"},{\"count\":\"2\",\"name\":\"books-i-have\"},{\"count\":\"2\",\"name\":\"paperback\"},{\"count\":\"2\",\"name\":\"books-in-my-library\"},{\"count\":\"2\",\"name\":\"summer-reads\"},{\"count\":\"2\",\"name\":\"read-in-2011\"},{\"count\":\"2\",\"name\":\"read-in-2010\"},{\"count\":\"2\",\"name\":\"gave-up\"},{\"count\":\"2\",\"name\":\"book-club-picks\"},{\"count\":\"2\",\"name\":\"spiritual\"},{\"count\":\"2\",\"name\":\"realistic-fiction\"},{\"count\":\"2\",\"name\":\"beach-read\"},{\"count\":\"2\",\"name\":\"unread-books-i-own\"},{\"count\":\"2\",\"name\":\"read-in-2008\"},{\"count\":\"2\",\"name\":\"in-my-library\"},{\"count\":\"2\",\"name\":\"general\"}]'"
+      },
+      {
+         "name":"asin",
+         "type":"string",
+         "doc":"Type inferred from '\"\"'"
+      },
+      {
+         "name":"is_ebook",
+         "type":"string",
+         "doc":"Type inferred from '\"false\"'"
+      },
+      {
+         "name":"average_rating",
+         "type":"string",
+         "doc":"Type inferred from '\"3.23\"'"
+      },
+      {
+         "name":"kindle_asin",
+         "type":"string",
+         "doc":"Type inferred from '\"B000FC0PBC\"'"
+      },
+      {
+         "name":"similar_books",
+         "type":{
+            "type":"array",
+            "items":"string"
+         },
+         "doc":"Type inferred from '[\"8709549\",\"17074050\",\"28937\",\"158816\",\"228563\",\"11296581\",\"1073987\",\"7298465\",\"1274862\",\"18290554\",\"86382\",\"343067\",\"2774907\",\"663892\",\"1233981\",\"298912\",\"401091\",\"307575\"]'"
+      },
+      {
+         "name":"description",
+         "type":"string",
+         "doc":"Type inferred from '\"Anita Diamant's international bestseller \\\"The Red Tent\\\" brilliantly re-created the ancient world of womanhood. Diamant brings her remarkable storytelling skills to \\\"Good Harbor\\\" -- offering insight to the precarious balance of marriage and career, motherhood and friendship in the world of modern women. The seaside town of Gloucester, Massachusetts is a place where the smell of the ocean lingers in the air and the rocky coast glistens in the Atlantic sunshine. When longtime Gloucester-resident Kathleen Levine is diagnosed with breast cancer, her life is thrown into turmoil. Frightened and burdened by secrets, she meets Joyce Tabachnik -- a freelance writer with literary aspirations -- and a once-in-a-lifetime friendship is born. Joyce has just bought a small house in Gloucester, where she hopes to write as well as vacation with her family. Like Kathleen, Joyce is at a fragile place in her life.\\nA mutual love for books, humor, and the beauty of the natural world brings the two women together. They share their personal histories, and help each other to confront scars left by old emotional wounds.\\nWith her own trademark wisdom and humor, Diamant considers the nature, strength, and necessity of adult female friendship. \\\"Good Harbor\\\" examines the tragedy of loss, the insidious nature of family secrets, as well as the redemptive power of friendship.\"'"
+      },
+      {
+         "name":"format",
+         "type":"string",
+         "doc":"Type inferred from '\"Audio CD\"'"
+      },
+      {
+         "name":"link",
+         "type":"string",
+         "doc":"Type inferred from '\"https://www.goodreads.com/book/show/1333909.Good_Harbor\"'"
+      },
+      {
+         "name":"authors",
+         "type":{
+            "type":"array",
+            "items":{
+               "type":"record",
+               "name":"authors",
+               "fields":[
+                  {
+                     "name":"author_id",
+                     "type":"string",
+                     "doc":"Type inferred from '\"626222\"'"
+                  },
+                  {
+                     "name":"role",
+                     "type":"string",
+                     "doc":"Type inferred from '\"\"'"
+                  }
+               ]
+            }
+         },
+         "doc":"Type inferred from '[{\"author_id\":\"626222\",\"role\":\"\"}]'"
+      },
+      {
+         "name":"publisher",
+         "type":"string",
+         "doc":"Type inferred from '\"Simon & Schuster Audio\"'"
+      },
+      {
+         "name":"num_pages",
+         "type":"string",
+         "doc":"Type inferred from '\"\"'"
+      },
+      {
+         "name":"publication_day",
+         "type":"string",
+         "doc":"Type inferred from '\"1\"'"
+      },
+      {
+         "name":"isbn13",
+         "type":"string",
+         "doc":"Type inferred from '\"9780743509985\"'"
+      },
+      {
+         "name":"publication_month",
+         "type":"string",
+         "doc":"Type inferred from '\"10\"'"
+      },
+      {
+         "name":"edition_information",
+         "type":"string",
+         "doc":"Type inferred from '\"Abridged\"'"
+      },
+      {
+         "name":"publication_year",
+         "type":"string",
+         "doc":"Type inferred from '\"2001\"'"
+      },
+      {
+         "name":"url",
+         "type":"string",
+         "doc":"Type inferred from '\"https://www.goodreads.com/book/show/1333909.Good_Harbor\"'"
+      },
+      {
+         "name":"image_url",
+         "type":"string",
+         "doc":"Type inferred from '\"https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png\"'"
+      },
+      {
+         "name":"book_id",
+         "type":"string",
+         "doc":"Type inferred from '\"1333909\"'"
+      },
+      {
+         "name":"ratings_count",
+         "type":"string",
+         "doc":"Type inferred from '\"10\"'"
+      },
+      {
+         "name":"work_id",
+         "type":"string",
+         "doc":"Type inferred from '\"1323437\"'"
+      },
+      {
+         "name":"title",
+         "type":"string",
+         "doc":"Type inferred from '\"Good Harbor\"'"
+      },
+      {
+         "name":"title_without_series",
+         "type":"string",
+         "doc":"Type inferred from '\"Good Harbor\"'"
+      }
+   ]
+}
