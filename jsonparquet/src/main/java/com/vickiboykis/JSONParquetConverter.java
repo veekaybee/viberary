@@ -10,13 +10,14 @@ import java.io.*;
 
 import org.apache.hadoop.fs.Path;
 
+import java.net.URI;
 import java.net.URL;
 
 import static java.nio.file.Paths.*;
 import static org.apache.avro.generic.GenericData.Record;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.*;
 
 /**
  * Converts a JSON file to Parquet using an Avro schema
@@ -47,11 +48,105 @@ public class JSONParquetConverter
         URL resource = JSONParquetConverter.class.getResource("/goodreads.avsc");
         java.nio.file.Path schemaPath = get(resource.toURI());
 
-        // Output path
+        // Output Hadoop filepath
         Path outputPath = new Path("goodreads_books.parquet");
+
+        java.nio.file.Path outputLocalPath = new java.nio.file.Path("goodreads_books.parquet") {
+            @Override
+            public FileSystem getFileSystem() {
+                return null;
+            }
+
+            @Override
+            public boolean isAbsolute() {
+                return false;
+            }
+
+            @Override
+            public java.nio.file.Path getRoot() {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path getFileName() {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path getParent() {
+                return null;
+            }
+
+            @Override
+            public int getNameCount() {
+                return 0;
+            }
+
+            @Override
+            public java.nio.file.Path getName(int index) {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path subpath(int beginIndex, int endIndex) {
+                return null;
+            }
+
+            @Override
+            public boolean startsWith(java.nio.file.Path other) {
+                return false;
+            }
+
+            @Override
+            public boolean endsWith(java.nio.file.Path other) {
+                return false;
+            }
+
+            @Override
+            public java.nio.file.Path normalize() {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path resolve(java.nio.file.Path other) {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path relativize(java.nio.file.Path other) {
+                return null;
+            }
+
+            @Override
+            public URI toUri() {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path toAbsolutePath() {
+                return null;
+            }
+
+            @Override
+            public java.nio.file.Path toRealPath(LinkOption... options) throws IOException {
+                return null;
+            }
+
+            @Override
+            public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events, WatchEvent.Modifier... modifiers) throws IOException {
+                return null;
+            }
+
+            @Override
+            public int compareTo(java.nio.file.Path other) {
+                return 0;
+            }
+        };
 
         Schema schema = getAvroSchema(schemaPath, "mySchema");
         System.out.println(schema);
+
+        Files.deleteIfExists("goodreads_books.parquet");
 
         try (JSONFileReader<Record> reader = new JSONFileReader<>(
                 sampleStream, schema, Record.class)) {
@@ -59,6 +154,7 @@ public class JSONParquetConverter
             reader.initialize();
 
             long count = 0;
+
 
             try (ParquetWriter<Record> writer = AvroParquetWriter
                     .<Record>builder(outputPath)
