@@ -9,7 +9,7 @@
       },
       {
          "name":"text_reviews_count",
-         "type":"string",
+         "type":"int",
          "doc":"Type inferred from '\"6\"'"
       },
       {
@@ -40,7 +40,7 @@
                "fields":[
                   {
                      "name":"count",
-                     "type":"string",
+                     "type":"int",
                      "doc":"Type inferred from '\"2634\"'"
                   },
                   {
@@ -126,7 +126,7 @@
       },
       {
          "name":"num_pages",
-         "type":"string",
+         "type":"int",
          "doc":"Type inferred from '\"\"'"
       },
       {
@@ -151,7 +151,7 @@
       },
       {
          "name":"publication_year",
-         "type":"string",
+         "type":"int",
          "doc":"Type inferred from '\"2001\"'"
       },
       {
@@ -171,7 +171,7 @@
       },
       {
          "name":"ratings_count",
-         "type":"string",
+         "type":"int",
          "doc":"Type inferred from '\"10\"'"
       },
       {

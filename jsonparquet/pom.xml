@@ -91,6 +91,16 @@
       <version>2.6.0</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.iceberg/iceberg-core -->
+    <dependency>
+      <groupId>org.apache.iceberg</groupId>
+      <artifactId>iceberg-core</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+
+
+
 
   </dependencies>
 

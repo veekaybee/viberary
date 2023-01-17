@@ -1,12 +1,15 @@
 package com.vickiboykis;
 
 import org.apache.avro.Schema;
+import org.apache.iceberg.io.OutputFile;
 import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.kitesdk.data.spi.JsonUtil;
 import org.kitesdk.data.spi.filesystem.JSONFileReader;
 import org.apache.parquet.avro.AvroParquetWriter;
 import java.io.*;
+
+import org.apache.iceberg.Files;
 
 import org.apache.hadoop.fs.Path;
 
@@ -48,121 +51,28 @@ public class JSONParquetConverter
         URL resource = JSONParquetConverter.class.getResource("/goodreads.avsc");
         java.nio.file.Path schemaPath = get(resource.toURI());
 
-        // Output Hadoop filepath
-        Path outputPath = new Path("goodreads_books.parquet");
+        // Output File Loally
 
-        java.nio.file.Path outputLocalPath = new java.nio.file.Path("goodreads_books.parquet") {
-            @Override
-            public FileSystem getFileSystem() {
-                return null;
-            }
-
-            @Override
-            public boolean isAbsolute() {
-                return false;
-            }
-
-            @Override
-            public java.nio.file.Path getRoot() {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path getFileName() {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path getParent() {
-                return null;
-            }
-
-            @Override
-            public int getNameCount() {
-                return 0;
-            }
-
-            @Override
-            public java.nio.file.Path getName(int index) {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path subpath(int beginIndex, int endIndex) {
-                return null;
-            }
-
-            @Override
-            public boolean startsWith(java.nio.file.Path other) {
-                return false;
-            }
-
-            @Override
-            public boolean endsWith(java.nio.file.Path other) {
-                return false;
-            }
-
-            @Override
-            public java.nio.file.Path normalize() {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path resolve(java.nio.file.Path other) {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path relativize(java.nio.file.Path other) {
-                return null;
-            }
-
-            @Override
-            public URI toUri() {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path toAbsolutePath() {
-                return null;
-            }
-
-            @Override
-            public java.nio.file.Path toRealPath(LinkOption... options) throws IOException {
-                return null;
-            }
-
-            @Override
-            public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events, WatchEvent.Modifier... modifiers) throws IOException {
-                return null;
-            }
-
-            @Override
-            public int compareTo(java.nio.file.Path other) {
-                return 0;
-            }
-        };
+        OutputFile outputFile = Files.localOutput("goodreads_books_2.parquet");
 
         Schema schema = getAvroSchema(schemaPath, "mySchema");
         System.out.println(schema);
-
-        Files.deleteIfExists("goodreads_books.parquet");
 
         try (JSONFileReader<Record> reader = new JSONFileReader<>(
                 sampleStream, schema, Record.class)) {
 
             reader.initialize();
+            System.out.println("reader initialized");
 
             long count = 0;
 
-
             try (ParquetWriter<Record> writer = AvroParquetWriter
-                    .<Record>builder(outputPath)
+                    .<Record>builder((Path) outputFile)
                     .withCompressionCodec(CompressionCodecName.SNAPPY)
                     .withSchema(schema)
                     .build()) {
-
                 for (Record record : reader) {
+                    System.out.println("record" + record);
                     writer.write(record);
                     count += 1;
                     System.out.println(count + "rows converted");
