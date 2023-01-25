@@ -2,6 +2,13 @@
 
 goodreads_books.json
 notebooks/memray-results/*
+jsonparquet/target/*
+jsonparquet/src/main/resources/*
+bin/*
+lib/
+.DS_Store
+notebooks/my-db./*
+notebooks/goodreads_parquet.parquet/*
 
 # JAVA
 # Compiled class file
