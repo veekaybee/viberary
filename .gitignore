@@ -1,5 +1,4 @@
 # Data files
-
 goodreads_books.json
 notebooks/memray-results/*
 jsonparquet/target/*
@@ -9,6 +8,7 @@ lib/
 .DS_Store
 notebooks/my-db./*
 notebooks/goodreads_parquet.parquet/*
+.ipynb_checkpoints
 
 # JAVA
 # Compiled class file
