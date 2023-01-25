@@ -14,13 +14,14 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 + Post 0: [Working with the data in BigQuery](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/)
 + Post 1: [Working with the data in Pandas](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/)
 
-## Lit Review
+## Relevant Literature
 
 + ["Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning"](https://arxiv.org/abs/2006.02282)
 + ["PinnerSage"](https://arxiv.org/abs/2007.03634)
++ ["Deduplicating Training Data Makes Language Models Better"](https://arxiv.org/pdf/2107.06499.pdf)
++ ["The Pile: An 800GB Dataset of Diverse Text for Language Modeling"](https://arxiv.org/pdf/2101.00027.pdf)
 
-
-## Input Data
+## Input Data Sample
 
 UCSD Book Graph, with the critical part being the [user-generated shelf labels.](https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/books). [Sample row:](https://gist.github.com/veekaybee/e8ea5dcf5632fd6345096023dc18159e) Note these are all encoded as strings!
 
