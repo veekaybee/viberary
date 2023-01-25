@@ -1,6 +1,7 @@
 # Data files
 
 goodreads_books.json
+notebooks/memray-results/*
 
 # JAVA
 # Compiled class file
