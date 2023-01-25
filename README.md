@@ -110,6 +110,3 @@ UCSD Book Graph, with the critical part being the [user-generated shelf labels.]
 }
 ```
 
-## Processing
-
-Read into BigQuery with notebooks to profile. 
