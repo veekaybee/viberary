@@ -7,7 +7,7 @@ The idea is pretty simple: return book recommendations based on the vibe of the 
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" something like that, like a prompt, and get back a list of books
 
 ## Reference implementation: 
-![](viberary.png)
+![](/assets/viberary.png)
 
 ## Blog posts
 
