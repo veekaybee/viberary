@@ -1,38 +1,63 @@
-from torch.utils.data import Dataset
-from torchvision import datasets
-from torchtext.vocab import vocab
-
 import csv
+import sys
 from collections import Counter
 
-# TODO: abstract away util from local file dir
-input_file = "/Users/vicki/viberary/viberary/data/word2vec_input.csv"
+import torchtext
+from torch.utils.data import Dataset
+from torchtext.vocab import build_vocab_from_iterator
+from torchvision import datasets
 
-# Open file
-def read_input_data(input_file) -> list:
-
-    rows = []
-
-    with open(input_file, "rt") as input_file:
-        for row in csv.reader(input_file):
-            rows.append(row)
-
-    # Build vocabulary from file
+"""
+This class implements the CBOW approach to learning embeddings covered in the original Word2vec paper. 
+"""
 
 
-def create_vocabulary_counter(input_data: list[str]) -> Counter:
+class ContinuousBagofWords:
+    def __init__(self) -> None:
 
-    counter = Counter()
+        # TODO: create utility class for reading relative paths across the project
+        self.input_file = "/Users/vicki/viberary/viberary/data/word2vec_input.csv"
 
-    for item in input_data:
-        counter.update(item)
+    # Open file
+    def read_input_data(self, input_file) -> list:
+        """Reads a comma-delimited CSV file of rows of book data
 
-    return counter
+        Args:
+            input_file (_type_): CSV-delimited file
+
+        Returns:
+            list: A concatentated in-memory list representation of all books in our training data
+        """
+
+        rows = []
+        self.input_file = input_file
+
+        csv.field_size_limit(sys.maxsize)
+
+        with open(input_file, "rt") as input_file:
+            for row in csv.reader(input_file, quoting=csv.QUOTE_NONE):
+                rows.append(row)
+        
+        return rows
+
+    def create_vocabulary_counter(self, input_data: list[str]) -> Counter:
+
+        counter = Counter()
+        
+        for item in input_data:
+            counter.update(item)
+
+        return counter
+
+    def build_vocab(self):
+
+        input_data = self.read_input_data(self.input_file)
+        vocabulary_counter = self.create_vocabulary_counter(input_data)
+        print(vocabulary_counter)
+        # vocab = build_vocab_from_iterator(vocabulary_counter)
+        # return vocab
 
 
-def build_vocab(
-    vocab_counter: Counter, tokens=list[str]
-) -> torchtext.vocab.vocab.Vocab:
+vocab = ContinuousBagofWords().build_vocab()
 
-    vocab = text.build_vocab_from_iterator(vocab_counter)
-    return vocab
+print(vocab)
