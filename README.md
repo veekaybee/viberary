@@ -1,6 +1,7 @@
 # Viberary
 
-![](https://github.com/veekaybee/viberary/blob/main/assets/viberary-logo.png)
+![](https://github.com/veekaybee/viberary/blob/main/docs/assets/img/viberary.jpg)
+
 
 Viberary is a project that will eventually recommend you books based not on genre or title, but vibe. 
 The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
