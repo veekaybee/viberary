@@ -1,5 +1,5 @@
-from train import ModelTrainer
-from model import EMBED_DIMENSION
+from word2vec.train import ModelTrainer
+from word2vec.model import EMBED_DIMENSION
 
 model = ModelTrainer(300,EMBED_DIMENSION)
 
