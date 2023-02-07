@@ -10,7 +10,7 @@ import torch.autograd as autograd
 
 
 class ModelTrainer:
-    def __init__(self, vocab_size: int, embedding_dim: int) -> None:
+    def __init__(self) -> None:
 
         # Build vocab from input file, returns vocab object
         self.vocab = TextPreProcessor().build_vocab()
@@ -21,8 +21,8 @@ class ModelTrainer:
 
         # Hyperparameters
         self.num_epochs = 5
-        self.context_size = 2  # 2 words to the left, 2 to the right
-        self.embedding_dim = 64
+        self.context_size = 2  # 2 words to the left, 2 words to the right
+        self.embedding_dim = 64  # Optimized for storage
         self.learning_rate = 0.001
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -38,7 +38,7 @@ class ModelTrainer:
         self.vocab_list = vocab
 
         data = []
-        for i in range(2, len(vocab) - 2):
+        for i in range(self.context_size, len(vocab) - self.context_size):
             context = [vocab[i - 2], vocab[i - 1], vocab[i + 1], vocab[i + 2]]
             target = vocab[i]
             data.append((context, target))
@@ -56,13 +56,21 @@ class ModelTrainer:
 
         return autograd.Variable(tensor)
 
-    def train_model(self):
+    def get_index_of_max(self, input):
+        index = 0
+        for i in range(1, len(input)):
+            if input[i] > input[index]:
+                index = i
+        return index
+
+    def get_max_prob_result(self, input, ix_to_word):
+        return self.ix_to_word[self.get_index_of_max(input)]
+
+    def train_model(self) -> CBOWModel:
         # Main model training loop
 
         # Loss and optimizer
-        self.model = CBOWModel(
-            self.vocab_size, self.embedding_dim, self.context_size
-        ).to(self.device)
+        self.model = CBOWModel(self.vocab_size, self.embedding_dim).to(self.device)
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         for epoch in range(self.num_epochs):
@@ -73,7 +81,6 @@ class ModelTrainer:
 
             # for each word, context pair, crate a complementary vector and set the target vector
             for context, target in data:
-                print(context, target)
                 v_ctx = self.make_context_vector(context)
                 v_tar = autograd.Variable(torch.LongTensor([self.vocab[target]]))
 
@@ -89,10 +96,30 @@ class ModelTrainer:
                 # Backward pass and optimize
                 loss.backward()
 
-                # continue
+                # continue training
                 self.optimizer.step()
 
-            logging.warning('Save model to model.ckpt')
-            print("Save model to model.ckpt".format(epoch, total_loss))
-            torch.save(self.model.state_dict(), 'model.ckpt')
             print("end of epoch {} | loss {:2.3f}".format(epoch, total_loss))
+
+        torch.save(self.model.state_dict(), 'model.ckpt')
+        logging.warning('Save model to model.ckpt')
+
+        return self.model
+
+    def test_model(self):
+
+        model = self.train_model()
+
+        context = ['third', 'shapeshifter', '2016', 'for']
+        context_vector = self.make_context_vector(context)
+        a = model(context_vector).data.numpy()
+        # # print('Raw text: {}\n'.format(' '.join(raw_text)))
+        # print('Context: {}\n'.format(context))
+        # print('Prediction: {}'.format(get_max_prob_result(a[0], ix_to_word)))
+
+        # print(f'Raw text: {" ".join(self.vocab)}\n')
+        # print(f'Context: {self.context}\n')
+        # print(f'Prediction: {self.ix_to_word[torch.argmax(a[0]).item()]}')
+
+        print('Context: {}\n'.format(context))
+        print('Prediction: {}'.format(self.get_max_prob_result(a[0], self.ix_to_word)))
