@@ -9,7 +9,8 @@ from torchvision import datasets
 from torchtext.data import get_tokenizer
 
 """
-Preprocess text from a CSV file into format for modeling CBOW or Skipgram
+Preprocess text from a CSV file that's created in the input_generator 
+into format for modeling CBOW or Skipgram
 """
 
 
@@ -19,7 +20,7 @@ class TextPreProcessor:
         # TODO: create utility class for reading relative paths across the project
         self.input_file = "/Users/vicki/viberary/viberary/data/word2vec_input.csv"
 
-        # TODO: specify min vocab here
+        # TODO: split into training and test set
 
     def generate_tokens(self):
 

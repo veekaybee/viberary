@@ -1,41 +1,35 @@
-from word2vec.model import CBOWModel
+from word2vec.model import CBOW
 from word2vec.preprocessor import TextPreProcessor
 
 import logging
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-import torch.autograd as autograd
+
+from tqdm import tqdm
 
 
 class ModelTrainer:
     def __init__(self) -> None:
 
-        # Build vocab from input file, returns vocab object
+        # Hyperparameters
+        self.num_epochs = 50
+        self.context_size = 2  # 2 words to the left, 2 words to the right
+        self.embedding_dim = 100  # Optimized for storage
+        self.learning_rate = 0.001
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         self.vocab = TextPreProcessor().build_vocab()
         self.word_to_ix = self.vocab.get_stoi()
         self.ix_to_word = self.vocab.get_itos()
         self.vocab_list = list(self.vocab.get_stoi().keys())
         self.vocab_size = len(self.vocab)
 
-        # Hyperparameters
-        self.num_epochs = 5
-        self.context_size = 2  # 2 words to the left, 2 words to the right
-        self.embedding_dim = 64  # Optimized for storage
-        self.learning_rate = 0.001
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    def build_training_data(self) -> list[tuple]:
 
-    def get_context_window(self, vocab: list[str]) -> list[tuple]:
-        """
-        For each word in the vocab, find sliding windows of [-2,1,0,1,2] indexes
-        relative to the position of the word
+        logging.warning('Building training data')
 
-        :param vocab: list of words in the vocab
-        :return: a list of tuples that are context windows for each word
-        """
-
-        self.vocab_list = vocab
+        vocab = self.vocab_list
 
         data = []
         for i in range(self.context_size, len(vocab) - self.context_size):
@@ -45,81 +39,56 @@ class ModelTrainer:
 
         return data
 
-    def make_context_vector(self, context) -> autograd.Variable:
+    def make_context_vector(self, context, word_to_ix) -> torch.LongTensor:
         """
+        For each word in the vocab, find sliding windows of [-2,1,0,1,2] indexes
+        relative to the position of the word
 
-        :param context:
-        :return:
+        :param vocab: list of words in the vocab
+        :return: torch.LongTensor
         """
-        idxs = [self.word_to_ix[w] for w in context]
+        idxs = [word_to_ix[w] for w in context]
         tensor = torch.LongTensor(idxs)
 
-        return autograd.Variable(tensor)
+        return tensor
 
-    def get_index_of_max(self, input):
-        index = 0
-        for i in range(1, len(input)):
-            if input[i] > input[index]:
-                index = i
-        return index
-
-    def get_max_prob_result(self, input, ix_to_word):
-        return self.ix_to_word[self.get_index_of_max(input)]
-
-    def train_model(self) -> CBOWModel:
+    def train_model(self) -> CBOW:
         # Main model training loop
 
         # Loss and optimizer
-        self.model = CBOWModel(self.vocab_size, self.embedding_dim).to(self.device)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        model = CBOW(self.vocab_size, self.embedding_dim).to(self.device)
+        optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
+        loss_function = nn.NLLLoss()
 
-        for epoch in range(self.num_epochs):
-            total_loss = 0.0
+        logging.warning('Building training data')
+        data = self.build_training_data()
 
-            # generate context window for all words
-            data = self.get_context_window(self.vocab_list)
+        logging.warning('Starting forward pass')
+        for epoch in tqdm(range(self.num_epochs)):
+            # we start tracking how accurate our intial words are
+            total_loss = 0
 
-            # for each word, context pair, crate a complementary vector and set the target vector
+            # for the x, y in the training data:
             for context, target in data:
-                v_ctx = self.make_context_vector(context)
-                v_tar = autograd.Variable(torch.LongTensor([self.vocab[target]]))
+                context_vector = self.make_context_vector(context, self.word_to_ix)
 
-                # Forward pass
-                self.model.zero_grad()
-                out = self.model(v_ctx)
+                # we look at loss
+                log_probs = model(context_vector)
 
-                # negative log likelihood loss, predicts the likelhood of the next word
-                loss_function = nn.NLLLoss()
-                loss = loss_function(out, v_tar)
-                total_loss += loss.data
+                # we compare the loss from what the actual word is related to the probaility of the words
+                total_loss += loss_function(
+                    log_probs, torch.tensor([self.word_to_ix[target]])
+                )
 
-                # Backward pass and optimize
-                loss.backward()
+            # optimize at the end of each epoch
+            optimizer.zero_grad()
+            total_loss.backward()
+            optimizer.step()
 
-                # continue training
-                self.optimizer.step()
+            # Log out some metrics to see if loss decreases
+            logging.warning("end of epoch {} | loss {:2.3f}".format(epoch, total_loss))
 
-            print("end of epoch {} | loss {:2.3f}".format(epoch, total_loss))
-
-        torch.save(self.model.state_dict(), 'model.ckpt')
+        torch.save(model.state_dict(), 'model.ckpt')
         logging.warning('Save model to model.ckpt')
 
-        return self.model
-
-    def test_model(self):
-
-        model = self.train_model()
-
-        context = ['third', 'shapeshifter', '2016', 'for']
-        context_vector = self.make_context_vector(context)
-        a = model(context_vector).data.numpy()
-        # # print('Raw text: {}\n'.format(' '.join(raw_text)))
-        # print('Context: {}\n'.format(context))
-        # print('Prediction: {}'.format(get_max_prob_result(a[0], ix_to_word)))
-
-        # print(f'Raw text: {" ".join(self.vocab)}\n')
-        # print(f'Context: {self.context}\n')
-        # print(f'Prediction: {self.ix_to_word[torch.argmax(a[0]).item()]}')
-
-        print('Context: {}\n'.format(context))
-        print('Prediction: {}'.format(self.get_max_prob_result(a[0], self.ix_to_word)))
+        return model
