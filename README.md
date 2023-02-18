@@ -1,7 +1,6 @@
 # Viberary
 
-![](https://github.com/veekaybee/viberary/blob/main/docs/assets/img/viberary.jpg)
-
+![]([https://github.com/veekaybee/viberary/blob/main/docs/assets/img/viberary.jpg](https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png?raw=true))
 
 Viberary is a project that will eventually recommend you books based not on genre or title, but vibe. 
 The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
@@ -110,4 +109,9 @@ UCSD Book Graph, with the critical part being the [user-generated shelf labels.]
   "title_without_series": "The Te Of Piglet"
 }
 ```
+
+## Embeddings Sample
+
+<img width="648" alt="Screen Shot 2023-02-18 at 2 10 15 PM" src="https://user-images.githubusercontent.com/3837836/219883909-cb615361-9356-4b62-936f-4ea7c6719296.png">
+
 
