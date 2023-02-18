@@ -1,11 +1,18 @@
+import tensorboard as tb
+import tensorflow as tf
 import torch
 
 from model import CBOW
 
-# ## instantiate CBOW, generating training data
-cbow = CBOW()
+tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
+from torch.utils.tensorboard import SummaryWriter
 
-## Train new model and checkpoint it
+# instantiate CBOW, generating training data
+cbow = CBOW()
+# instantiate tensorboard
+writer = SummaryWriter("/tmp/log")
+
+# Train new model and checkpoint it
 # cbow.train_model()
 
 ## Load trained model
@@ -26,3 +33,10 @@ print('Getting weights:\n', model.embeddings.weight.data[1])
 
 # Check Embeddings
 print('Getting embeddings:\n', model.embeddings)
+
+vectors = model.embeddings.weight
+
+# Write embeddings to file
+writer.add_embedding(vectors)
+writer.flush()
+writer.close()
