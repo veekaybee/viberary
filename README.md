@@ -9,10 +9,12 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 ## Reference implementation: 
 ![](https://github.com/veekaybee/viberary/blob/main/assets/viberary.png)
 
-## Blog posts
+## Blog posts and research artifacts
 
 + Post 0: [Working with the data in BigQuery](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/)
 + Post 1: [Working with the data in Pandas](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/)
++ Post 2: [Doing research with ChatGPT)https://vickiboykis.com/2023/02/26/what-should-you-use-chatgpt-for/)
++ [LaTeX Resource](https://vickiboykis.com/latex_resources/)
 
 ## Relevant Literature
 
