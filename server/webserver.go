@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-redis/redis"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -22,13 +23,35 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 	client.Set(query, 1.0, 0)
 }
 
+func search(query string) []string {
+	// This is where you would implement the search logic to get the results
+	// For this example, we'll just return some dummy data
+	return []string{"Result 1", "Result 2", "Result 3"}
+}
+
 func main() {
 
 	// Handle form requests
-	fileServer := http.FileServer(http.Dir("./static"))
 
-	http.Handle("/", fileServer)
-	http.HandleFunc("/form", formHandler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Serve the index.html file
+		http.ServeFile(w, r, "./static/index.html")
+	})
+
+	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		// Get the search query from the form input
+		query := r.URL.Query().Get("query")
+
+		// Pass the query to the search function to get the results
+		results := search(query)
+
+		// Add results to Redis
+		client.Set(query, 1.0, 0)
+
+		// Render the results template with the results on the homepage
+		tmpl := template.Must(template.ParseFiles("./static/results.html"))
+		tmpl.Execute(w, results)
+	})
 
 	fmt.Printf("Starting server at port 8080\n")
 

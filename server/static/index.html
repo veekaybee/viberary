@@ -9,6 +9,25 @@
     <meta name="generator" content="Hugo 0.108.0">
     <title>Viberary</title>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            // Handle the search form submission
+            $("form").submit(function(e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Get the search query from the form input
+                var query = $("#query").val();
+
+                // Send an AJAX request to the /search page with the query as a parameter
+                $.get("/search", {query: query}, function(data) {
+                    // Replace the search results container with the new results
+                    $("#results").html(data);
+                });
+            });
+        });
+    </script>
+
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/cover/">
 
     <link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -90,17 +109,23 @@
 
         <main class="px-3">
             <img src="/assets/img/vibe_book.png" width="300" height="300">
+
+
             <h1 class="cover-heading">Viberary</h1>
             Enter a book vibe you'd like to search for! Keywords include "sad, happy, etc."
             <div>
 
 
-                <form method="POST" action="/form">
+                <form>
                     <div class="form-group">
-                    <input name="query" type="text" value="" />
-                    <input type="submit" value="submit" />
+                        <input type="text" class="form-control" name="query" id="query">
                     </div>
+                    <button type="submit" class="btn btn-primary mt-3">Search</button>
                 </form>
+                <div id="results">
+                    <!-- The search results will be displayed here -->
+                </div>
+
             </div>
                </p>
 
