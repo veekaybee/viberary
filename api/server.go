@@ -10,19 +10,6 @@ import (
 
 var client *redis.Client
 
-func formHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "ParseForm() err: %v", err)
-		return
-	}
-	fmt.Fprintf(w, "POST request successful ")
-	query := r.FormValue("query")
-
-	fmt.Fprintf(w, "query = %s\n", query)
-
-	client.Set(query, 1.0, 0)
-}
-
 func search(query string) []string {
 	// This is where you would implement the search logic to get the results
 	// For this example, we'll just return some dummy data
@@ -31,10 +18,8 @@ func search(query string) []string {
 
 func main() {
 
-	// Handle form requests
-
+	// Serve the index.html file, simple route
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Serve the index.html file
 		http.ServeFile(w, r, "./static/index.html")
 	})
 
@@ -53,7 +38,7 @@ func main() {
 		tmpl.Execute(w, results)
 	})
 
-	fmt.Printf("Starting server at port 8080\n")
+	fmt.Printf("Starting api at port 8080\n")
 
 	// Connect to local Redis
 	client = redis.NewClient(&redis.Options{
