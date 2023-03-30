@@ -2,12 +2,15 @@
 
 ![](https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png)
 
-Viberary is a project that will eventually recommend you books based not on genre or title, but vibe. 
+Viberary is a project that will recommend you books based not on genre or title, but vibe by performing semantic search across a set of learned embeddings. 
 The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" something like that, like a prompt, and get back a list of books
 
 ## Reference implementation: 
 ![](https://github.com/veekaybee/viberary/blob/main/assets/viberary.png)
+
+## Actual Architecture:
+![](https://github.com/veekaybee/viberary/blob/main/assets/actual_architecture.png)
 
 ## Blog posts and research artifacts
 
@@ -16,12 +19,12 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 + Post 2: [Doing research with ChatGPT](https://vickiboykis.com/2023/02/26/what-should-you-use-chatgpt-for/)
 + [LaTeX Resource](https://vickiboykis.com/latex_resources/)
 
-## Relevant Literature
+## Relevant Literature and Bibliography
 
 + ["Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning"](https://arxiv.org/abs/2006.02282)
 + ["PinnerSage"](https://arxiv.org/abs/2007.03634)
-+ ["Deduplicating Training Data Makes Language Models Better"](https://arxiv.org/pdf/2107.06499.pdf)
-+ ["The Pile: An 800GB Dataset of Diverse Text for Language Modeling"](https://arxiv.org/pdf/2101.00027.pdf)
++ ["Making Machine Learning Easy with Embeddings"](https://mlsys.org/Conferences/doc/2018/115.pdf)
++ ["Research Rabbit Collection"](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
 
 ## Input Data Sample
 
