@@ -15,7 +15,7 @@ logging.basicConfig(
 # Hideous
 current_dir = Path.cwd()
 parent_dir = Path('..').resolve()
-models_dir = parent_dir / 'models'
+models_dir = current_dir / 'models'
 ft_file_path = models_dir / 'fasttext.model'
 w2v_file_path = models_dir / 'word2vec.model'
 ft = str(ft_file_path)
