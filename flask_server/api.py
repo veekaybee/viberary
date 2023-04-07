@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from flask import Flask
-from flask import render_template, request, jsonify
+from flask import render_template, jsonify, request
 from gensim.models import Word2Vec
 
 app = Flask(__name__)
@@ -30,23 +30,28 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/search/<model>/<word>', methods=['GET', 'POST'])
-def search(model, word):
-    n = request.args.get('topn')
-    search_query = request.args.get('q')
+@app.route('/search', methods=['POST'])
+def search():
+    n = 10
 
-    if not n:
-        n = 10
-    else:
-        n = int(n)
+    model = request.form['model']
+    word = request.form['word']
 
     if model == "fasttext":
         data = jsonify(ft_model.wv.most_similar([word], topn=n))
+        return render_template(
+            'index.html',
+            model=model,
+            data=data.json,
+        )
     elif model == "word2vec":
         data = jsonify(w2v_model.wv.most_similar([word], topn=n))
-
-    return render_template('index.html', search_query=search_query, data=data.json)
+        return render_template(
+            'index.html',
+            model=model,
+            data=data.json,
+        )
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

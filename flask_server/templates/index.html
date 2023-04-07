@@ -90,20 +90,25 @@
 	<main class="px-3">
 		<img src="/static/assets/img/vibe_book.png" width="300" height="300">
 		
-		
 		<h1 class="cover-heading">Viberary</h1>
-		Enter a book vibe you'd like to search for! Keywords include "sad, happy, etc."
+		Enter a word you'd like to search for similarity for and pick a model!
 		<div>
-			
-			<form class="form-inline my-2 my-lg-0" mmethod="post"
-				  action="{{ url_for('search', model='fasttext', word='') }}"
-				  style="margin:auto;max-width:600px">
-				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			<form action="{{ url_for('search') }}" method="POST">
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" name="word" placeholder="Search...">
+					<div class="input-group-append">
+						<button class="btn btn-primary" type="submit">Search</button>
+					</div>
+					<div class="input-group-append">
+						<select class="form-control" name="model">
+							<option value="fasttext">FastText</option>
+							<option value="word2vec">Word2Vec</option>
+						</select>
+					</div>
+				</div>
 			</form>
 		</div>
 		</p>
-		
 		
 		
 		{% include 'search.html' %}
