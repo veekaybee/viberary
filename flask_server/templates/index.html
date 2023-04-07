@@ -91,11 +91,16 @@
 		<img src="/static/assets/img/vibe_book.png" width="300" height="300">
 		
 		<h1 class="cover-heading">Viberary</h1>
-		Enter a word you'd like to search for similarity for and pick a model!
+		
+		<div class="callout callout-info">
+			<h4>Enter a word for similarity search and pick a model!</h4>
+			
+		</div>
+		
 		<div>
 			<form action="{{ url_for('search') }}" method="POST">
 				<div class="input-group mb-3">
-					<input type="text" class="form-control" name="word" placeholder="Search...">
+					<input type="text" class="form-control" id="query" name="query" value="{{query}}" placeholder="Search..." required>
 					<div class="input-group-append">
 						<button class="btn btn-primary" type="submit">Search</button>
 					</div>
