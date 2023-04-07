@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -9,6 +9,13 @@ import (
 )
 
 var client *redis.Client
+
+type Vector struct {
+}
+
+type Server struct {
+	*mux.Router
+}
 
 func search(query string) []string {
 	// This is where you would implement the search logic to get the results
@@ -27,6 +34,8 @@ func main() {
 		// Get the search query from the form input
 		query := r.URL.Query().Get("query")
 
+		// Vectorize the search query
+		
 		// Pass the query to the search function to get the results
 		results := search(query)
 
