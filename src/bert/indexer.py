@@ -1,24 +1,32 @@
 from src.io import file_reader as f
 from typing import IO, TypedDict, List, Dict
 
+from tqdm import tqdm
+from pathlib import Path
+
+import importlib.resources
+from io import TextIOWrapper
+
 import numpy as np
 
 import pandas as pd
 from pandas import DataFrame
-
 
 from redis import Redis
 from redis.commands.search.field import VectorField, TextField
 from redis.commands.search.query import Query
 
 import logging
+from logging.config import fileConfig
 
 """
 Indexes embeddings from a file into a Redis instance
 """
 
 
-class Indexer:
+class Indexer():
+    
+        
     def __init__(
         self,
         filepath,
@@ -42,28 +50,30 @@ class Indexer:
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    logging.basicConfig(
-        format="%(levelname)s - %(asctime)s: %(message)s",
-        datefmt="%H:%M:%S",
-        level=logging.INFO,
-    )
+        root = f.get_project_root()
+        LOGGING_CONFIG =  root / 'logging.ini'
+        fileConfig(LOGGING_CONFIG)
+        self.logger = logging.getLogger('indexer')
+        
 
     def read_file(self) -> IO:
+        self.logger.info(f"Opening {self.filepath}...")
         return f.get_resource(self.filepath)
+
 
     def file_to_embedding_dict(self) -> Dict[str, List[float]]:
         """
         Returns k,v dictionary
         k is the index of the embedding and v is a vector of embeddings
         """
-
-        csv = self.read_file()
-        df: DataFrame = pd.read_csv(csv)
-        embedding_dict = dict(zip(df["idx"], df["embeddings"]))
-        return embedding_dict
+        with importlib.resources.as_file(self.filepath) as path:
+            self.logger.info(f"Reading in CSV {path}...")
+            csv = path.open()
+            self.logger.info(f"Creating dataframe {path}...")
+            df = pd.read_csv(csv)
+            # df: DataFrame = pd.read_csv(csv)
+            embedding_dict = dict(zip(df["idx"], df["embeddings"]))
+            return embedding_dict
 
     def redis_connection(self) -> Redis:
         host = "localhost"
