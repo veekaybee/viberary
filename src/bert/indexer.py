@@ -1,23 +1,22 @@
-from src.io import file_reader as f
-from typing import IO, TypedDict, List, Dict
-
-from tqdm import tqdm
-from pathlib import Path
-
 import importlib.resources
+import logging
 from io import TextIOWrapper
+from logging.config import fileConfig
+from pathlib import Path
+from typing import IO, Dict, List, TypedDict
+
+import sys
 
 import numpy as np
-
-import pandas as pd
 from pandas import DataFrame
-
 from redis import Redis
-from redis.commands.search.field import VectorField, TextField
+from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
+from tqdm import tqdm
+import pandas as pd
 
-import logging
-from logging.config import fileConfig
+from src.io import file_reader as f
+from src.bert import tqdm_logger 
 
 """
 Indexes embeddings from a file into a Redis instance
@@ -55,6 +54,7 @@ class Indexer():
         fileConfig(LOGGING_CONFIG)
         self.logger = logging.getLogger('indexer')
         
+        
 
     def read_file(self) -> IO:
         self.logger.info(f"Opening {self.filepath}...")
@@ -66,13 +66,17 @@ class Indexer():
         Returns k,v dictionary
         k is the index of the embedding and v is a vector of embeddings
         """
-        with importlib.resources.as_file(self.filepath) as path:
-            self.logger.info(f"Reading in CSV {path}...")
-            csv = path.open()
-            self.logger.info(f"Creating dataframe {path}...")
-            df = pd.read_csv(csv)
-            # df: DataFrame = pd.read_csv(csv)
+        csv = f.get_project_root() / "data" / "embeddings_sample.csv"
+        
+        self.logger.info(f"Reading in CSV { csv}...")
+        
+        tqdm_out = tqdm_logger.TqdmToStdout(self.logger,level=logging.INFO)
+        with tqdm(total=len(open(csv, 'r').readlines())) as pbar:
+            df = pd.read_csv(csv, chunksize=1000, low_memory=False)
+            df = pd.concat(df)
+            self.logger.info(f"Creating dataframe from {csv}...")
             embedding_dict = dict(zip(df["idx"], df["embeddings"]))
+            print(embedding_dict)
             return embedding_dict
 
     def redis_connection(self) -> Redis:
@@ -107,7 +111,7 @@ class Indexer():
         r.ft(self.index_name).create_index(schema)
         r.ft(self.index_name).config_set("default_dialect", 2)
 
-    def load_docs(self, client: Redis):
+    def load_docs(self):
 
         r = self.redis_connection()
 
@@ -121,11 +125,11 @@ class Indexer():
 
             try:
                 # try storing vector, log exceptions if fails to map
-                client.hset(k, mapping={self.vector_field: np_vector.tobytes()})
+                r.hset(k, mapping={self.vector_field: np_vector.tobytes()})
                 logging.info(f"Set {k} vector into Redis index as {self.vector_field}")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
 
-    def check_load(self, client: Redis):
+    def check_load(self):
         r = self.redis_connection()
         logging.info("index meta: ", r.ft(self.index_name).info())

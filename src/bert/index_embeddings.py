@@ -1,3 +1,4 @@
+exit;
 from src.bert.indexer import Indexer
 from importlib import resources
 from pathlib import Path
@@ -19,3 +20,7 @@ indexer = Indexer(
 
 
 indexer.file_to_embedding_dict()
+indexer.delete_index()
+indexer.create_index_schema()
+indexer.load_docs()
+indexer.check_load()
