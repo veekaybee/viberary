@@ -20,11 +20,11 @@ class KNNSearch:
         self.index = "viberary"
         self.vector_field = vector_field
         self.logger = ViberaryLogging().setup_logging()
+        self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
+    # TODO: character escaping, etc, etc for query sanitation input
     def vectorize_query(self, query_string) -> np.ndarray:
-        embedder = SentenceTransformer("all-MiniLM-L6-v2")
-        query_embedding = embedder.encode(self.query_string, convert_to_tensor=False)
-
+        query_embedding = self.embedder.encode(self.query_string, convert_to_tensor=False)
         return query_embedding
 
     def top_knn(self, query_string, top_k=10):
