@@ -1,10 +1,11 @@
-exit;
 from src.bert.indexer import Indexer
 from importlib import resources
 from pathlib import Path
+from src.io import file_reader as f
 
-training_data:Path = Path("data/sentence_embeddings.csv")
+training_data:Path = f.get_project_root() / "data" / "embeddings.snappy"
 
+# Instantiate indexer
 indexer = Indexer(
     training_data,
     nvecs=10,
@@ -18,9 +19,17 @@ indexer = Indexer(
     float_type="FLOAT64",
 )
 
-
+# Load embeddings from parquet file
 indexer.file_to_embedding_dict()
+
+# Delete existing index
 indexer.delete_index()
+
+# Recreate schema based on Indexer
 indexer.create_index_schema()
+
+# Load Embeddings
 indexer.load_docs()
-indexer.check_load()
+
+# Check Index Metadata
+indexer.get_index_metadata()
