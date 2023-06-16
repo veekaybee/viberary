@@ -1,6 +1,7 @@
 import pprint
 from redis import Redis
 from redis.commands.search.query import Query
+from src.bert.viberary_logging import ViberaryLogging
 
 from sentence_transformers import SentenceTransformer, util
 import torch
@@ -18,6 +19,7 @@ class KNNSearch:
         self.query_string = ""
         self.index = "viberary"
         self.vector_field = vector_field
+        self.logger = ViberaryLogging().setup_logging()
 
     def vectorize_query(self, query_string) -> np.ndarray:
         embedder = SentenceTransformer("all-MiniLM-L6-v2")
@@ -40,5 +42,5 @@ class KNNSearch:
 
         # TODO: log and pretty return results
         results = self.conn.ft(self.index).search(q, query_params=params_dict)
-        logging.info(pformat(results))
+        self.logger.info(pformat(results))
         return results

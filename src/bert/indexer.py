@@ -1,16 +1,15 @@
 from src.io import file_reader as f
-
+from src.bert.viberary_logging import ViberaryLogging
 
 from io import TextIOWrapper
 
-from logging.config import fileConfig
+
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
 
 
 import csv
 import importlib.resources
-import logging
 
 import sys
 
@@ -21,9 +20,6 @@ from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
 from tqdm import tqdm
 import pandas as pd
-
-
-from src.bert import tqdm_logger
 
 """
 Indexes embeddings from a file into a Redis instance
@@ -56,13 +52,7 @@ class Indexer:
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
-        self.setup_logging()
-
-    def setup_logging(self):
-        root = f.get_project_root()
-        LOGGING_CONFIG = root / "logging.ini"
-        fileConfig(LOGGING_CONFIG)
-        self.logger = logging.getLogger("indexer")
+        self.logger = ViberaryLogging().setup_logging()
 
     def file_to_embedding_dict(self) -> Dict[str, List[float]]:
         """Reads Parquet file and process in Pandas, returning zipped dict of index and embeddings
@@ -121,7 +111,9 @@ class Indexer:
             try:
                 # write to Redis
                 r.hset(k, mapping={self.vector_field: np_vector.tobytes()})
-                self.logger.info(f"Set {i} vector into Redis index as {self.vector_field}")
+                self.logger.info(
+                    f"Set {i} vector into Redis index as {self.vector_field}"
+                )
             except Exception as e:
                 self.logger.error("An exception occurred: {}".format(e))
 
@@ -129,5 +121,5 @@ class Indexer:
         r = self.conn
         metadata = r.ft(self.index_name).info()
         self.logger.info(
-            f"index name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds"
+            f"name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds"
         )

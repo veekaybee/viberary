@@ -1,5 +1,5 @@
 [tool.black]
-line-length = 99 # override black's default line-length
+line-length = 90 # override black's default line-length
 exclude = '''
 /(
     \.git
