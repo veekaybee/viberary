@@ -3,7 +3,7 @@ from importlib import resources
 from pathlib import Path
 from src.io import file_reader as f
 
-training_data:Path = f.get_project_root() / "data" / "embeddings.snappy"
+training_data: Path = f.get_project_root() / "data" / "embeddings.snappy"
 
 # Instantiate indexer
 indexer = Indexer(

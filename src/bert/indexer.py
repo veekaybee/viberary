@@ -1,11 +1,19 @@
-import importlib.resources
-import logging
+from src.io import file_reader as f
+from src.bert.cache import Cache
+
+
 from io import TextIOWrapper
+
+
+
 from logging.config import fileConfig
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
-from src.io import file_reader as f
+
+
 import csv
+import importlib.resources
+import logging
 
 import sys
 
@@ -18,16 +26,15 @@ from tqdm import tqdm
 import pandas as pd
 
 
-from src.bert import tqdm_logger 
+from src.bert import tqdm_logger
 
 """
 Indexes embeddings from a file into a Redis instance
 """
 
 
-class Indexer():
+class Indexer:
     
-        
     def __init__(
         self,
         filepath,
@@ -51,52 +58,42 @@ class Indexer():
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
+        cache = Cache()
+        self.cache = cache.redis_connection()
         root = f.get_project_root()
-        LOGGING_CONFIG =  root / 'logging.ini'
+        LOGGING_CONFIG = root / "logging.ini"
         fileConfig(LOGGING_CONFIG)
-        self.logger = logging.getLogger('indexer')
-        
-        
-    
+        self.logger = logging.getLogger("indexer")
+
     def file_to_embedding_dict(self) -> Dict[str, List[float]]:
         """
         Returns k,v dictionary
         k is the index of the embedding and v is a vector of embeddings
         """
         parquet = self.filepath
-        
+
         self.logger.info(f"Loading parquet file {parquet}...")
-        
-        tqdm_out = tqdm_logger.TqdmToStdout(self.logger,level=logging.INFO)
-        
+
+        tqdm_out = tqdm_logger.TqdmToStdout(self.logger, level=logging.INFO)
+
         self.logger.info(f"Creating dataframe from {parquet}...")
         pqt = pd.read_parquet(parquet)
-        
-        embedding_dict = dict(
-            zip(
-                pqt["index"],
-                pqt["embeddings"]
-            )
-        )
-        
+
+        embedding_dict = dict(zip(pqt["index"], pqt["embeddings"]))
+
         return embedding_dict
 
-    def redis_connection(self) -> Redis:
-        host = "localhost"
-        port = 6379
-        redis_conn = Redis(host=host, port=port)
-        return redis_conn
 
     def delete_index(self):
         """Delete Redis index, will need to do to recreate"""
         self.logger.info(f"Deleting Redis index...")
-        r = self.redis_connection()
+        r = self.cache
         r.flushall()
 
     def create_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
 
-        r = self.redis_connection()
+        r = self.cache
 
         schema = (
             VectorField(
@@ -117,7 +114,7 @@ class Indexer():
 
     def load_docs(self):
 
-        r = self.redis_connection()
+        r = self.cache
 
         vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict()
         self.logger.info(f"Inserting vector into Redis index {self.index_name}")
@@ -125,7 +122,7 @@ class Indexer():
         # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):
             data = np.array(v, dtype=np.float64)
-            
+
             np_vector = data.astype(np.float64)
 
             try:
@@ -133,9 +130,11 @@ class Indexer():
                 r.hset(k, mapping={self.vector_field: np_vector.tobytes()})
                 self.logger.info(f"Set {i} vector into Redis index as {self.vector_field}")
             except Exception as e:
-                 self.logger.error("An exception occurred: {}".format(e))
+                self.logger.error("An exception occurred: {}".format(e))
 
     def get_index_metadata(self):
-        r = self.redis_connection()
+        r = self.cache
         metadata = r.ft(self.index_name).info()
-        self.logger.info(f"index name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds")
+        self.logger.info(
+            f"index name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds"
+        )
