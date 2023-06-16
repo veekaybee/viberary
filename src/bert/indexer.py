@@ -5,7 +5,6 @@ from src.bert.cache import Cache
 from io import TextIOWrapper
 
 
-
 from logging.config import fileConfig
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
@@ -34,7 +33,6 @@ Indexes embeddings from a file into a Redis instance
 
 
 class Indexer:
-    
     def __init__(
         self,
         filepath,
@@ -82,7 +80,6 @@ class Indexer:
         embedding_dict = dict(zip(pqt["index"], pqt["embeddings"]))
 
         return embedding_dict
-
 
     def delete_index(self):
         """Delete Redis index, will need to do to recreate"""
