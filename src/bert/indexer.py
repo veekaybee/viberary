@@ -33,6 +33,7 @@ Indexes embeddings from a file into a Redis instance
 class Indexer:
     def __init__(
         self,
+        redis_conn,
         filepath,
         nvecs=0,
         dim=0,
@@ -43,9 +44,8 @@ class Indexer:
         distance_metric="COSINE",
         token_field_name="token",
         float_type="FLOAT64",
-        host="localhost",
-        port=6379,
     ) -> None:
+        self.conn = redis_conn
         self.filepath = filepath
         self.dim = dim
         self.nvecs = nvecs
@@ -56,7 +56,6 @@ class Indexer:
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
-        self.cache = Redis(host=host, port=port)
         self.setup_logging()
 
     def setup_logging(self):
@@ -73,9 +72,6 @@ class Indexer:
         """
         parquet = self.filepath
 
-        self.logger.info(f"Loading parquet file {parquet}...")
-        tqdm_out = tqdm_logger.TqdmToStdout(self.logger, level=logging.INFO)
-
         self.logger.info(f"Creating dataframe from {parquet}...")
         pqt = pd.read_parquet(parquet)
 
@@ -86,13 +82,13 @@ class Indexer:
     def delete_index(self):
         """Delete Redis index, will need to do to recreate"""
         self.logger.info(f"Deleting Redis index...")
-        r = self.cache
+        r = self.conn
         r.flushall()
 
     def create_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
 
-        r = self.cache
+        r = self.conn
 
         schema = (
             VectorField(
@@ -112,8 +108,7 @@ class Indexer:
         self.logger.info(f"Creating Redis schema: {schema}")
 
     def load_docs(self):
-
-        r = self.cache
+        r = self.conn
 
         vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict()
         self.logger.info(f"Inserting vector into Redis index {self.index_name}")
@@ -131,7 +126,7 @@ class Indexer:
                 self.logger.error("An exception occurred: {}".format(e))
 
     def get_index_metadata(self):
-        r = self.cache
+        r = self.conn
         metadata = r.ft(self.index_name).info()
         self.logger.info(
             f"index name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds"

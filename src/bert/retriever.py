@@ -1,9 +1,10 @@
 from src.bert.knn_search import KNNSearch
+from src.bert.redis_conn import RedisConnection
 
 """Perform simple KNN search in Redis
 """
 
 
-retriever = KNNSearch()
+retriever = KNNSearch(RedisConnection().conn())
 
-retriever.top_knn("dog")
+print(retriever.top_knn("dog"))

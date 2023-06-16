@@ -9,15 +9,14 @@ from torch import Tensor
 from typing import List
 
 import numpy as np
+from pprint import pformat
 
 
 class KNNSearch:
-    def __init__(
-        self, host="localhost", index="viberary", port=6379, vector_field="vector"
-    ) -> None:
+    def __init__(self, redis_conn, vector_field="vector") -> None:
+        self.conn = redis_conn
         self.query_string = ""
-        self.cache = Redis(host=host, port=port)
-        self.index = index
+        self.index = "viberary"
         self.vector_field = vector_field
 
     def vectorize_query(self, query_string) -> np.ndarray:
@@ -40,6 +39,6 @@ class KNNSearch:
         params_dict = {"vec_param": query_vector}
 
         # TODO: log and pretty return results
-        results = self.cache.ft(self.index).search(q, query_params=params_dict)
-
+        results = self.conn.ft(self.index).search(q, query_params=params_dict)
+        logging.info(pformat(results))
         return results
