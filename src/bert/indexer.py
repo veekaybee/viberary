@@ -1,9 +1,7 @@
 from src.io import file_reader as f
-from src.bert.cache import Cache
 
 
 from io import TextIOWrapper
-
 
 from logging.config import fileConfig
 from pathlib import Path
@@ -45,6 +43,8 @@ class Indexer:
         distance_metric="COSINE",
         token_field_name="token",
         float_type="FLOAT64",
+        host="localhost",
+        port=6379,
     ) -> None:
         self.filepath = filepath
         self.dim = dim
@@ -56,22 +56,24 @@ class Indexer:
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
-        cache = Cache()
-        self.cache = cache.redis_connection()
+        self.cache = Redis(host=host, port=port)
+        self.setup_logging()
+
+    def setup_logging(self):
         root = f.get_project_root()
         LOGGING_CONFIG = root / "logging.ini"
         fileConfig(LOGGING_CONFIG)
         self.logger = logging.getLogger("indexer")
 
     def file_to_embedding_dict(self) -> Dict[str, List[float]]:
-        """
-        Returns k,v dictionary
-        k is the index of the embedding and v is a vector of embeddings
+        """Reads Parquet file and process in Pandas, returning zipped dict of index and embeddings
+
+        Returns:
+            Dict[str, List[float]]: _description_
         """
         parquet = self.filepath
 
         self.logger.info(f"Loading parquet file {parquet}...")
-
         tqdm_out = tqdm_logger.TqdmToStdout(self.logger, level=logging.INFO)
 
         self.logger.info(f"Creating dataframe from {parquet}...")
@@ -119,11 +121,10 @@ class Indexer:
         # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):
             data = np.array(v, dtype=np.float64)
-
             np_vector = data.astype(np.float64)
 
             try:
-                # try storing vector, log exceptions if fails to map
+                # write to Redis
                 r.hset(k, mapping={self.vector_field: np_vector.tobytes()})
                 self.logger.info(f"Set {i} vector into Redis index as {self.vector_field}")
             except Exception as e:
