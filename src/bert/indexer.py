@@ -4,6 +4,7 @@ import sys
 from io import TextIOWrapper
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
+import pyarrow as pa
 
 import numpy as np
 import pandas as pd

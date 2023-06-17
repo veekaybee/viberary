@@ -11,11 +11,11 @@ from flask import render_template, jsonify, request
 app = Flask(__name__)
 
 logger = ViberaryLogging().setup_logging()
-retriever = KNNSearch(RedisConnection().conn())
 
 
 def return_model_results(word: str, n: int = 10) -> str:
-    data = jsonify(retriever.top_knn(word))
+    retriever = KNNSearch(word, RedisConnection().conn())
+    data = jsonify(retriever.top_knn())
     return render_template("index.html", data=data.json, query=word)
 
 

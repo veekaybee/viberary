@@ -5,8 +5,8 @@ from src.bert.redis_conn import RedisConnection
 """
 
 
-retriever = KNNSearch(RedisConnection().conn())
+retriever = KNNSearch("beauty and the beast", RedisConnection().conn())
 
-results = retriever.top_knn("dog")
+results = retriever.top_knn()
 
 print(results)
