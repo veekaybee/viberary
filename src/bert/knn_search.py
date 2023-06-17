@@ -1,16 +1,17 @@
 import pprint
-from redis import Redis
-from redis.commands.search.query import Query
-from src.bert.viberary_logging import ViberaryLogging
-
-from sentence_transformers import SentenceTransformer, util
-import torch
-from torch import Tensor
-
+from pprint import pformat
 from typing import List
 
 import numpy as np
-from pprint import pformat
+import torch
+from redis import Redis
+from redis.commands.search.query import Query
+from sentence_transformers import SentenceTransformer, util
+from torch import Tensor
+
+from redis.commands.search import result
+
+from src.bert.viberary_logging import ViberaryLogging
 
 
 class KNNSearch:
@@ -27,7 +28,7 @@ class KNNSearch:
         query_embedding = self.embedder.encode(self.query_string, convert_to_tensor=False)
         return query_embedding
 
-    def top_knn(self, query_string, top_k=10):
+    def top_knn(self, query_string, top_k=10) -> List:
         query_vector = self.vectorize_query(query_string).astype(np.float64).tobytes()
 
         q = (
@@ -42,5 +43,11 @@ class KNNSearch:
 
         # TODO: log and pretty return results
         results = self.conn.ft(self.index).search(q, query_params=params_dict)
+        results_docs = results.docs
+
+        index_vector = []
+
+        for i in results_docs:
+            index_vector.append((i["id"], i["vector_score"]))
         self.logger.info(pformat(results))
-        return results
+        return index_vector

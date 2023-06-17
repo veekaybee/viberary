@@ -1,7 +1,8 @@
-from src.io import file_reader as f
 import logging
-from logging.config import fileConfig
 from logging import Logger
+from logging.config import fileConfig
+
+from src.io import file_reader as f
 
 
 class ViberaryLogging:

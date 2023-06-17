@@ -7,4 +7,6 @@ from src.bert.redis_conn import RedisConnection
 
 retriever = KNNSearch(RedisConnection().conn())
 
-print(retriever.top_knn("dog"))
+results = retriever.top_knn("dog")
+
+print(results)
