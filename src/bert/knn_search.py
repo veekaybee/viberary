@@ -48,7 +48,11 @@ class KNNSearch:
         index_vector = []
 
         for i in results_docs:
-            index_vector.append((i["id"], i["vector_score"]))
+            id = i["id"]
+            id_int = id.lstrip("vector::")
+            print(id_int)
+            title = self.conn.get(f"title::{id_int}")
+            index_vector.append((i["id"], i["vector_score"], title))
 
         self.logger.info(pformat(index_vector))
         return index_vector

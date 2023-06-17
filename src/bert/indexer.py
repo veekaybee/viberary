@@ -106,7 +106,7 @@ class Indexer:
 
             try:
                 # write to Redis
-                r.hset(k, mapping={self.vector_field: np_vector.tobytes()})
+                r.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
                 self.logger.info(
                     f"Set {i} vector into Redis index as {self.vector_field}"
                 )

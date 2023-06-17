@@ -22,7 +22,7 @@ indexer = Indexer(
     float_type="FLOAT64",
 )
 
-# # Load embeddings from parquet file
+# # # Load embeddings from parquet file
 # indexer.file_to_embedding_dict()
 
 # # Delete existing index
@@ -38,5 +38,8 @@ indexer = Indexer(
 # indexer.get_index_metadata()
 
 # Write index mapping title to index
-title_mapper = TitleMapper(RedisConnection().conn(), training_data)
-title_mapper.index_title_redis()
+title_mapper = TitleMapper(
+    RedisConnection().conn(),
+    training_data,
+)
+title_mapper.load_docs()
