@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import os
 
 from src.models.bert.knn_search import KNNSearch
 from src.logs.viberary_logging import ViberaryLogging
@@ -32,4 +33,5 @@ def search():
 
 # Local testing model only
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)

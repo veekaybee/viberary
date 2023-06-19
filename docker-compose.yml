@@ -1,11 +1,12 @@
 services:
   redis:
-    image: redislabs/redisearch
+    image: redis/redis-stack
     container_name: redis
     ports:
       - '6379:6379'
 
   flask:
+    env_file: .env
     build: .
     container_name: flask
     ports:

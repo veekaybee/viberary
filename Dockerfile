@@ -2,10 +2,11 @@ FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
-COPY requirements.txt /app
-
+COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
 
-COPY . /code
+ENV PYTHONPATH=/app
 
-CMD python /code/src/api.py
+COPY . .
+
+CMD flask --app /app/src/api/api.py run

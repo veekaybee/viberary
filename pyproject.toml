@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length = 90 # override black's default line-length
 exclude = '''
