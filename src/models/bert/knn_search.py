@@ -11,7 +11,7 @@ from torch import Tensor
 
 from redis.commands.search import result
 
-from src.bert.viberary_logging import ViberaryLogging
+from src.logs.viberary_logging import ViberaryLogging
 
 
 class KNNSearch:
@@ -29,7 +29,7 @@ class KNNSearch:
         return query_embedding
 
     def top_knn(self, top_k=10) -> List:
-        """_summary_
+        """Return top 10 vector results from model using HNSW search
 
         Args:
             top_k (int, optional): _description_. Defaults to 10.
@@ -69,7 +69,7 @@ class KNNSearch:
 
     def rescore(self, result_list: List) -> List:
         """Takes a ranked list and returns ordinal scores for each
-        cosine similarity
+        cosine similarity for UI legibility
         """
         ranked_list = []
 

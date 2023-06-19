@@ -1,9 +1,9 @@
-from src.bert.indexer import Indexer
+from src.models.bert.indexer import Indexer
 from importlib import resources
 from pathlib import Path
 from src.io import file_reader as f
-from src.bert.redis_conn import RedisConnection
-from src.bert.title_mapper import TitleMapper
+from src.io.redis_conn import RedisConnection
+from src.models.bert.title_mapper import TitleMapper
 
 training_data: Path = f.get_project_root() / "data" / "embeddings.snappy"
 
@@ -22,24 +22,25 @@ indexer = Indexer(
     float_type="FLOAT64",
 )
 
-# # # Load embeddings from parquet file
-# indexer.file_to_embedding_dict()
+# Load embeddings from parquet file
+indexer.file_to_embedding_dict()
 
-# # Delete existing index
-# indexer.delete_index()
+# Delete existing index
+indexer.delete_index()
 
-# # Recreate schema based on Indexer
-# indexer.create_index_schema()
+# Recreate schema based on Indexer
+indexer.create_index_schema()
 
-# # Load Embeddings
-# indexer.load_docs()
+# Load Embeddings
+indexer.load_docs()
 
-# # Check Index Metadata
-# indexer.get_index_metadata()
+# Check Index Metadata
+indexer.get_index_metadata()
 
 # Write index mapping title to index
 title_mapper = TitleMapper(
     RedisConnection().conn(),
     training_data,
 )
+
 title_mapper.load_docs()

@@ -38,7 +38,6 @@ class TitleMapper:
         pqt = pd.read_parquet(self.filepath)
         self.logger.info(f"Getting index data from {pqt}...")
         title_dict = dict(zip(pqt["index"], pqt["sentence"]))
-        print(title_dict)
         return title_dict
 
     def load_docs(self):
