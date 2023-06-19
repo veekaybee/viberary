@@ -12,23 +12,30 @@ from torch import Tensor
 from redis.commands.search import result
 
 from src.logs.viberary_logging import ViberaryLogging
+from src.stringops.sanitize_input import InputSanitizer
 
 
 class KNNSearch:
-    def __init__(self, query_string, redis_conn, vector_field="vector") -> None:
+    def __init__(
+        self,
+        redis_conn,
+    ) -> None:
         self.conn = redis_conn
         self.index = "viberary"
-        self.vector_field = vector_field
+        self.vector_field = "vector"
         self.logger = ViberaryLogging().setup_logging()
+        self.sanitizer = InputSanitizer()
         self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
-        self.query_string = query_string
 
-    # TODO: character escaping, etc, etc for query sanitation input
-    def vectorize_query(self) -> np.ndarray:
-        query_embedding = self.embedder.encode(self.query_string, convert_to_tensor=False)
+    def vectorize_query(self, query_string) -> np.ndarray:
+        query_embedding = self.embedder.encode(query_string, convert_to_tensor=False)
         return query_embedding
 
-    def top_knn(self, top_k=10) -> List:
+    def top_knn(
+        self,
+        query,
+        top_k=10,
+    ) -> List:
         """Return top 10 vector results from model using HNSW search
 
         Args:
@@ -37,7 +44,10 @@ class KNNSearch:
         Returns:
             List: Returns list of tuple that includes the index, cosine similarity, and book title
         """
-        query_vector = self.vectorize_query().astype(np.float64).tobytes()
+
+        sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
+
+        query_vector = self.vectorize_query(sanitized_query).astype(np.float64).tobytes()
 
         q = (
             Query(f"*=>[KNN {top_k} @{self.vector_field} $vec_param AS vector_score]")
@@ -69,7 +79,7 @@ class KNNSearch:
 
     def rescore(self, result_list: List) -> List:
         """Takes a ranked list and returns ordinal scores for each
-        cosine similarity for UI legibility
+        cosine similarity for UI
         """
         ranked_list = []
 

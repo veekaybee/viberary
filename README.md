@@ -36,11 +36,12 @@ For now, there are a couple key directories:
 + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings model, and storing and querying those embeddings in Redis Search. This is the solution I'm working towards for the first baseline production model. 
 + `flask_server` - A model learned in Word2Vec AND Fasttext from the code here (https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb) and deployed on a tiny Flask server on a GitHub droplet. This is not production-grade, but allows for model serving and evaluation. 
 
-Demo here: 
+Word2Vec Demo: 
 
 https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
 
-+ `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn about PyTorch idioms and paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
++ models: 
+  + `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn about PyTorch idioms and paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
 
 + `docs` - This serves and rebuilds viberary.pizza
 

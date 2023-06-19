@@ -4,6 +4,6 @@ from src.io.redis_conn import RedisConnection
 """Tests retrieval from Redis
 """
 
-retriever = KNNSearch("beauty and the beast", RedisConnection().conn())
-results = retriever.top_knn()
+retriever = KNNSearch(RedisConnection().conn())
+results = retriever.top_knn("funny")
 print(results)

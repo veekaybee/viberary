@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
 
-from word2vec.src.preprocessor import TextPreProcessor
+from models.word2vec.src.preprocessor import TextPreProcessor
 
 """
 Initializing a CBOW model which tries to guess the middle word in a
@@ -27,7 +27,7 @@ class CBOW(torch.nn.Module):
         self.context_size = 2  # 2 words to the left, 2 words to the right
         self.embedding_dim = 100  # Size of your embedding vector
         self.learning_rate = 0.001
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.vocab = TextPreProcessor().build_vocab()
         self.word_to_ix = self.vocab.get_stoi()
@@ -37,7 +37,7 @@ class CBOW(torch.nn.Module):
 
         self.model = None
 
-        self.model_path = 'model.ckpt'
+        self.model_path = "model.ckpt"
 
         # out: 1 x embedding_dim
         self.embeddings = nn.Embedding(
@@ -64,8 +64,7 @@ class CBOW(torch.nn.Module):
         return self.embeddings(word).view(1, -1)
 
     def build_training_data(self) -> list[tuple]:
-
-        logging.warning('Building training data')
+        logging.warning("Building training data")
 
         vocab = self.vocab_list
 
@@ -91,16 +90,15 @@ class CBOW(torch.nn.Module):
         return tensor
 
     def train_model(self):
-
         # Loss and optimizer
         self.model = CBOW().to(self.device)
         optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
         loss_function = nn.NLLLoss()
 
-        logging.warning('Building training data')
+        logging.warning("Building training data")
         data = self.build_training_data()
 
-        logging.warning('Starting forward pass')
+        logging.warning("Starting forward pass")
         for epoch in tqdm(range(self.num_epochs)):
             # we start tracking how accurate our intial words are
             total_loss = 0
@@ -126,15 +124,15 @@ class CBOW(torch.nn.Module):
             logging.warning("end of epoch {} | loss {:2.3f}".format(epoch, total_loss))
 
         torch.save(self.model.state_dict(), self.model_path)
-        logging.warning(f'Save model to {self.model_path}')
+        logging.warning(f"Save model to {self.model_path}")
 
     def load(self):
-        '''
+        """
         Load model from file
         :return:
-        '''
+        """
         try:
-            logging.warning('Loading model from checkpoint')
+            logging.warning("Loading model from checkpoint")
 
             self.model = CBOW().to(self.device)
             self.model.eval()
@@ -148,4 +146,4 @@ class CBOW(torch.nn.Module):
             return self.model
 
         except FileNotFoundError:
-            print('Model file does not exist')
+            print("Model file does not exist")

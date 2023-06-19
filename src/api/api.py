@@ -14,8 +14,8 @@ logger = ViberaryLogging().setup_logging()
 
 
 def return_model_results(word: str, n: int = 10) -> str:
-    retriever = KNNSearch(word, RedisConnection().conn())
-    data = jsonify(retriever.top_knn())
+    retriever = KNNSearch(RedisConnection().conn())
+    data = jsonify(retriever.top_knn(word))
     return render_template("index.html", data=data.json, query=word)
 
 
