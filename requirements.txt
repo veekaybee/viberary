@@ -119,10 +119,6 @@ sentence-transformers==2.2.2
 sentencepiece==0.1.99
 six==1.16.0
 smart-open==6.3.0
-soupsieve==2.4.1
-spacy==3.5.0
-spacy-legacy==3.0.12
-spacy-loggers==1.0.4
 SQLAlchemy==2.0.15
 sqlglot==15.0.0
 sqlparse==0.4.4
@@ -130,10 +126,8 @@ srsly==2.4.5
 stack-data==0.6.2
 tenacity==8.2.2
 termcolor==2.2.0
-threadpoolctl==3.1.0
 tokenize-rt==5.0.0
 tokenizers==0.13.3
-tomli==2.0.1
 torch==1.13.1
 torchtext==0.14.1
 torchvision==0.14.1
@@ -145,7 +139,6 @@ typer==0.7.0
 typing_extensions==4.4.0
 wasabi==1.1.1
 watermark==2.4.2
-wcwidth==0.2.6
 Werkzeug==2.2.3
 widgetsnbextension==4.0.7
 wrapt==1.14.1

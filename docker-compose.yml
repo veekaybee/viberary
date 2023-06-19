@@ -6,11 +6,10 @@ services:
       - '6379:6379'
 
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     volumes:
       - .:/app
-    environment:
-      FLASK_APP: src/api
-      FLASK_ENV: development
