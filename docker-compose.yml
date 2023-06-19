@@ -1,0 +1,16 @@
+services:
+  redis:
+    image: redislabs/redisearch
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  flask:
+    build: .
+    container_name: flask
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - redis

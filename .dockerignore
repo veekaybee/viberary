@@ -1,0 +1,5 @@
+data/*
+lib/*
+neuron/*
+.pytest_cache/*
+bin/*
