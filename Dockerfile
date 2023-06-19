@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
 
-ENV PYTHONPATH=/app
+ENV FLASK_APP src/api/
 
-COPY . .
+ADD src .
 
-CMD flask --app /app/src/api/api.py run
+CMD ["flask", "run", "--host=0.0.0.0"]

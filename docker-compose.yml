@@ -5,13 +5,12 @@ services:
     ports:
       - '6379:6379'
 
-  flask:
-    env_file: .env
+  web:
     build: .
-    container_name: flask
     ports:
       - "5000:5000"
     volumes:
       - .:/app
-    depends_on:
-      - redis
+    environment:
+      FLASK_APP: src/api
+      FLASK_ENV: development
