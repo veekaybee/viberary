@@ -8,7 +8,7 @@ from inout.file_reader import get_project_root
 class ViberaryLogging:
     def setup_logging(self) -> Logger:
         root = get_project_root()
-        LOGGING_CONFIG = root / "logging.ini"
+        LOGGING_CONFIG = root / "src" / "logs" / "logging.ini"
         fileConfig(LOGGING_CONFIG)
         logger = logging.getLogger("indexer")
         return logger

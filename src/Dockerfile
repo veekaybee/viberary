@@ -4,11 +4,11 @@ WORKDIR /src
 
 COPY requirements.txt requirements.txt
 
-# RUN --mount=type=cache,target=~/.cache/pip  pip install -r requirements.txt
-RUN pip install Flask
+RUN --mount=type=cache,target=~/.cache/pip  pip install -r requirements.txt
 COPY . /src
 
 ENV FLASK_APP=app
+ENV PYTHONPATH="$PYTHONPATH:/src"
 
 EXPOSE 5000
 
