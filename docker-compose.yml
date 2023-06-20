@@ -5,9 +5,14 @@ services:
     ports:
       - '6379:6379'
 
-  web:
+  flask:
     build:
-      context: ./src/api
+      context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - 5000:5000
+    volumes:
+      - ./src:/src
+    environment:
+      - FLASK_APP=/src/api/app.py
+      - PYTHONPATH=$PYTHONPATH:/src/api
