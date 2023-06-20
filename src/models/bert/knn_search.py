@@ -11,8 +11,8 @@ from torch import Tensor
 
 from redis.commands.search import result
 
-from src.logs.viberary_logging import ViberaryLogging
-from src.stringops.sanitize_input import InputSanitizer
+from logs.viberary_logging import ViberaryLogging
+from stringops.sanitize_input import InputSanitizer
 
 
 class KNNSearch:
