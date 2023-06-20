@@ -7,9 +7,7 @@ services:
 
   web:
     build:
-      context: .
+      context: ./src/api
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
