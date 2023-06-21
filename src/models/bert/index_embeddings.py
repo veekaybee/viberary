@@ -1,9 +1,9 @@
-from src.models.bert.indexer import Indexer
+from models.bert.indexer import Indexer
 from importlib import resources
 from pathlib import Path
-from src.io import file_reader as f
-from src.io.redis_conn import RedisConnection
-from src.models.bert.title_mapper import TitleMapper
+from inout import file_reader as f
+from inout.redis_conn import RedisConnection
+from models.bert.title_mapper import TitleMapper
 
 training_data: Path = f.get_project_root() / "data" / "embeddings.snappy"
 

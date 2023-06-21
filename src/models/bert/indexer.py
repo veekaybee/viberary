@@ -1,21 +1,20 @@
 import csv
 import importlib.resources
 import sys
-from io import TextIOWrapper
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
-import pyarrow as pa
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 from pandas import DataFrame
 from redis import Redis
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
+from src.logs.viberary_logging import ViberaryLogging
 from tqdm import tqdm
 
-from src.logs.viberary_logging import ViberaryLogging
-from src.io import file_reader as f
+from inout import file_reader as f
 
 """
 Indexes embeddings from a file into a Redis instance
