@@ -42,25 +42,22 @@ Since the project is actively in exploration and development, there are a lot of
 
 + `src` - where all the code is
   + `api` - Flask sever that calls the model, includes a search endpoint. Eventually will be rewritten in Go (for performance reasons)
-  + `models` - The actual models including Word2Vec and BERT. Right now in production only BERT gets called from the API. 
-  + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings model, and storing and querying those embeddings in Redis Search. This is the solution I'm working towards for the first baseline production model. 
-
-
-
-
-+ models: 
-  + `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn about PyTorch idioms and paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
-
+  + `datagen` includes data generated for feeding into Word2Vec and for generating embeddings and also the code used to generate the embeddings, done on a Paperspace GPU instance. 
+  + `models` - The actual models including Word2Vec and BERT. 
+    + `bert` - Right now in production only BERT gets called from the API. the `bert` directory includes an indexer which indexes embeddings generated in `datagen` into a Redis instance. Redis and the Flask app talk to each other through an app running via `docker-compose` and the `Dockerfile` for the main app instance. 
+     + `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn about PyTorch idioms and paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
+  + There are some utilities such as data directory access, io operations and a separate indexer that indexes titles into Redis for easy retrieval by the application
+  + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings model, and storing and querying those embeddings in Redis Search. This is the solution I eventually turned into the application directory structure. 
 + `docs` - This serves and rebuilds viberary.pizza
 
-+ `api` - Me starting to learn Go for what will eventually be the production-grade server (ported from Flask
+
 
 ## Relevant Literature and Bibliography
 
 + ["Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning"](https://arxiv.org/abs/2006.02282)
 + ["PinnerSage"](https://arxiv.org/abs/2007.03634)
-+ ["Making Machine Learning Easy with Embeddings"](https://mlsys.org/Conferences/doc/2018/115.pdf)
-+ ["Research Rabbit Collection"](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
++ ["My Research Rabbit Collection"](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
++ My [paper on embeddings and its bibliography](https://vickiboykis.com/what_are_embeddings/index.html) 
 
 ## Input Data Sample
 

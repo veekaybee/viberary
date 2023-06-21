@@ -78,12 +78,9 @@ class KNNSearch:
         return scored_results
 
     def rescore(self, result_list: List) -> List:
-        """Takes a ranked list and returns ordinal scores for each
+        """Takes a ranked list of tuples
+        Each tuple contains (index, cosine similarity, book title)
+        and returns ordinal scores for each
         cosine similarity for UI
         """
-        ranked_list = []
-
-        for index, val in enumerate(result_list):
-            ranked_list.append((val[2], index))
-
-        return ranked_list
+        return [(val[2], index) for index, val in enumerate(result_list)]
