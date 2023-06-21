@@ -33,8 +33,14 @@ https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a
 
 https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5afb9972-bef1-4481-81c6-489a2a8cc861.MOV
 
+# Running the project
 
-  
+1. Clone the repo
+2. go to the project root
+3. `docker compose build`
+4. `docker compose up` - starts the web server
+5. `docker exec -it viberary-flask-1 python /app/src/models/bert/index_embeddings.py` indexes the embeddings once the web server is running
+6. `docker compose logs` for logs
 
 # Repo Structure
 

@@ -4,14 +4,33 @@ from pathlib import Path
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 from models.bert.title_mapper import TitleMapper
+import time
+from redis.exceptions import ConnectionError
 
-training_data: Path = (
-    f.get_project_root() / "app" / "src" / "data" / "learned_embeddings.snappy"
-)
-print(training_data)
+training_data: Path = f.get_project_root() / "src" / "data" / "learned_embeddings.snappy"
+
+
+def connect_to_redis_with_retries():
+    max_retries = 5  # Maximum number of connection retries
+    retry_delay = 2  # Delay between retries in seconds
+
+    for attempt in range(max_retries):
+        try:
+            return RedisConnection().conn()
+        except ConnectionError:
+            print(
+                f"Connection to Redis failed (attempt {attempt + 1}/{max_retries}). Retrying in {retry_delay} seconds..."
+            )
+            time.sleep(retry_delay)
+
+    raise ConnectionError(f"Failed to connect to Redis after {max_retries} attempts.")
+
+
+redis_conn = connect_to_redis_with_retries()
+
 # Instantiate indexer
 indexer = Indexer(
-    RedisConnection().conn(),
+    redis_conn,
     training_data,
     nvecs=1000,
     dim=384,
@@ -24,11 +43,11 @@ indexer = Indexer(
     float_type="FLOAT64",
 )
 
-# Load embeddings from parquet file
-indexer.file_to_embedding_dict()
-
 # Delete existing index
 indexer.delete_index()
+
+# Load embeddings from parquet file
+indexer.file_to_embedding_dict()
 
 # Recreate schema based on Indexer
 indexer.create_index_schema()

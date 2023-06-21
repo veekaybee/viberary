@@ -14,7 +14,7 @@ from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
 from tqdm import tqdm
 
-from src.logs.viberary_logging import ViberaryLogging
+from logs.viberary_logging import ViberaryLogging
 from inout import file_reader as f
 
 """

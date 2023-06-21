@@ -15,8 +15,7 @@ services:
       - db-data:/etc/data
     environment:
       - FLASK_APP=/src/api/app.py
-      - PYTHONPATH=$PYTHONPATH:/src/api
-    command: bash -c "python /app/src/models/bert/index_embeddings.py && python /app/src/api/app.py"
-
+    depends_on:
+      - redis
 volumes:
   db-data:

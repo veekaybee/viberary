@@ -11,7 +11,7 @@ from pandas import DataFrame
 from redis import Redis
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
-from src.logs.viberary_logging import ViberaryLogging
+from logs.viberary_logging import ViberaryLogging
 from tqdm import tqdm
 
 from inout import file_reader as f
