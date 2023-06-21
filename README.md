@@ -4,10 +4,11 @@
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
 
-Viberary is a project that will recommend you books based not on genre or title, but vibe by performing semantic search across a set of learned embeddings on a dataset of books from Goodreads and their metadata. 
+Viberary is a project that will eventually recommend you books based not on genre or title, but vibe by performing semantic search across a set of learned embeddings on a dataset of books from Goodreads and their metadata. 
 
-The idea is pretty simple: return book recommendations based on the vibe of the book that you put in.
-So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt, and get back a list of books
+The idea is simple: return book recommendations based on the vibe of the book that you put in.
+So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt, and get back a list of books.
+
 
 ## Reference implementation: 
 ![](https://github.com/veekaybee/viberary/blob/main/assets/viberary.png)
@@ -17,28 +18,35 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 
 My approach is: 
 
-1. Explore the data [Done]
+- [X] Explore the data 
   + Post 0: [Working with the data in BigQuery](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/)
   + Post 1: [Working with the data in Pandas](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/)
   + Post 2: [Doing research with ChatGPT](https://vickiboykis.com/2023/02/26/what-should-you-use-chatgpt-for/)
-2. Build a baseline model in Word2Vec [In progress]
-3. Deploy the baseline model to "prod" (aka a single server) and test it out [In progress]
-4. Build a model using base BERT (or DistilBERT, etc.) and also deploy that and evaluate them against each other. 
-5. At the same time, write a document about what embeddings are and how they fit into modern machine learning workflows
-  + [LaTeX Resource](https://vickiboykis.com/latex_resources/)
+- [X] Build a baseline model in Word2Vec. [Done]
+   - Built and implemented in the [word2vec_demo](https://github.com/veekaybee/viberary/tree/word2vec_demo) branch
+- [X] Doing a [deep dive on embeddings](https://vickiboykis.com/what_are_embeddings/) and [LaTeX Resource](https://vickiboykis.com/latex_resources/)
+- [x] Deploy the baseline model to "prod" (aka a single server) and test it out. Word2Vec Demo: 
+
+https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
+
+- [ ] Build a model [using BERT](https://github.com/veekaybee/viberary/tree/bert) and also deploy that and evaluate them against each other. In progress [on this branch](https://github.com/veekaybee/viberary/tree/bert)
+
+https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5afb9972-bef1-4481-81c6-489a2a8cc861.MOV
+
+
+  
 
 # Repo Structure
 
 Since the project is actively in exploration and development, there are a lot of winding codepaths, experiments, and dead ends in the codebase. It is not production-grade for ANY definition of production. I'll let you know when it's ready. 
 
-For now, there are a couple key directories: 
++ `src` - where all the code is
+  + `api` - Flask sever that calls the model, includes a search endpoint. Eventually will be rewritten in Go (for performance reasons)
+  + `models` - The actual models including Word2Vec and BERT. Right now in production only BERT gets called from the API. 
+  + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings model, and storing and querying those embeddings in Redis Search. This is the solution I'm working towards for the first baseline production model. 
 
-+ `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings model, and storing and querying those embeddings in Redis Search. This is the solution I'm working towards for the first baseline production model. 
-+ `flask_server` - A model learned in Word2Vec AND Fasttext from the code here (https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb) and deployed on a tiny Flask server on a GitHub droplet. This is not production-grade, but allows for model serving and evaluation. 
 
-Word2Vec Demo: 
 
-https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
 
 + models: 
   + `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn about PyTorch idioms and paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
