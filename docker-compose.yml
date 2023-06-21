@@ -1,0 +1,21 @@
+services:
+  redis:
+    image: redis/redis-stack
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - db-data:/etc/data
+    environment:
+      - FLASK_APP=/src/api/app.py
+    depends_on:
+      - redis
+volumes:
+  db-data:
