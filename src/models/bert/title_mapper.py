@@ -15,7 +15,7 @@ from redis.commands.search.query import Query
 from tqdm import tqdm
 
 from src.logs.viberary_logging import ViberaryLogging
-from src.io import file_reader as f
+from inout import file_reader as f
 
 """
 Indexes embeddings from a file into a Redis instance

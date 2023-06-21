@@ -25,7 +25,7 @@ class KNNSearch:
         self.vector_field = "vector"
         self.logger = ViberaryLogging().setup_logging()
         self.sanitizer = InputSanitizer()
-        self.embedder = SentenceTransformer("all-MiniLM-L6-v2.pth")
+        self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.embedder.encode(query_string, convert_to_tensor=False)

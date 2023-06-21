@@ -16,6 +16,7 @@ services:
     environment:
       - FLASK_APP=/src/api/app.py
       - PYTHONPATH=$PYTHONPATH:/src/api
+    command: bash -c "python /app/src/models/bert/index_embeddings.py && python /app/src/api/app.py"
 
 volumes:
   db-data:

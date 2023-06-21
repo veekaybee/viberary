@@ -1,4 +1,6 @@
 FROM bitnami/pytorch 
+USER root
+
 
 WORKDIR /app
 
@@ -15,8 +17,7 @@ ENV SENTENCE_TRANSFORMERS_HOME=/app/data
 
 
 WORKDIR /app/src/api
-ENTRYPOINT [ "python" ]
-CMD ["app.py" ]
+
 
 
 

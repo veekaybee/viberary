@@ -5,8 +5,10 @@ from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 from models.bert.title_mapper import TitleMapper
 
-training_data: Path = f.get_project_root() / "data" / "embeddings.snappy"
-
+training_data: Path = (
+    f.get_project_root() / "app" / "src" / "data" / "learned_embeddings.snappy"
+)
+print(training_data)
 # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),
