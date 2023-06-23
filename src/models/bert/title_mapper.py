@@ -4,18 +4,18 @@ import sys
 from io import TextIOWrapper
 from pathlib import Path
 from typing import IO, Dict, List, TypedDict
-import pyarrow as pa
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 from pandas import DataFrame
 from redis import Redis
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.query import Query
 from tqdm import tqdm
 
-from logs.viberary_logging import ViberaryLogging
 from inout import file_reader as f
+from logs.viberary_logging import ViberaryLogging
 
 """
 Indexes embeddings from a file into a Redis instance

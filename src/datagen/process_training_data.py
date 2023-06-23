@@ -1,7 +1,6 @@
-from src.logs.viberary_logging import ViberaryLogging
-
 import duckdb
 import pandas as pd
+from src.logs.viberary_logging import ViberaryLogging
 
 """Generates input data in English for Embeddings
 """

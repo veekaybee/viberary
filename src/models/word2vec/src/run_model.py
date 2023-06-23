@@ -1,7 +1,6 @@
 import tensorboard as tb
 import tensorflow as tf
 import torch
-
 from model import CBOW
 
 tf.io.gfile = tb.compat.tensorflow_stub.io.gfile

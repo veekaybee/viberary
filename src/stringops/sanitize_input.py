@@ -1,6 +1,5 @@
 import re
 
-
 """Utility functions in working with text in Viberary
 """
 

@@ -1,11 +1,13 @@
-from models.bert.indexer import Indexer
+import time
 from importlib import resources
 from pathlib import Path
+
+from redis.exceptions import ConnectionError
+
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
+from models.bert.indexer import Indexer
 from models.bert.title_mapper import TitleMapper
-import time
-from redis.exceptions import ConnectionError
 
 training_data: Path = f.get_project_root() / "src" / "data" / "learned_embeddings.snappy"
 
