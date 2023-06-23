@@ -1,0 +1,8 @@
+watermark 
+python-snappy 
+pandas  
+matplotlib 
+sentence_transformers 
+tqdm 
+numpy
+pyarrow
