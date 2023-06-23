@@ -1,13 +1,12 @@
 import logging
-from pathlib import Path
 import os
+from pathlib import Path
 
-from models.bert.knn_search import KNNSearch
-from logs.viberary_logging import ViberaryLogging
+from flask import Flask, jsonify, render_template, request
+
 from inout.redis_conn import RedisConnection
-
-from flask import Flask
-from flask import render_template, jsonify, request
+from logs.viberary_logging import ViberaryLogging
+from models.bert.knn_search import KNNSearch
 
 app = Flask(__name__)
 

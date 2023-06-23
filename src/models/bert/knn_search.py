@@ -5,11 +5,10 @@ from typing import List
 import numpy as np
 import torch
 from redis import Redis
+from redis.commands.search import result
 from redis.commands.search.query import Query
 from sentence_transformers import SentenceTransformer, util
 from torch import Tensor
-
-from redis.commands.search import result
 
 from logs.viberary_logging import ViberaryLogging
 from stringops.sanitize_input import InputSanitizer
