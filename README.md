@@ -2,40 +2,45 @@
 
 ![]()
 
+Since the project is actively in exploration and development, there are a lot of winding codepaths, experiments, and dead ends in the codebase. It is not production-grade yet for ANY definition of production. 
+
+🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a> <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a> 🚧
+
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
 
-Viberary is a project that will eventually recommend you books based not on genre or title, but vibe by performing semantic search across a set of learned embeddings on a dataset of books from Goodreads and their metadata. 
+Viberary is a search engine that will eventually recommend you books based not on genre or title, but vibe by performing [semantic search](https://en.wikipedia.org/wiki/Semantic_search) across [a set of learned embeddings](https://vickiboykis.com/what_are_embeddings/index.html) on a dataset of books from Goodreads and their metadata. 
 
-The idea is simple: return book recommendations based on the vibe of the book that you put in.
-So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt, and get back a list of books.
+The idea is to return book recommendations based on the vibe of the book that you put in.
+So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt, and get back a list of books. This project came out of experiences I had where recommendations for movies, TV, and music have fairly been good, but book recommendations are always a problem. 
+
+![](https://github.com/veekaybee/viberary/blob/main/assets/cats.png)
 
 
-## Reference implementation: 
-![](https://github.com/veekaybee/viberary/blob/main/assets/viberary.png)
+## Architecture:
 
-## Actual Architecture:
+
 ![](https://github.com/veekaybee/viberary/blob/main/assets/actual_architecture.png)
 
-My approach is: 
+Work so far: 
 
 - [X] Explore the data 
   + Post 0: [Working with the data in BigQuery](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/)
   + Post 1: [Working with the data in Pandas](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/)
   + Post 2: [Doing research with ChatGPT](https://vickiboykis.com/2023/02/26/what-should-you-use-chatgpt-for/)
-- [X] Build a baseline model in Word2Vec. [Done]
-   - Built and implemented in the [word2vec_demo](https://github.com/veekaybee/viberary/tree/word2vec_demo) branch
-- [X] Doing a [deep dive on embeddings](https://vickiboykis.com/what_are_embeddings/) and [LaTeX Resource](https://vickiboykis.com/latex_resources/)
+- [X] Build a baseline model in Word2Vec. [Released here](https://github.com/veekaybee/viberary/releases/tag/v0.0.1)
+- [X] [Deep dive on embeddings](https://vickiboykis.com/what_are_embeddings/) and [LaTeX Resource](https://vickiboykis.com/latex_resources/)
 - [x] Deploy the baseline model to "prod" (aka a single server) and test it out. Word2Vec Demo: 
 
-https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
+![](https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov)
 
-- [ ] Build a model [using BERT](https://github.com/veekaybee/viberary/tree/bert) and also deploy that and evaluate them against each other. In progress [on this branch](https://github.com/veekaybee/viberary/tree/bert)
+- [ ] Build a model [using BERT](https://github.com/veekaybee/viberary/tree/bert) and also deploy that and evaluate them against each other. In progress on the main branch. 
 
-https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5afb9972-bef1-4481-81c6-489a2a8cc861.MOV
+![](https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5afb9972-bef1-4481-81c6-489a2a8cc861.MOV)
+
 
 # Running the project
 
-1. Clone the repo
+1. Fork/clone the repo
 2. go to the project root
 3. `docker compose build`
 4. `docker compose up` - starts the web server
@@ -44,7 +49,7 @@ https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5
 
 # Repo Structure
 
-Since the project is actively in exploration and development, there are a lot of winding codepaths, experiments, and dead ends in the codebase. It is not production-grade for ANY definition of production. I'll let you know when it's ready. 
+
 
 + `src` - where all the code is
   + `api` - Flask sever that calls the model, includes a search endpoint. Eventually will be rewritten in Go (for performance reasons)
@@ -60,12 +65,13 @@ Since the project is actively in exploration and development, there are a lot of
 
 ## Relevant Literature and Bibliography
 
-+ ["Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning"](https://arxiv.org/abs/2006.02282)
-+ ["PinnerSage"](https://arxiv.org/abs/2007.03634)
-+ ["My Research Rabbit Collection"](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
 + My [paper on embeddings and its bibliography](https://vickiboykis.com/what_are_embeddings/index.html) 
++ [Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning](https://arxiv.org/abs/2006.02282)
++ [PinnerSage"(https://arxiv.org/abs/2007.03634)
++ [My Research Rabbit Collection](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
 
-## Input Data Sample
+
+## Input Data 
 
 UCSD Book Graph, with the critical part being the [user-generated shelf labels.](https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/books). [Sample row:](https://gist.github.com/veekaybee/e8ea5dcf5632fd6345096023dc18159e) Note these are all encoded as strings!
 
