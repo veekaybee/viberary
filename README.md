@@ -31,11 +31,11 @@ Work so far:
 - [X] [Deep dive on embeddings](https://vickiboykis.com/what_are_embeddings/) and [LaTeX Resource](https://vickiboykis.com/latex_resources/)
 - [x] Deploy the baseline model to "prod" (aka a single server) and test it out. Word2Vec Demo: 
 
-![](https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov)
+https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
 
 - [ ] Build a model [using BERT](https://github.com/veekaybee/viberary/tree/bert) and also deploy that and evaluate them against each other. In progress on the main branch. 
 
-![](https://github-production-user-asset-6210df.s3.amazonaws.com/3837836/246661581-5afb9972-bef1-4481-81c6-489a2a8cc861.MOV)
+https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d672410dd1
 
 
 # Running the project
