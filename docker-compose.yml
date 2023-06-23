@@ -1,6 +1,8 @@
 services:
   redis:
     image: redis/redis-stack
+    volumes:
+      - redis-data:/data
     container_name: redis
     ports:
       - '6379:6379'
@@ -19,3 +21,5 @@ services:
       - redis
 volumes:
   db-data:
+  redis-data:
+    driver: local
