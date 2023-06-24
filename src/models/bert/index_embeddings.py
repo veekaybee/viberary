@@ -1,8 +1,4 @@
-import time
-from importlib import resources
 from pathlib import Path
-
-from redis.exceptions import ConnectionError
 
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
@@ -11,28 +7,9 @@ from models.bert.title_mapper import TitleMapper
 
 training_data: Path = f.get_project_root() / "src" / "data" / "learned_embeddings.snappy"
 
-
-def connect_to_redis_with_retries():
-    max_retries = 5  # Maximum number of connection retries
-    retry_delay = 2  # Delay between retries in seconds
-
-    for attempt in range(max_retries):
-        try:
-            return RedisConnection().conn()
-        except ConnectionError:
-            print(
-                f"Connection to Redis failed (attempt {attempt + 1}/{max_retries}). Retrying in {retry_delay} seconds..."
-            )
-            time.sleep(retry_delay)
-
-    raise ConnectionError(f"Failed to connect to Redis after {max_retries} attempts.")
-
-
-redis_conn = connect_to_redis_with_retries()
-
 # Instantiate indexer
 indexer = Indexer(
-    redis_conn,
+    RedisConnection().conn(),
     training_data,
     nvecs=1000,
     dim=384,

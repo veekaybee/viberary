@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'flask'
+    static_configs:
+      - targets: [ 'flask:5000' ]
+    metrics_path: /metrics
+    params:
+      module: [ logs ]
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: [ 'redis:6379' ]
+    metrics_path: /metrics
+    params:
+      module: [ logs ]
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+    metrics_path: /metrics
+    params:
+      module: [ logs ]
