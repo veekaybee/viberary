@@ -1,16 +1,14 @@
-import logging
+import logging.config
 import os
-from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 
+from inout import file_reader as f
 from inout.redis_conn import RedisConnection
-from logs.viberary_logging import ViberaryLogging
 from models.bert.knn_search import KNNSearch
 
 app = Flask(__name__)
-
-logger = ViberaryLogging().setup_logging()
+logging.config.fileConfig(f.get_project_root() / "logging.conf")
 
 
 def return_model_results(word: str) -> str:
@@ -32,5 +30,6 @@ def search():
 
 # Local testing model only
 if __name__ == "__main__":
+    logging.info(f"Starting Flask")
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=port)

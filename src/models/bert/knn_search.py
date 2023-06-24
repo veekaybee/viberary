@@ -1,16 +1,12 @@
-import pprint
+import logging.config
 from pprint import pformat
 from typing import List
 
 import numpy as np
-import torch
-from redis import Redis
-from redis.commands.search import result
 from redis.commands.search.query import Query
-from sentence_transformers import SentenceTransformer, util
-from torch import Tensor
+from sentence_transformers import SentenceTransformer
 
-from logs.viberary_logging import ViberaryLogging
+from inout import file_reader as f
 from stringops.sanitize_input import InputSanitizer
 
 
@@ -22,7 +18,7 @@ class KNNSearch:
         self.conn = redis_conn
         self.index = "viberary"
         self.vector_field = "vector"
-        self.logger = ViberaryLogging().setup_logging()
+        logging.config.fileConfig(f.get_project_root() / "logging.conf")
         self.sanitizer = InputSanitizer()
         self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -60,7 +56,7 @@ class KNNSearch:
 
         results = self.conn.ft(self.index).search(q, query_params=params_dict)
         results_docs = results.docs
-        self.logger.info(pformat(results))
+        logging.info(pformat(results))
 
         index_vector = []
 
@@ -70,7 +66,7 @@ class KNNSearch:
             title = self.conn.get(f"title::{id_int}")
             index_vector.append((i["id"], i["vector_score"], title))
 
-        self.logger.info(pformat(index_vector))
+        logging.info(pformat(index_vector))
 
         scored_results = self.rescore(index_vector)
 

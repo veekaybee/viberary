@@ -6,6 +6,11 @@ services:
     container_name: redis
     ports:
       - '6379:6379'
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+        tag: redis
 
   flask:
     build:
@@ -19,7 +24,37 @@ services:
       - FLASK_APP=/src/api/app.py
     depends_on:
       - redis
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+        tag: flask
+
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./custom.ini:/etc/grafana/grafana.ini
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    ports:
+      - '9090:9090'
+
 volumes:
   db-data:
   redis-data:
     driver: local
+  grafana_data: { }
