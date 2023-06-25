@@ -30,7 +30,6 @@ services:
         gelf-address: udp://localhost:12201
         tag: flask
 
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -65,4 +64,4 @@ volumes:
   db-data:
   redis-data:
     driver: local
-  grafana_data: { }
+  grafana_data: {}

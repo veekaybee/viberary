@@ -82,17 +82,12 @@ class Indexer:
             ),
             TextField(self.token_field_name),
         )
-        logging.info(
-            f"using {self.vector_field}, {self.float_type}, {self.dim}, {self.distance_metric},{self.token_field_name}"
-        )
+        logging.info(f"using {self.vector_field}, {self.float_type}, {self.dim}")
         logging.info(f"using {schema}")
 
         r.ft(self.index_name).create_index(schema)
         r.ft(self.index_name).config_set("default_dialect", 2)
         logging.info(f"Creating Redis schema: {schema} in index {self.index_name}")
-
-    def take(self, n, iterable):
-        return list(islice(iterable, n))
 
     def load_docs(self):
         r = self.conn
@@ -100,10 +95,8 @@ class Indexer:
         vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict()
         logging.info(f"Inserting vector into Redis index {self.index_name}")
 
-        sample_dict = self.take(10, vector_dict.items())
-
         # an input dictionary from a dictionary
-        for i, (k, v) in enumerate(sample_dict):
+        for i, (k, v) in enumerate(vector_dict.items()):
             data = np.array(v, dtype=np.float64)
             np_vector = data.astype(np.float64)
 

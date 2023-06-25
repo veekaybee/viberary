@@ -38,6 +38,6 @@ class TitleMapper:
             try:
                 # write to Redis
                 r.set(f"title::{k}", v)
-                logging.info(f"Set {i} vector into Redis index")
+                logging.info(f"Set {i} title into Redis")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
