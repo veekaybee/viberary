@@ -50,13 +50,20 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
 
 1. Fork/clone the repo
 2. go to the project root
-3. `docker compose build`
-4. `docker compose up` - starts the web server
-5. `docker exec -it viberary-flask-1 python /app/src/models/bert/index_embeddings.py` indexes the embeddings once the
+3. You'll need the [embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) at the root of
+   the `/app/src/` repo.
+4. `docker compose build`
+5. `docker compose up` - starts the web server
+6. `docker exec -it viberary-flask-1 python /app/src/models/bert/index_embeddings.py` indexes the embeddings once the
    web server is running
-6. `docker compose logs -f -t` for logs
-7. To set up grafana, you need `http://host.docker.internal:9090`.
-8. docker
+
+# Monitoring the project
+
+1. `docker compose logs -f -t` for logs
+2. To set up grafana, you need `http://host.docker.internal:9090` or `http://prometheus:9090`.
+3. To set up Redis monitoring, you'll need to
+   follow [instructions here](https://grafana.com/grafana/dashboards/12776-redis/) and set `http://redis:6379`
+4. docker
 
 # Repo Structure
 

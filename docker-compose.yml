@@ -1,11 +1,11 @@
 services:
   redis:
-    image: redis/redis-stack
+    image: redis/redis-stack-server:latest
     volumes:
       - redis-data:/data
     container_name: redis
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     logging:
       driver: gelf
       options:
@@ -30,17 +30,24 @@ services:
         gelf-address: udp://localhost:12201
         tag: flask
 
-
   grafana:
     image: grafana/grafana
     container_name: grafana
     restart: unless-stopped
     ports:
       - '3000:3000'
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_ENABLE_GZIP=true
+      - GF_USERS_DEFAULT_THEME=light
+      - GF_DEFAULT_APP_MODE=development
+      - GF_INSTALL_PLUGINS=redis-datasource
     volumes:
       - grafana_data:/var/lib/grafana
       - ./custom.ini:/etc/grafana/grafana.ini
-
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -57,4 +64,4 @@ volumes:
   db-data:
   redis-data:
     driver: local
-  grafana_data: { }
+  grafana_data: {}

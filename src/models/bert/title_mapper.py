@@ -31,13 +31,13 @@ class TitleMapper:
     def load_docs(self):
         r = self.conn
         vector_dict: Dict[str, str] = self.index_title_redis()
-        logging.info(f"Inserting k,v")
+        logging.info(f"Inserting titles into the title index")
 
         # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):
             try:
                 # write to Redis
                 r.set(f"title::{k}", v)
-                logging.info(f"Set {i} vector into Redis index")
+                logging.info(f"Set {i} title into Redis")
             except Exception as e:
-                self.logger.error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
