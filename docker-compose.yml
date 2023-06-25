@@ -37,10 +37,18 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000'
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_ENABLE_GZIP=true
+      - GF_USERS_DEFAULT_THEME=light
+      - GF_DEFAULT_APP_MODE=development
+      - GF_INSTALL_PLUGINS=redis-datasource
     volumes:
       - grafana_data:/var/lib/grafana
       - ./custom.ini:/etc/grafana/grafana.ini
-
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
   prometheus:
     image: prom/prometheus
     container_name: prometheus
