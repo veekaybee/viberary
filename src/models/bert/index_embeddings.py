@@ -5,7 +5,7 @@ from inout.redis_conn import RedisConnection
 from models.bert.indexer import Indexer
 from models.bert.title_mapper import TitleMapper
 
-training_data: Path = f.get_project_root() / "src" / "data" / "learned_embeddings.snappy"
+training_data: Path = f.get_project_root() / "src" / "learned_embeddings.snappy"
 
 # Instantiate indexer
 indexer = Indexer(
