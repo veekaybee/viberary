@@ -1,5 +1,6 @@
 import logging
 import logging.config
+from itertools import islice
 from typing import Dict, List
 
 import numpy as np
@@ -18,12 +19,12 @@ class Indexer:
         self,
         redis_conn,
         filepath,
+        vector_field,
+        index_name,
         nvecs=0,
         dim=0,
         max_edges=0,
         ef=0,
-        vector_field="",
-        index_name="",
         distance_metric="COSINE",
         token_field_name="token",
         float_type="FLOAT64",
@@ -58,13 +59,13 @@ class Indexer:
 
     def delete_index(self):
         """Delete Redis index, will need to do to recreate"""
-        logging.info(f"Deleting Redis index...")
+        logging.info(f"Deleting Redis index {self.index_name}...")
         r = self.conn
         r.flushall()
 
     def create_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
-
+        logging.info(f"Creating redis schema...")
         r = self.conn
 
         schema = (
@@ -82,7 +83,10 @@ class Indexer:
 
         r.ft(self.index_name).create_index(schema)
         r.ft(self.index_name).config_set("default_dialect", 2)
-        logging.info(f"Creating Redis schema: {schema}")
+        logging.info(f"Creating Redis schema: {schema} in index {self.index_name}")
+
+    def take(self, n, iterable):
+        return list(islice(iterable, n))
 
     def load_docs(self):
         r = self.conn
@@ -90,15 +94,19 @@ class Indexer:
         vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict()
         logging.info(f"Inserting vector into Redis index {self.index_name}")
 
+        sample_dict = self.take(10, vector_dict.items())
+
         # an input dictionary from a dictionary
-        for i, (k, v) in enumerate(vector_dict.items()):
+        for i, (k, v) in enumerate(sample_dict):
             data = np.array(v, dtype=np.float64)
             np_vector = data.astype(np.float64)
 
             try:
                 # write to Redis
                 r.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
-                logging.info(f"Set {i} vector into Redis index as {self.vector_field}")
+                logging.info(
+                    f"Set vector {i}  into {self.index_name} as {self.vector_field}"
+                )
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
 

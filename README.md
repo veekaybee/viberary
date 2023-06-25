@@ -55,7 +55,7 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
 5. `docker exec -it viberary-flask-1 python /app/src/models/bert/index_embeddings.py` indexes the embeddings once the
    web server is running
 6. `docker compose logs -f -t` for logs
-7. To set up grafana, you need `http://host.docker.internal:9090`.
+7. To set up grafana, you need `http://host.docker.internal:9090` or `http://prometheus:9090`.
 8. docker
 
 # Repo Structure
