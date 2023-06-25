@@ -23,7 +23,7 @@ indexer = Indexer(
 )
 
 # Delete existing index
-indexer.delete_index()
+indexer.drop_index()
 
 # Load embeddings from parquet file
 indexer.file_to_embedding_dict()

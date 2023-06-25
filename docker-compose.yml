@@ -1,11 +1,11 @@
 services:
   redis:
-    image: redis/redis-stack
+    image: redislabs/redismod
     volumes:
       - redis-data:/data
     container_name: redis
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     logging:
       driver: gelf
       options:

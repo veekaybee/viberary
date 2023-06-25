@@ -57,7 +57,7 @@ class Indexer:
 
         return embedding_dict
 
-    def delete_index(self):
+    def drop_index(self):
         """Delete Redis index, will need to do to recreate"""
         logging.info(f"Deleting Redis index {self.index_name}...")
         r = self.conn
