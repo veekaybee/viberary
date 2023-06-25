@@ -82,6 +82,10 @@ class Indexer:
             ),
             TextField(self.token_field_name),
         )
+        logging.info(
+            f"using {self.vector_field}, {self.float_type}, {self.dim}, {self.distance_metric},{self.token_field_name}"
+        )
+        logging.info(f"using {schema}")
 
         r.ft(self.index_name).create_index(schema)
         r.ft(self.index_name).config_set("default_dialect", 2)
