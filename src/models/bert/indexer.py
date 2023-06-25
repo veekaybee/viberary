@@ -62,7 +62,8 @@ class Indexer:
         logging.info(f"Deleting Redis index {self.index_name}...")
         r = self.conn
 
-        r.ft(self.index_name).dropindex()
+        if r.exists(self.index_name):
+            r.ft(self.index_name).dropindex()
 
     def create_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
