@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redislabs/redismod
+    image: redis/redis-stack-server:latest
     volumes:
       - redis-data:/data
     container_name: redis
