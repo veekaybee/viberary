@@ -55,7 +55,16 @@ services:
       - '--web.enable-lifecycle'
     ports:
       - '9090:9090'
-
+  redis-exporter:
+    image: oliver006/redis_exporter
+    ports:
+      - 9121:9121
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: "redis:6379"
+    links:
+      - redis
+      - prometheus
 volumes:
   db-data:
   redis-data:
