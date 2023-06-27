@@ -5,12 +5,7 @@ services:
       - redis-data:/data
     container_name: redis
     ports:
-      - '127.0.0.1:6379:6379'
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-        tag: redis
+      - '6379:6379'
 
   flask:
     build:
@@ -48,8 +43,9 @@ services:
       - grafana_data:/var/lib/grafana
       - ./custom.ini:/etc/grafana/grafana.ini
       - ./provisioning/datasources:/etc/grafana/provisioning/datasources
+
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:latest
     container_name: prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -59,9 +55,18 @@ services:
       - '--web.enable-lifecycle'
     ports:
       - '9090:9090'
-
+  redis-exporter:
+    image: oliver006/redis_exporter
+    ports:
+      - 9121:9121
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: "redis:6379"
+    links:
+      - redis
+      - prometheus
 volumes:
   db-data:
   redis-data:
     driver: local
-  grafana_data: {}
+  grafana_data: { }
