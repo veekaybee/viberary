@@ -1,7 +1,7 @@
 import pytest
 from fakeredis import FakeRedis
 
-from src.models.bert.knn_search import KNNSearch
+from ..knn_search import KNNSearch
 
 
 @pytest.fixture
