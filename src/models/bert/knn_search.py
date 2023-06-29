@@ -1,5 +1,4 @@
 import logging.config
-from pprint import pformat
 from typing import List
 
 import numpy as np
@@ -56,17 +55,16 @@ class KNNSearch:
 
         results = self.conn.ft(self.index).search(q, query_params=params_dict)
         results_docs = results.docs
-        logging.info(pformat(results))
 
         index_vector = []
 
         for i in results_docs:
-            id = i["id"]  # bookid
+            id = i["id"]  # book id
             id_int = id.lstrip("vector::")
             title = self.conn.get(f"title::{id_int}")
             index_vector.append((i["id"], i["vector_score"], title))
 
-        logging.info(pformat(index_vector))
+        logging.info(f"query:{sanitized_query}, results:{index_vector}")
 
         scored_results = self.rescore(index_vector)
 
@@ -76,6 +74,6 @@ class KNNSearch:
         """Takes a ranked list of tuples
         Each tuple contains (index, cosine similarity, book title)
         and returns ordinal scores for each
-        cosine similarity for UI
+        cosine similarity for UI, and start at index 1
         """
-        return [(val[2], index) for index, val in enumerate(result_list)]
+        return [(val[2], index) for index, val in enumerate(result_list, 1)]

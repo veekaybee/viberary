@@ -22,7 +22,6 @@ class TitleMapper:
 
     def index_title_redis(self) -> Dict[str, str]:
         """Write mapping of title to index to Redis"""
-        r = self.conn
         pqt = pd.read_parquet(self.filepath)
         logging.info(f"Getting index data from {pqt}...")
         title_dict = dict(zip(pqt["index"], pqt["sentence"]))
@@ -31,7 +30,7 @@ class TitleMapper:
     def load_docs(self):
         r = self.conn
         vector_dict: Dict[str, str] = self.index_title_redis()
-        logging.info(f"Inserting titles into the title index")
+        logging.info("Inserting titles into the title index")
 
         # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):

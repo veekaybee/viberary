@@ -56,14 +56,14 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
 5. `docker compose up` - starts the web server
 6. `docker exec -it viberary-flask-1 python /app/src/models/bert/index_embeddings.py` indexes the embeddings once the
    web server is running
+7. `localhost:5000` - the web server
 
 # Monitoring the project
 
 1. `docker compose logs -f -t` for logs
-2. To set up grafana, you need `http://host.docker.internal:9090` or `http://prometheus:9090`.
+2. To set up grafana to connect in the UI, you need `http://host.docker.internal:9090` or `http://prometheus:9090`.
 3. To set up Redis monitoring, you'll need to
    follow [instructions here](https://grafana.com/grafana/dashboards/12776-redis/) and set `http://redis:6379`
-4. docker
 
 # Repo Structure
 
@@ -86,7 +86,11 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
       covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings
       model, and storing and querying those embeddings in Redis Search. This is the solution I eventually turned into
       the application directory structure.
-+ `docs` - This serves and rebuilds viberary.pizza
++ `docs` - This serves and rebuilds `viberary.pizza`
+
+# CONTRIBUTING
+
+Not organized enough for meaningful contributions yet but should be soon.
 
 ## Relevant Literature and Bibliography
 

@@ -1,6 +1,6 @@
 """This script needs to be run on a machine with GPU access
 Currently being run on Paperspace
-Trains embedding data 
+Trains embedding data
 """
 
 import logging
@@ -38,10 +38,11 @@ corpus = embeddings["sentence"].tolist()
 titles = embeddings["title"].tolist()
 indices = embeddings.index.tolist()
 
-#  A common value for BERT & Co. are 512 word pieces, which correspond to about 300-400 words (for English).
+# A common value for BERT & Co. are 512 word pieces,
+# which correspond to about 300-400 words (for English).
 # Longer texts than this are truncated to the first x word pieces.
-# By default, the provided methods use a limit fo 128 word pieces, longer inputs will be truncated
-# the runtime and the memory requirement grows quadratic with the input length - we'll have to play around with this
+# By default, the provided methods use a limit fo 128 word pieces,
+# the runtime and the memory requirement grows quadratic with the input length
 
 # Change the length to 200
 logger.info("Running embeddings")
@@ -58,8 +59,6 @@ embeddings_list = [x.tolist() for x in corpus_embeddings]
 embedding_tuple = list(zip(titles, indices, embeddings_list))
 df = pd.DataFrame(embedding_tuple, columns=["sentence", "index", "embeddings"])
 
-# write resutls to parquet for ingestion in Redis
+# write results to parquet for ingestion in Redis
 logger.info("Writing to parquet")
-df.to_parquet(
-    f"{time}embeddings.snappy", engine="pyarrow", compression="snappy", schema=schema
-)
+df.to_parquet(f"{time}embeddings.snappy", engine="pyarrow", compression="snappy", schema=schema)
