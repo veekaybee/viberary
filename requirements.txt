@@ -3,6 +3,8 @@ Flask==2.2.3
 pandas==1.5.3
 pyarrow==12.0.0
 redis==4.5.3
-sentence_transformers==2.2.2
+torch==1.9.0+cpu
+transformers
+sentence_transformers==2.2.2 --install-option="--no-deps"
 tqdm==4.64.1
 fakeredis
