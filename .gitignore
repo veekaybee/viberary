@@ -43,4 +43,6 @@ jsonparquet/iml*
 .idea/**/dictionaries
 .idea/**/shelf
 
-
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
