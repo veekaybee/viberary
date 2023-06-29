@@ -64,7 +64,7 @@ class KNNSearch:
             title = self.conn.get(f"title::{id_int}")
             index_vector.append((i["id"], i["vector_score"], title))
 
-        logging.info(f"query:{sanitized_query}, results:{results}")
+        logging.info(f"query:{sanitized_query}, results:{index_vector}")
 
         scored_results = self.rescore(index_vector)
 

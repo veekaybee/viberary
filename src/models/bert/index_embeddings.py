@@ -15,8 +15,8 @@ indexer = Indexer(
     "viberary",
     nvecs=1000,
     dim=384,
-    max_edges=40,  # Optional Number of maximum allowed outgoing edges for each node in the graph in each layer.
-    ef=200,  # Number of maximum allowed potential outgoing edges candidates for each node in the graph
+    max_edges=40,  # maximum allowed outgoing edges for each node in the graph in each layer.
+    ef=200,  # maximum allowed potential outgoing edges candidates for each node in the graph
     token_field_name="token",
     distance_metric="COSINE",
     float_type="FLOAT64",

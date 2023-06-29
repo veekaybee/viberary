@@ -1,15 +1,7 @@
-import csv
-import sys
-from collections import Counter
-
-import torchtext
-from torch.utils.data import Dataset
-from torchtext.data import get_tokenizer
 from torchtext.vocab import Vocab, build_vocab_from_iterator
-from torchvision import datasets
 
 """
-Preprocess text from a CSV file that's created in the input_generator 
+Preprocess text from a CSV file that's created in the input_generator
 into format for modeling CBOW or Skipgram
 """
 
@@ -28,7 +20,5 @@ class TextPreProcessor:
                 yield line.strip().split()
 
     def build_vocab(self) -> Vocab:
-        vocab = build_vocab_from_iterator(
-            self.generate_tokens(), specials=["<unk>"], min_freq=100
-        )
+        vocab = build_vocab_from_iterator(self.generate_tokens(), specials=["<unk>"], min_freq=100)
         return vocab

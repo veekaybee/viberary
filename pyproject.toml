@@ -3,7 +3,7 @@ requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-line-length = 90 # override black's default line-length
+line-length = 100 # override black's default line-length
 exclude = '''
 /(
     \.git
@@ -20,4 +20,8 @@ exclude = '''
 
 [tool.isort]
 # make it compatible with black
-profile = "black" 
+profile = "black"
+
+[tool.ruff]
+
+line-length = 100

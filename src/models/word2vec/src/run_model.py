@@ -2,9 +2,9 @@ import tensorboard as tb
 import tensorflow as tf
 import torch
 from model import CBOW
+from torch.utils.tensorboard import SummaryWriter
 
 tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
-from torch.utils.tensorboard import SummaryWriter
 
 # instantiate CBOW, generating training data
 cbow = CBOW()

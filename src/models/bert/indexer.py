@@ -1,6 +1,5 @@
 import logging
 import logging.config
-from itertools import islice
 from typing import Dict, List
 
 import numpy as np
@@ -67,7 +66,7 @@ class Indexer:
 
     def create_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
-        logging.info(f"Creating redis schema...")
+        logging.info("Creating redis schema...")
         r = self.conn
 
         schema = (
@@ -103,9 +102,7 @@ class Indexer:
             try:
                 # write to Redis
                 r.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
-                logging.info(
-                    f"Set vector {i}  into {self.index_name} as {self.vector_field}"
-                )
+                logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
 
@@ -113,5 +110,7 @@ class Indexer:
         r = self.conn
         metadata = r.ft(self.index_name).info()
         logging.info(
-            f"name: {metadata['index_name']}, docs: {metadata['max_doc_id']}, time:{metadata['total_indexing_time']} seconds"
+            f"name: {metadata['index_name']}, "
+            f"docs: {metadata['max_doc_id']}, "
+            f"time:{metadata['total_indexing_time']} seconds"
         )

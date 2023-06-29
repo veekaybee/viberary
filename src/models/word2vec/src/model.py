@@ -9,10 +9,10 @@ from models.word2vec.src.preprocessor import TextPreProcessor
 
 """
 Initializing a CBOW model which tries to guess the middle word in a
-bag of words of size n. CBOW is a 2-layer neural net, layer 1 is 
+bag of words of size n. CBOW is a 2-layer neural net, layer 1 is
 embeddings, layer 2 is a regression that predicts proabilities
 via softmax
-See more here: https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb
+https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb
 
 Example sentences: People create programs to direct processes.
 Example Context: ['People','create','to', 'direct']
@@ -110,10 +110,7 @@ class CBOW(torch.nn.Module):
                 # we look at loss
                 log_probs = self.model(context_vector)
 
-                # we compare the loss from what the actual word is related to the probaility of the words
-                total_loss += loss_function(
-                    log_probs, torch.tensor([self.word_to_ix[target]])
-                )
+                total_loss += loss_function(log_probs, torch.tensor([self.word_to_ix[target]]))
 
             # optimize at the end of each epoch
             optimizer.zero_grad()
