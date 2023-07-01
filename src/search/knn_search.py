@@ -1,5 +1,5 @@
 import logging.config
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 from redis.commands.search.query import Query
@@ -19,7 +19,7 @@ class KNNSearch:
         self.vector_field = "vector"
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
         self.sanitizer = InputSanitizer()
-        self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+        self.embedder = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.embedder.encode(query_string, convert_to_tensor=False)
@@ -71,7 +71,7 @@ class KNNSearch:
 
         return scored_results
 
-    def rescore(self, result_list: List) -> List:
+    def rescore(self, result_list: List[Tuple[int, float, str, str]]) -> List:
         """Takes a ranked list of tuples
         Each tuple contains (index, cosine similarity, book title, book author)
         and returns ordinal scores for each
