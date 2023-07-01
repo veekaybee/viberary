@@ -1,5 +1,5 @@
-from src.bert.knn_search import KNNSearch
 from src.io.redis_conn import RedisConnection
+from src.model.knn_search import KNNSearch
 
 """Tests retrieval from Redis
 """
