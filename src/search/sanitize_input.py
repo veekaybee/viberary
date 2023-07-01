@@ -20,9 +20,6 @@ class InputSanitizer:
         # Remove special characters using regex
         input_string = re.sub(r"[^\w\s]", "", input_string)
 
-        # Convert to lowercase
-        input_string = input_string.lower()
-
         # Remove extra whitespaces
         input_string = re.sub(r"\s+", " ", input_string)
 

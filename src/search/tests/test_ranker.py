@@ -1,11 +1,21 @@
 import pytest
 from fakeredis import FakeRedis
-from models.bert.knn_search import KNNSearch
+
+from search.knn_search import KNNSearch
 
 
 @pytest.fixture
 def redis_mock():
     return FakeRedis()
+
+
+def parse_and_sanitize_input():
+    input = " dogs cats frogs@"
+    expected_output = "dogs cats frogs"
+
+    sanitized_input = parse_and_sanitize_input()
+
+    assert input == sanitized_input
 
 
 def test_rescore(redis_mock):

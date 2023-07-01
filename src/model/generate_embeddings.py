@@ -30,12 +30,13 @@ dt = time.strftime("%Y%m%d%H%M")
 # Read local data from paperspace
 # Generated from training_data_generator
 logger.info("Reading in datafile")
-embeddings = pd.read_csv("embedding_data.csv")
+embeddings = pd.read_parquet("/notebooks/20230701_training.parquet")
 
 # Format for learning embeddings
 logger.info("Converting to embeddings format")
 corpus = embeddings["sentence"].tolist()
 titles = embeddings["title"].tolist()
+author = embeddings["author"].tolist()
 indices = embeddings.index.tolist()
 
 # A common value for BERT & Co. are 512 word pieces,
@@ -50,14 +51,35 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 model.max_seq_length = 200
 
 # Load MiniLM model and generate embeddings
+model = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
+model.max_seq_length = 200
+
+
 corpus_embeddings = model.encode(
     corpus, show_progress_bar=True, device="cuda", convert_to_numpy=False
 )
 
+torch.save(corpus_embeddings.state_dict(), "/notebooks/")
+
 # To dataframe for write in Parquet
 embeddings_list = [x.tolist() for x in corpus_embeddings]
-embedding_tuple = list(zip(titles, indices, embeddings_list))
-df = pd.DataFrame(embedding_tuple, columns=["sentence", "index", "embeddings"])
+embedding_tuple = list(zip(titles, indices, author, embeddings_list))
+
+fields = [
+    ("sentence", pa.string()),
+    ("index", pa.int64(), False),
+    ("author", pa.string()),
+    ("embeddings", pa.large_list(pa.float64())),
+]
+schema = pa.schema(fields)
+
+df = pd.DataFrame(embedding_tuple, columns=["title", "index", "author", "embeddings"])
+df.to_parquet(
+    "20230701_learned_embeddings.snappy",
+    engine="pyarrow",
+    compression="snappy",
+    schema=schema,
+)
 
 # write results to parquet for ingestion in Redis
 logger.info("Writing to parquet")

@@ -6,7 +6,7 @@ from redis.commands.search.query import Query
 from sentence_transformers import SentenceTransformer
 
 from inout import file_reader as f
-from stringops.sanitize_input import InputSanitizer
+from search.sanitize_input import InputSanitizer
 
 
 class KNNSearch:
