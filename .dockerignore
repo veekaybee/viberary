@@ -17,4 +17,4 @@ model.ckpt
 **duckdb**
 *.csv
 src/notebooks
-src/data
+src/data/

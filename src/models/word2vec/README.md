@@ -1,1 +1,0 @@
-# Word2Vec Model Architecture
