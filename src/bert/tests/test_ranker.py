@@ -1,6 +1,5 @@
 import pytest
 from fakeredis import FakeRedis
-
 from models.bert.knn_search import KNNSearch
 
 
