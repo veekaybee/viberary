@@ -1,17 +1,19 @@
 from pathlib import Path
 
-from models.bert.indexer import Indexer
-from models.bert.title_mapper import TitleMapper
-
+from index.indexer import Indexer
+from index.title_mapper import TitleMapper
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 
 training_data: Path = f.get_project_root() / "src" / "training_data" / "20230701_training.parquet"
+embedding_data: Path = f.get_project_root() / "src" / "training_data" / "learned_embeddings.parquet"
+
+# Load Embeddings Data
 
 # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),
-    training_data,
+    embedding_data,
     "vector",
     "viberary",
     nvecs=1000,
@@ -44,5 +46,8 @@ title_mapper = TitleMapper(
     training_data,
 )
 
-title_mapper.load_title_docs()
-title_mapper.load_author_docs()
+
+# Load plain keys/values that map to title and author
+title_mapper.load_docs("title")
+title_mapper.load_docs("author")
+title_mapper.load_docs("link")
