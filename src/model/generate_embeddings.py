@@ -73,6 +73,7 @@ fields = [
 ]
 schema = pa.schema(fields)
 
+# TODO: change the name of the file to machine generated
 df = pd.DataFrame(embedding_tuple, columns=["title", "index", "author", "embeddings"])
 df.to_parquet(
     "20230701_learned_embeddings.snappy",

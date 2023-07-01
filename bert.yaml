@@ -1,0 +1,17 @@
+
+
+# Data Config
+input_data:
+  books:
+  authors:
+  reviews:
+training_data:
+  path:
+embeddings_data:
+  path:
+
+
+# Redis Search Config
+
+
+# SBERT Model Config
