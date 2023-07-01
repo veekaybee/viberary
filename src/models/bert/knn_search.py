@@ -62,7 +62,8 @@ class KNNSearch:
             id = i["id"]  # book id
             id_int = id.lstrip("vector::")
             title = self.conn.get(f"title::{id_int}")
-            index_vector.append((i["id"], i["vector_score"], title))
+            author = self.conn.get(f"author::{id_int}")
+            index_vector.append((i["id"], i["vector_score"], title, author))
 
         logging.info(f"query:{sanitized_query}, results:{index_vector}")
 
@@ -72,8 +73,8 @@ class KNNSearch:
 
     def rescore(self, result_list: List) -> List:
         """Takes a ranked list of tuples
-        Each tuple contains (index, cosine similarity, book title)
+        Each tuple contains (index, cosine similarity, book title, book author)
         and returns ordinal scores for each
         cosine similarity for UI, and start at index 1
         """
-        return [(val[2], index) for index, val in enumerate(result_list, 1)]
+        return [(val[2], val[3], index) for index, val in enumerate(result_list, 1)]

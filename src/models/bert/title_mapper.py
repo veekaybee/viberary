@@ -27,7 +27,14 @@ class TitleMapper:
         title_dict = dict(zip(pqt["index"], pqt["sentence"]))
         return title_dict
 
-    def load_docs(self):
+    def index_title_redis(self) -> Dict[str, str]:
+        """Write mapping of title to index to Redis"""
+        pqt = pd.read_parquet(self.filepath)
+        logging.info(f"Getting index data from {pqt}...")
+        title_dict = dict(zip(pqt["index"], pqt["author"]))
+        return title_dict
+
+    def load_title_docs(self):
         r = self.conn
         vector_dict: Dict[str, str] = self.index_title_redis()
         logging.info("Inserting titles into the title index")
@@ -37,6 +44,20 @@ class TitleMapper:
             try:
                 # write to Redis
                 r.set(f"title::{k}", v)
+                logging.info(f"Set {i} title into Redis")
+            except Exception as e:
+                logging.error("An exception occurred: {}".format(e))
+
+    def load_author_docs(self):
+        r = self.conn
+        vector_dict: Dict[str, str] = self.index_title_redis()
+        logging.info("Inserting titles into the title index")
+
+        # an input dictionary from a dictionary
+        for i, (k, v) in enumerate(vector_dict.items()):
+            try:
+                # write to Redis
+                r.set(f"author::{k}", v)
                 logging.info(f"Set {i} title into Redis")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))

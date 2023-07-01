@@ -10,8 +10,12 @@ def redis_mock():
 
 
 def test_rescore(redis_mock):
-    result_list = [(1, 0.888, "dogs"), (2, 0.777, "cats"), (3, 0.666, "birds")]
-    expected_list = [("dogs", 1), ("cats", 2), ("birds", 3)]
+    result_list = [
+        (1, 0.888, "dogs", "lassie"),
+        (2, 0.777, "cats", "hello kitty"),
+        (3, 0.666, "birds", "big bird"),
+    ]
+    expected_list = [("dogs", "lassie", 1), ("cats", "hello kitty", 2), ("birds", "big bird", 3)]
 
     rescore = KNNSearch(redis_mock).rescore(result_list)
 

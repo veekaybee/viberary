@@ -1,4 +1,3 @@
-data
 lib
 *neuron
 *.pytest_cache
@@ -18,3 +17,4 @@ model.ckpt
 **duckdb**
 *.csv
 src/notebooks
+src/data
