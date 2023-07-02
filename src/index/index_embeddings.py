@@ -6,7 +6,9 @@ from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 
 training_data: Path = f.get_project_root() / "src" / "training_data" / "20230701_training.parquet"
-embedding_data: Path = f.get_project_root() / "src" / "training_data" / "learned_embeddings.parquet"
+embedding_data: Path = (
+    f.get_project_root() / "src" / "training_data" / "20230701_learned_embeddings.snappy"
+)
 
 # Load Embeddings Data
 
