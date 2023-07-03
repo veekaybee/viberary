@@ -1,9 +1,12 @@
 import logging
 import logging.config
+from collections import defaultdict
 from typing import Dict, List
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 from redis.commands.search.field import TextField, VectorField
 
 from inout import file_reader as f
@@ -50,11 +53,22 @@ class Indexer:
         parquet = self.filepath
 
         logging.info(f"Creating dataframe from {parquet}...")
-        pqt = pd.read_parquet(parquet)
+        r = self.conn
 
-        embedding_dict = dict(zip(pqt["index"], pqt["embeddings"]))
+        parquet_file = pq.ParquetFile(str(parquet))
 
-        return embedding_dict
+        final_df = pd.DataFrame()
+
+        for batch in parquet_file.iter_batches(columns=["index", "embeddings"]):
+            logging.info(f"RecordBatch {batch}")
+            df = batch.to_pandas()
+            final_df = final_df.append(df, ignore_index=True)
+
+        df_dict = final_df.to_dict("split")
+        data = df_dict["data"]
+        my_dict = {item[0]: item[1] for item in data}
+
+        return my_dict
 
     def drop_index(self):
         """Delete Redis index, will need to do to recreate"""

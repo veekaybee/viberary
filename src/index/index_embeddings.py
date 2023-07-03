@@ -30,9 +30,6 @@ indexer = Indexer(
 # Delete existing index
 indexer.drop_index()
 
-# Load embeddings from parquet file
-indexer.file_to_embedding_dict()
-
 # Recreate schema based on Indexer
 indexer.create_index_schema()
 
