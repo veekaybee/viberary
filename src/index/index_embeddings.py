@@ -5,12 +5,11 @@ from index.title_mapper import TitleMapper
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 
-training_data: Path = f.get_project_root() / "src" / "training_data" / "20230701_training.parquet"
+# Load Learned Embeddings Data
 embedding_data: Path = (
     f.get_project_root() / "src" / "training_data" / "20230701_learned_embeddings.snappy"
 )
 
-# Load Embeddings Data
 
 # Instantiate indexer
 indexer = Indexer(
@@ -27,26 +26,20 @@ indexer = Indexer(
     float_type="FLOAT64",
 )
 
+# Create search index
 # Delete existing index
 indexer.drop_index()
 
 # Recreate schema based on Indexer
-indexer.create_index_schema()
+indexer.create_search_index_schema()
 
 # Load Embeddings
-indexer.load_docs()
+indexer.write_embeddings_to_search_index(columns=["index", "embeddings"])
 
-# # Check Index Metadata
+# # Check Search Index Metadata
 indexer.get_index_metadata()
 
-# Write index mapping title to index
-title_mapper = TitleMapper(
-    RedisConnection().conn(),
-    training_data,
-)
-
-
-# Load plain keys/values that map to title and author
-title_mapper.load_docs("title")
-title_mapper.load_docs("author")
-title_mapper.load_docs("link")
+# Create Metadata
+indexer.write_keys_to_cache(key_prefix="title", columns=["index", "title"])
+indexer.write_keys_to_cache(key_prefix="author", columns=["author", "title"])
+indexer.write_keys_to_cache(key_prefix="link", columns=["link", "title"])

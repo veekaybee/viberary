@@ -54,8 +54,7 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
    the `/app/src/` repo.
 4. `docker compose build`
 5. `docker compose up` - starts the web server
-6. `docker exec -it viberary-flask-1 python /app/src/index/index_embeddings.py` indexes the embeddings once the
-   web server is running
+6. `docker exec -it viberary-flask-1 python /app/src/index/index_embeddings.py` indexes the embeddings once the web server is running
 7. `localhost:5000` - the web server
 
 # Monitoring the project

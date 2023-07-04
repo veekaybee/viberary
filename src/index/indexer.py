@@ -42,12 +42,8 @@ class Indexer:
         self.distance_metric = distance_metric
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
 
-    def file_to_embedding_dict(self) -> Dict[str, List[float]]:
-        """Reads Parquet file and process in Pandas, returning zipped dict of index and embeddings
-
-        Returns:
-            Dict[str, List[float]]: _description_
-        """
+    def file_to_embedding_dict(self, columns: List) -> Dict[str, List[float]]:
+        """Reads Parquet file and processes in Pandas, returning zipped dict of input index and column"""
         parquet = self.filepath
 
         logging.info(f"Creating dataframe from {parquet}...")
@@ -56,7 +52,7 @@ class Indexer:
 
         final_df = pd.DataFrame()
 
-        for batch in parquet_file.iter_batches(columns=["index", "embeddings"]):
+        for batch in parquet_file.iter_batches(columns=columns):
             logging.info(f"RecordBatch {batch}")
             df = batch.to_pandas()
             final_df = final_df.append(df, ignore_index=True)
@@ -68,14 +64,14 @@ class Indexer:
         return my_dict
 
     def drop_index(self):
-        """Delete Redis index, will need to do to recreate"""
+        """Delete Redis index but does not delete underlying data"""
         logging.info(f"Deleting Redis index {self.index_name}...")
         r = self.conn
 
         if r.exists(self.index_name):
             r.ft(self.index_name).dropindex()
 
-    def create_index_schema(self) -> None:
+    def create_search_index_schema(self) -> None:
         """Create Redis index with schema parameters from config"""
         logging.info("Creating redis schema...")
         r = self.conn
@@ -99,11 +95,11 @@ class Indexer:
         r.ft(self.index_name).config_set("default_dialect", 2)
         logging.info(f"Creating Redis schema: {schema} in index {self.index_name}")
 
-    def load_docs(self):
+    def write_embeddings_to_search_index(self, columns):
         r = self.conn
 
-        vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict()
-        logging.info(f"Inserting vector into Redis index {self.index_name}")
+        vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict(columns)
+        logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
         # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):
@@ -111,14 +107,32 @@ class Indexer:
             np_vector = data.astype(np.float64)
 
             try:
-                # write to Redis
+                # write to Search Index
                 r.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
                 if i % 1000 == 0:
                     logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
 
-    def get_index_metadata(self):
+    def write_keys_to_cache(self, columns, key_prefix):
+        """
+        Writing title, author, and link and other string metadata for lookups in search
+        """
+        r = self.conn
+
+        vector_dict: Dict[str, str] = self.file_to_embedding_dict(columns)
+        logging.info(f"Inserting keys into Redis keyspace {key_prefix}")
+
+        for i, (k, v) in enumerate(vector_dict.items()):
+            try:
+                # write to Redis
+                r.set(f"{key_prefix}::{k}", v)
+                if i % 1000 == 0:
+                    logging.info(f"Set {i} into {key_prefix}")
+            except Exception as e:
+                logging.error("An exception occurred: {}".format(e))
+
+    def get_search_index_metadata(self):
         r = self.conn
         metadata = r.ft(self.index_name).info()
         logging.info(

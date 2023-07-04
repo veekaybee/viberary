@@ -8,6 +8,7 @@ import time
 
 import pandas as pd
 import pyarrow as pa
+import torch
 from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger()
@@ -47,10 +48,6 @@ indices = embeddings.index.tolist()
 
 # Change the length to 200
 logger.info("Running embeddings")
-model = SentenceTransformer("all-MiniLM-L6-v2")
-model.max_seq_length = 200
-
-# Load MiniLM model and generate embeddings
 model = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
 model.max_seq_length = 200
 
