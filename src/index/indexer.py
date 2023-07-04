@@ -1,11 +1,9 @@
 import logging
 import logging.config
-from collections import defaultdict
 from typing import Dict, List
 
 import numpy as np
 import pandas as pd
-import pyarrow as pa
 import pyarrow.parquet as pq
 from redis.commands.search.field import TextField, VectorField
 
@@ -53,7 +51,6 @@ class Indexer:
         parquet = self.filepath
 
         logging.info(f"Creating dataframe from {parquet}...")
-        r = self.conn
 
         parquet_file = pq.ParquetFile(str(parquet))
 
@@ -116,7 +113,8 @@ class Indexer:
             try:
                 # write to Redis
                 r.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
-                logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
+                if i % 1000 == 0:
+                    logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
             except Exception as e:
                 logging.error("An exception occurred: {}".format(e))
 

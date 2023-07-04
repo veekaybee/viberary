@@ -18,8 +18,8 @@ indexer = Indexer(
     embedding_data,
     "vector",
     "viberary",
-    nvecs=1000,
-    dim=384,
+    nvecs=800000,
+    dim=768,
     max_edges=40,  # maximum allowed outgoing edges for each node in the graph in each layer.
     ef=200,  # maximum allowed potential outgoing edges candidates for each node in the graph
     token_field_name="token",

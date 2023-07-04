@@ -38,7 +38,7 @@ class KNNSearch:
         Returns:
             List: Returns list of tuple that includes the index, cosine similarity, and book title
         """
-
+        r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
 
         query_vector = self.vectorize_query(sanitized_query).astype(np.float64).tobytes()
@@ -53,7 +53,7 @@ class KNNSearch:
 
         params_dict = {"vec_param": query_vector}
 
-        results = self.conn.ft(self.index).search(q, query_params=params_dict)
+        results = r.ft(self.index).search(q, query_params=params_dict)
         results_docs = results.docs
 
         index_vector = []
