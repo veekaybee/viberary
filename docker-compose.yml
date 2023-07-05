@@ -1,72 +1,31 @@
+version: '3'
+
 services:
   redis:
     image: redis/redis-stack-server:latest
     volumes:
       - redis-data:/data
     container_name: redis
+    command: bash -c "redis-server --appendonly yes --save 3600 1 300 100 60 10000 --loglevel warning --protected-mode no --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so"
     ports:
       - '6379:6379'
+
 
   flask:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 5000:5000
+      - '5000:5000'
     volumes:
-      - db-data:/etc/data
+      - ./src/training_data:/app/src/training_data
     environment:
       - FLASK_APP=/src/api/app.py
+      - REDIS_HOST=redis
     depends_on:
       - redis
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-        tag: flask
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
-    ports:
-      - '3000:3000'
-    environment:
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_BASIC_ENABLED=false
-      - GF_ENABLE_GZIP=true
-      - GF_USERS_DEFAULT_THEME=light
-      - GF_DEFAULT_APP_MODE=development
-      - GF_INSTALL_PLUGINS=redis-datasource
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./custom.ini:/etc/grafana/grafana.ini
-      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.enable-lifecycle'
-    ports:
-      - '9090:9090'
-  redis-exporter:
-    image: oliver006/redis_exporter
-    ports:
-      - 9121:9121
-    restart: unless-stopped
-    environment:
-      REDIS_ADDR: "redis:6379"
-    links:
-      - redis
-      - prometheus
 volumes:
   db-data:
   redis-data:
-    driver: local
-  grafana_data: { }

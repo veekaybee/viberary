@@ -1,9 +1,10 @@
-from redis import Redis
+import redis
 
 
 class RedisConnection:
-    def conn(self) -> Redis:
+    def conn(self) -> redis.Redis:
         host = "redis"
         port = 6379
-        redis_conn = Redis(host=host, port=port, decode_responses=True)
+        pool = redis.ConnectionPool(host=host, port=port, db=0)
+        redis_conn = redis.Redis(connection_pool=pool)
         return redis_conn
