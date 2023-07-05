@@ -13,8 +13,8 @@
 		<tbody>
 			{% for item in data %}
 			<tr>
-				<td>{{ item[0].decode() if item[0] is not none }}</td>
-				<td>{{ item[1].decode() if item[0] is not none}}</td>
+				<td>{{ item[0] if item[0] is not none }}</td>
+				<td>{{ item[1] if item[0] is not none}}</td>
 				<td>{{ item[2] }}</td>
 			</tr>
 			{% endfor %}

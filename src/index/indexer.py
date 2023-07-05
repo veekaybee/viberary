@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 from redis.commands.search.field import TextField, VectorField
+from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 
 from inout import file_reader as f
 
@@ -95,7 +96,10 @@ class Indexer:
         logging.info(f"using {self.vector_field_name}, {self.float_type}, {self.dim}")
         logging.info(f"using {schema}")
 
-        r.ft(self.index_name).create_index(schema)
+        r.ft(self.index_name).create_index(
+            fields=schema,
+            definition=IndexDefinition(prefix=["viberary:"], index_type=IndexType.HASH),
+        )
         r.ft(self.index_name).config_set("default_dialect", 2)
         logging.info(f"Creating Redis schema: {schema} in index {self.index_name}")
 
@@ -109,14 +113,14 @@ class Indexer:
         for i, (k, v) in enumerate(vector_dict.items()):
             np_vector = v[2].astype(np.float64)
             pipe.hset(
-                i,
+                f"{self.index_name}:{i}",
                 mapping={
                     self.vector_field_name: np_vector.tobytes(),
                     self.title_field_name: v[0],
                     self.author_field_name: v[1],
                 },
             )
-            if i % 500 == 0:
+            if i % 5000 == 0:
                 logging.info(f"Inserting {i} vector into Redis index {self.index_name}")
                 pipe.execute()
 
@@ -125,6 +129,6 @@ class Indexer:
         metadata = r.ft(self.index_name).info()
         logging.info(
             f"name: {metadata['index_name']}, "
-            f"docs: {metadata['max_doc_id']}, "
-            f"time:{metadata['total_indexing_time']} seconds"
+            f"docs: {metadata['num_records']}, "
+            f"time:{metadata['total_indexing_time']} ms"
         )
