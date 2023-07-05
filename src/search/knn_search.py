@@ -17,6 +17,8 @@ class KNNSearch:
         self.conn = redis_conn
         self.index = "viberary"
         self.vector_field = "vector"
+        self.title_field = "title"
+        self.author_field = "author"
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
         self.sanitizer = InputSanitizer()
         self.embedder = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
@@ -30,13 +32,14 @@ class KNNSearch:
         query,
         top_k=10,
     ) -> List:
-        """Return top 10 vector results from model using HNSW search
+        """Return top 10 vector results from model
 
         Args:
-            top_k (int, optional): _description_. Defaults to 10.
+            top_k (int, optional): Defaults to 10.
+            query str: query string
 
         Returns:
-            List: Returns list of tuple that includes the index, cosine similarity, and book title
+            List: Returns list of tuple that includes the index, author, cosine similarity, and book title
         """
         r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
@@ -47,7 +50,7 @@ class KNNSearch:
             Query(f"*=>[KNN {top_k} @{self.vector_field} $vec_param AS vector_score]")
             .sort_by("vector_score", asc=False)
             .paging(0, top_k)
-            .return_fields("token", "vector_score")
+            .return_fields("vector_score", self.vector_field, self.title_field, self.author_field)
             .dialect(2)
         )
 
@@ -59,11 +62,12 @@ class KNNSearch:
         index_vector = []
 
         for i in results_docs:
+            print(i)
             id = i["id"]  # book id
-            id_int = id.lstrip("vector::")
-            title = self.conn.get(f"title::{id_int}")
-            author = self.conn.get(f"author::{id_int}")
-            index_vector.append((id_int, i["vector_score"], title, author))
+            score = i["vector_score"]
+            title = i["title"]
+            author = i["author"]
+            index_vector.append((id, score, title, author))
 
         logging.info(f"query:{sanitized_query}, {i}, results:{index_vector}")
 
