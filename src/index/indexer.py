@@ -52,11 +52,12 @@ class Indexer:
 
         final_df = pd.DataFrame()
 
-        for batch in parquet_file.iter_batches(columns=columns):
-            logging.info(f"RecordBatch {batch}")
+        for i, batch in enumerate(parquet_file.iter_batches(columns=columns)):
+            logging.info(f"Loading RecordBatch {i}")
             df = batch.to_pandas()
             final_df = final_df.append(df, ignore_index=True)
 
+        # Format as dict for read into Redis
         df_dict = final_df.to_dict("split")
         data = df_dict["data"]
         my_dict = {item[0]: item[1] for item in data}
@@ -69,12 +70,14 @@ class Indexer:
         r = self.conn
 
         if r.exists(self.index_name):
-            r.ft(self.index_name).dropindex()
+            r.ft(self.index_name).dropindex(delete_documents=True)
 
-    def create_search_index_schema(self) -> None:
+    def create_search_index_schema(
+        self,
+    ) -> None:
+        r = self.conn
         """Create Redis index with schema parameters from config"""
         logging.info("Creating redis schema...")
-        r = self.conn
 
         schema = (
             VectorField(
@@ -97,24 +100,24 @@ class Indexer:
 
     def write_embeddings_to_search_index(self, columns):
         r = self.conn
-        pipe = r.pipeline()
+        pipe = r.pipeline(transaction=False)
+        batch_size = 10000
 
         vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict(columns)
         logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
-        # an input dictionary from a dictionary
         for i, (k, v) in enumerate(vector_dict.items()):
             data = np.array(v, dtype=np.float64)
             np_vector = data.astype(np.float64)
 
-            try:
-                # write to index using pipeline
-                pipe.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
-                if i % 2000 == 0:
-                    logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
-                    pipe.execute()
-            except Exception as e:
-                logging.error("An exception occurred: {}".format(e))
+            pipe.hset(f"vector::{k}", mapping={self.vector_field: np_vector.tobytes()})
+
+            if i % batch_size == 0:
+                logging.info(f"Set vector {i}  into {self.index_name} as {self.vector_field}")
+                pipe.execute()
+                pipe = r.pipeline(transaction=False)
+
+        pipe.execute()
 
     def write_keys_to_cache(self, columns, key_prefix):
         """
