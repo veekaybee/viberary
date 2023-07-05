@@ -19,12 +19,6 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-fields = [
-    ("sentence", pa.string()),
-    ("index", pa.int64(), False),
-    ("embeddings", pa.large_list(pa.float64())),
-]
-schema = pa.schema(fields)
 
 dt = time.strftime("%Y%m%d%H%M")
 

@@ -13,8 +13,8 @@ logging.config.fileConfig(f.get_project_root() / "logging.conf")
 
 def return_model_results(word: str) -> str:
     retriever = KNNSearch(RedisConnection().conn())
-    data = jsonify(retriever.top_knn(word))
-    return render_template("index.html", data=data.json, query=word)
+    data = retriever.top_knn(word)
+    return render_template("index.html", data=data, query=word)
 
 
 @app.route("/", methods=["POST", "GET"])

@@ -10,6 +10,10 @@ embedding_data: Path = (
     f.get_project_root() / "src" / "training_data" / "20230701_learned_embeddings.snappy"
 )
 
+link_data: Path = (
+    f.get_project_root() / "src" / "training_data" / "20230701_learned_embeddings.snappy"
+)
+
 
 # Instantiate indexer
 indexer = Indexer(
@@ -37,9 +41,8 @@ indexer.create_search_index_schema()
 indexer.write_embeddings_to_search_index(columns=["index", "embeddings"])
 
 # # Check Search Index Metadata
-indexer.get_index_metadata()
+indexer.get_search_index_metadata()
 
 # Create Metadata
 indexer.write_keys_to_cache(key_prefix="title", columns=["index", "title"])
-indexer.write_keys_to_cache(key_prefix="author", columns=["author", "title"])
-indexer.write_keys_to_cache(key_prefix="link", columns=["link", "title"])
+indexer.write_keys_to_cache(key_prefix="author", columns=["index", "author"])

@@ -6,7 +6,7 @@ services:
     volumes:
       - redis-data:/data
     container_name: redis
-    command: bash -c "sysctl vm.overcommit_memory=1 && redis-server --protected-mode no --save 20 1 --loglevel warning --protected-mode no --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so"
+    command: bash -c "sysctl vm.overcommit_memory=1 && redis-server --appendonly yes --save 3600 1 300 100 60 10000 --loglevel warning --protected-mode no --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so"
     ports:
       - '6379:6379'
 
@@ -29,4 +29,3 @@ services:
 volumes:
   db-data:
   redis-data:
-    driver: local
