@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from index.indexer import Indexer
-from index.title_mapper import TitleMapper
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 
@@ -31,11 +30,12 @@ indexer = Indexer(
 # Delete existing index
 indexer.drop_index()
 
+# Load Embeddings
+indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "embeddings"])
+
 # Recreate schema based on Indexer
 indexer.create_search_index_schema()
 
-# Load Embeddings
-indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "embeddings"])
 
 # Check Search Index Metadata
 indexer.get_search_index_metadata()
