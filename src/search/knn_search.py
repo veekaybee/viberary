@@ -39,7 +39,7 @@ class KNNSearch:
             query str: query string
 
         Returns:
-            List: Returns list of tuple that includes the index, author, cosine similarity, and book title
+            List: Returns [(index, author, cosine similarity, book title]
         """
         r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)

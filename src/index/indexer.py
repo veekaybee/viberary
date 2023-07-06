@@ -48,7 +48,11 @@ class Indexer:
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
 
     def file_to_embedding_dict(self, columns: List) -> Dict[str, List[float]]:
-        """Reads Parquet file and processes in Pandas, returning zipped dict of input index and column"""
+        """
+        Reads Parquet file and processes in Pandas
+        in chunks
+        """
+
         parquet = self.filepath
 
         logging.info(f"Creating dataframe from {parquet}...")
