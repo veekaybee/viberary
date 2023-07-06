@@ -8,6 +8,7 @@ services:
     container_name: redis
     command: redis-server --port 6379 --appendonly yes  --protected-mode no  --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so
 
+
   flask:
     build:
       context: .
