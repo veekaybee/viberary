@@ -6,10 +6,7 @@ services:
     volumes:
       - redis-data:/data
     container_name: redis
-    command: bash -c "redis-server --appendonly yes --save 3600 1 300 100 60 10000 --loglevel warning --protected-mode no --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so"
-    ports:
-      - '6379:6379'
-
+    command: redis-server --port 6379 --appendonly yes  --protected-mode no  --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so
 
   flask:
     build:
@@ -27,5 +24,4 @@ services:
 
 
 volumes:
-  db-data:
   redis-data:
