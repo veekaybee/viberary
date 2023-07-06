@@ -3,7 +3,7 @@ name: Python package and deploy
 on:
   push:
     branches:
-      - '!main'   # excludes master
+      - main
 
 jobs:
   build:
@@ -37,3 +37,14 @@ jobs:
         run: |
           cd /home/runner/work/viberary/viberary/src
           pytest
+
+      - name: install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+      - name: connect and pull
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull origin main && exit"
+      - name: cleanup
+        run: rm -rf ~/.ssh
