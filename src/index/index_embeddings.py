@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from index.indexer import Indexer
-from index.title_mapper import TitleMapper
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
 
