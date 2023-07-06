@@ -11,7 +11,6 @@ def redis_mock():
 
 def parse_and_sanitize_input():
     input = " dogs cats frogs@"
-    expected_output = "dogs cats frogs"
 
     sanitized_input = parse_and_sanitize_input()
 

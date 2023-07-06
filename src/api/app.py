@@ -1,7 +1,6 @@
 import logging.config
-import os
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 
 from inout import file_reader as f
 from inout.redis_conn import RedisConnection
