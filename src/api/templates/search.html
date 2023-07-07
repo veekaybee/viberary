@@ -14,7 +14,7 @@
 			{% for item in data %}
 			<tr>
 				<td>{{ item[0] if item[0] is not none }}</td>
-				<td>{{ item[1] if item[0] is not none}}</td>
+				<td><a href="{{ item[3] }}">{{ item[1] if item[1] is not none}}</a></td>
 				<td>{{ item[2] }}</td>
 			</tr>
 			{% endfor %}

@@ -19,6 +19,7 @@ class KNNSearch:
         self.vector_field = "vector"
         self.title_field = "title"
         self.author_field = "author"
+        self.link_field = "link"
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
         self.sanitizer = InputSanitizer()
         self.embedder = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
@@ -50,7 +51,13 @@ class KNNSearch:
             Query(f"*=>[KNN {top_k} @{self.vector_field} $vec_param AS vector_score]")
             .sort_by("vector_score", asc=False)
             .paging(0, top_k)
-            .return_fields("vector_score", self.vector_field, self.title_field, self.author_field)
+            .return_fields(
+                "vector_score",
+                self.vector_field,
+                self.title_field,
+                self.author_field,
+                self.link_field,
+            )
             .dialect(2)
         )
 
@@ -66,9 +73,10 @@ class KNNSearch:
             score = i["vector_score"]
             title = i["title"]
             author = i["author"]
-            index_vector.append((id, score, title, author))
+            link = i["link"]
+            index_vector.append((id, score, title, author, link))
 
-        logging.info(f"query:{query}, {i}, results:{index_vector}")
+        logging.info(f"query:{query}, results:{index_vector}")
 
         scored_results = self.rescore(index_vector)
 
@@ -76,8 +84,8 @@ class KNNSearch:
 
     def rescore(self, result_list: List[Tuple[int, float, str, str]]) -> List:
         """Takes a ranked list of tuples
-        Each tuple contains (index, cosine similarity, book title, book author)
+        Each tuple contains (index, cosine similarity, book title, book author, book link)
         and returns ordinal scores for each
         cosine similarity for UI, and start at index 1
         """
-        return [(val[2], val[3], index) for index, val in enumerate(result_list, 1)]
+        return [(val[2], val[3], val[4], index) for index, val in enumerate(result_list, 1)]

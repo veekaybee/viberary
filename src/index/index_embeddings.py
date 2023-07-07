@@ -6,17 +6,18 @@ from inout.redis_conn import RedisConnection
 
 # Load Learned Embeddings Data
 embedding_data: Path = (
-    f.get_project_root() / "src" / "training_data" / "20230701_learned_embeddings.snappy"
+    f.get_project_root() / "src" / "training_data" / "20230710_learned_embeddings.snappy"
 )
 
 # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),
     embedding_data,
-    "vector",
-    "author",
-    "title",
-    "viberary",
+    vector_field="vector",
+    author_field="author",
+    title_field="title",
+    link_field="link",
+    index_name="viberary",
     nvecs=800000,
     dim=768,
     max_edges=40,  # maximum allowed outgoing edges for each node in the graph in each layer.
@@ -31,7 +32,7 @@ indexer = Indexer(
 indexer.drop_index()
 
 # Load Embeddings
-indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "embeddings"])
+indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "list", "embeddings"])
 
 # Recreate schema based on Indexer
 indexer.create_search_index_schema()
