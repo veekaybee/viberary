@@ -62,14 +62,13 @@ class KNNSearch:
         index_vector = []
 
         for i in results_docs:
-            print(i)
             id = i["id"]  # book id
             score = i["vector_score"]
             title = i["title"]
             author = i["author"]
             index_vector.append((id, score, title, author))
 
-        logging.info(f"query:{sanitized_query}, {i}, results:{index_vector}")
+        logging.info(f"query:{query}, {i}, results:{index_vector}")
 
         scored_results = self.rescore(index_vector)
 
