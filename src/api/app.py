@@ -30,4 +30,4 @@ def search():
 # Local testing model only
 if __name__ == "__main__":
     logging.info("Starting Flask")
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=5000)
