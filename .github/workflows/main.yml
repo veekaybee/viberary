@@ -3,7 +3,8 @@ name: Python package and deploy
 on:
   push:
     branches:
-      - '!main'   # excludes master
+      - '**'        # matches every branch
+      - '!main'   # excludes main
 
 jobs:
   build:
