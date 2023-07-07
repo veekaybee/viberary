@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - '5000:80'
     volumes:
       - ./src/training_data:/app/src/training_data
     environment:
