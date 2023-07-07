@@ -23,7 +23,7 @@ To provision one and train the data, you'll need an AWS account, keys, and the C
 
 2. Spin up the instance, make sure the security group has the correct ports open
 ```bash
-aws ec2 run-instances --image-id ami-0271ce88f6c03e149 --instance-type p3.2xlarge --key-name yourawskey  --security-groups yoursecuritygroup
+aws ec2 run-instances --image-id ami-0271ce88f6c03e149 --instance-type p3.2xlarge --key-name yourawskey  --security-group-ids yoursecuritygroup
 ```
 
 3. Set up [Jupyter notebooks so you can run the training script interactively](https://docs.aws.amazon.com/dlami/latest/devguide/setup-jupyter.html)
