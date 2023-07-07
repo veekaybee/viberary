@@ -124,7 +124,6 @@ class Indexer:
 
         # v: title, author, Link, embeddings
         for k, v in vector_dict.items():
-            logging.info(f"kv: {k,v}")
             np_vector = v[3].astype(np.float64)
             pipe.hset(
                 f"{self.index_name}:{k}",
