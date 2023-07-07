@@ -21,6 +21,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/how", methods=["POST", "GET"])
+def how():
+    return render_template("how.html")
+
+
 @app.route("/search", methods=["POST"])
 def search():
     word = request.form["query"]
