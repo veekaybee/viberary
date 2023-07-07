@@ -121,15 +121,16 @@ class Indexer:
         vector_dict = self.file_to_embedding_dict(columns)
         logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
+        # title, author, Link, embeddings
         for k, v in vector_dict.items():
-            np_vector = v[2].astype(np.float64)
+            np_vector = v[3].astype(np.float64)
             pipe.hset(
                 f"{self.index_name}:{k}",
                 mapping={
                     self.vector_field_name: np_vector.tobytes(),
                     self.title_field_name: v[0],
                     self.author_field_name: v[1],
-                    self.link_field_name: v[3],
+                    self.link_field_name: v[2],
                 },
             )
             if k % 5000 == 0:
