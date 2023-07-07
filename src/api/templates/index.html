@@ -89,12 +89,11 @@
 		<main class="px-3">
 			<img src="/static/assets/img/vibe_book.png" width="300" height="300">
 
-			<h1 class="cover-heading">Welcome to the Viberary</h1>
+			<h1 class="cover-heading">Viberary<span class="badge badge-primary">Alpha</span></h1>
 			<hr>
-			<h4>We're here to recommend you some literary vibes. Enter some keywords you'd like for your next read</h4>
+			<h4>Tired of bad book recommendations? Search by &#10024;vibe&#10024;! </h4>
 
 			<div class="callout callout-info">
-				<p>Hints: Funny, sad, tense,playful, ironic, mysterious, historical, suspenseful </p>
 
 			</div>
 
@@ -102,7 +101,7 @@
 				<form action="{{ url_for('search') }}" method="POST">
 					<div class="input-group mb-3">
 						<input type="text" class="form-control" id="query" name="query" value="{{query}}"
-							placeholder="Search..." required>
+							placeholder="Funny scifi or historical novel set in Africa or moody classic drama" required>
 						<div class="input-group-append">
 							<button class="btn btn-primary" type="submit">Search</button>
 						</div>

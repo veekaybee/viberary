@@ -19,3 +19,4 @@ model.ckpt
 src/data
 src/notebooks
 src/training_data
+src/model/*.db
