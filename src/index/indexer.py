@@ -94,6 +94,7 @@ class Indexer:
         """Create Redis index with schema parameters from config"""
         logging.info("Creating redis schema...")
 
+        # title, author, Link, embeddings
         schema = (
             VectorField(
                 self.vector_field_name,
@@ -121,7 +122,7 @@ class Indexer:
         vector_dict = self.file_to_embedding_dict(columns)
         logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
-        # title, author, Link, embeddings
+        # v: title, author, Link, embeddings
         for k, v in vector_dict.items():
             np_vector = v[3].astype(np.float64)
             pipe.hset(

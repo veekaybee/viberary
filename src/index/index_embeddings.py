@@ -32,7 +32,7 @@ indexer = Indexer(
 indexer.drop_index()
 
 # Load Embeddings
-indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "list", "embeddings"])
+indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "link", "embeddings"])
 
 # Recreate schema based on Indexer
 indexer.create_search_index_schema()
