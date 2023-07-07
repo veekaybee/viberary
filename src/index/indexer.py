@@ -50,7 +50,7 @@ class Indexer:
         logging.config.fileConfig(f.get_project_root() / "logging.conf")
 
     # TODO: unit test these columns and parquet writes
-    def file_to_embedding_dict(self, columns: List) -> Dict[str, List[float]]:
+    def file_to_embedding_dict(self, columns: List) -> Dict:
         """
         Reads Parquet file and processes in Pandas
         in chunks
@@ -118,13 +118,13 @@ class Indexer:
         r = self.conn
         pipe = r.pipeline(transaction=False)
 
-        vector_dict: Dict[str, List[float]] = self.file_to_embedding_dict(columns)
+        vector_dict = self.file_to_embedding_dict(columns)
         logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
-        for i, (k, v) in enumerate(vector_dict.items()):
+        for k, v in vector_dict.items():
             np_vector = v[2].astype(np.float64)
             pipe.hset(
-                f"{self.index_name}:{i}",
+                f"{self.index_name}:{k}",
                 mapping={
                     self.vector_field_name: np_vector.tobytes(),
                     self.title_field_name: v[0],
@@ -132,8 +132,8 @@ class Indexer:
                     self.link_field_name: v[3],
                 },
             )
-            if i % 5000 == 0:
-                logging.info(f"Inserting {i} vector into Redis index {self.index_name}")
+            if k % 5000 == 0:
+                logging.info(f"Inserting {k} vector into Redis index {self.index_name}")
                 pipe.execute()
 
     def get_search_index_metadata(self):
