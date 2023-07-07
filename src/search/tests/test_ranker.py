@@ -19,11 +19,15 @@ def parse_and_sanitize_input():
 
 def test_rescore(redis_mock):
     result_list = [
-        (1, 0.888, "dogs", "lassie"),
-        (2, 0.777, "cats", "hello kitty"),
-        (3, 0.666, "birds", "big bird"),
+        (1, 0.888, "dogs", "lassie", "http://"),
+        (2, 0.777, "cats", "hello kitty", "http://"),
+        (3, 0.666, "birds", "big bird", "http://"),
     ]
-    expected_list = [("dogs", "lassie", 1), ("cats", "hello kitty", 2), ("birds", "big bird", 3)]
+    expected_list = [
+        ("dogs", "lassie", "http://", 1),
+        ("cats", "hello kitty", "http://", 2),
+        ("birds", "big bird", "http://", 3),
+    ]
 
     rescore = KNNSearch(redis_mock).rescore(result_list)
 
