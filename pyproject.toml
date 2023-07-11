@@ -36,6 +36,7 @@ exclude = [
     ".env",
 ]
 
-[tool.pytest]
+[tool.pytest.ini_options]
 
 pythonpath = "src"
+testpaths = "src"

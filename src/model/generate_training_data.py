@@ -41,7 +41,8 @@ class TrainingDataGenerator:
         FROM read_json_auto("{self.authors}",lines='true');"""
 
         author_ids_query = """CREATE TABLE IF NOT EXISTS goodreads_auth_ids
-        AS SELECT REGEXP_EXTRACT(authors, '[0-9]+') as author_id, title, description,link, average_rating, book_id
+        AS SELECT REGEXP_EXTRACT(authors, '[0-9]+') as author_id, title, description,link,
+        average_rating, book_id, text_reviews_count
         FROM goodreads;"""
 
         # Drop and recreate new tables
@@ -64,6 +65,10 @@ class TrainingDataGenerator:
     def _get_join_tables_query(self, duckdb_conn):
         date = self._get_date_and_hour()
 
+        output_path: Path = (
+            f.get_project_root() / "src" / "training_data" / f"{date}_training.parquet"
+        )
+
         query = """SELECT
         review_text,
         goodreads_auth_ids.title,
@@ -71,6 +76,7 @@ class TrainingDataGenerator:
         goodreads_auth_ids.description,
         goodreads_auth_ids.average_rating,
         goodreads_authors.name AS author,
+        text_reviews_count,
         review_text || goodreads_auth_ids.title || goodreads_auth_ids.description || goodreads_authors.name as sentence
         FROM goodreads_auth_ids
         JOIN goodreads_reviews
@@ -79,7 +85,7 @@ class TrainingDataGenerator:
         ON goodreads_auth_ids.author_id = goodreads_authors.author_id
         WHERE goodreads_auth_ids.author_id NOT ILIKE '' """
 
-        duckdb_conn.sql(f"COPY ({query} ) TO '{date}_training.parquet' (FORMAT PARQUET);")
+        duckdb_conn.sql(f"COPY ({query} ) TO '{output_path}' (FORMAT PARQUET);")
 
     def generate(self):
         date = self._get_date_and_hour()

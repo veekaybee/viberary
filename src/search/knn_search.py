@@ -31,12 +31,12 @@ class KNNSearch:
     def top_knn(
         self,
         query,
-        top_k=10,
+        top_k=50,
     ) -> List:
-        """Return top 10 vector results from model
+        """Return top k vector results from model
 
         Args:
-            top_k (int, optional): Defaults to 10.
+            top_k (int, optional): Defaults to 50.
             query str: query string
 
         Returns:
