@@ -52,38 +52,35 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
 2. go to the project root
 3. You'll need the [embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) at the root of
    the `/app/src/` repo.
-4. `docker compose build`
-5. `docker compose up` - starts the web server
-6. `docker exec -it viberary-flask-1 python /app/src/index/index_embeddings.py` indexes the embeddings once the web server is running
+4. `make build` - Builds the docker image
+4. `make up` - Docker compose running in background
+5. `make embed`indexes the embeddings once the web server is running
 7. `localhost:5000` - the web server
 
 # Monitoring the project
 
-1. `docker compose logs -f -t` for logs
-2. To set up grafana to connect in the UI, you need `http://host.docker.internal:9090` or `http://prometheus:9090`.
-3. To set up Redis monitoring, you'll need to
-   follow [instructions here](https://grafana.com/grafana/dashboards/12776-redis/) and set `http://redis:6379`
+1. `make logs` for logs
+
+# TODO: Redis monitoring
 
 # Repo Structure
 
 + `src` - where all the code is
     + `api` - Flask sever that calls the model, includes a search endpoint. Eventually will be rewritten in Go (for
       performance reasons)
-    + `datagen` includes data generated for feeding into Word2Vec and for generating embeddings and also the code used
-      to generate the embeddings, done on a Paperspace GPU instance.
-    + `models` - The actual models including Word2Vec and BERT.
-        + `bert` - Right now in production only BERT gets called from the API. the `bert` directory includes an indexer
-          which indexes embeddings generated in `datagen` into a Redis instance. Redis and the Flask app talk to each
+    + `training_data` - generated training data
+    + `model` - The actual BERT model. Includes data generated for generating embeddings and also the code used
+      to generate the embeddings, on an EC2 instance.
+          - Right now in production only BERT gets called from the API.
+    + `index` includes an indexer which indexes embeddings generated in `model` into a Redis instance. Redis and the Flask app talk to each
           other through an app running via `docker-compose` and the `Dockerfile` for the main app instance.
-        + `word2vec` - Word2Vec implemented in PyTorch. I did this before I implemented Word2Vec in Gensim to learn
-          about PyTorch idioms and
-          paradigms. [Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)
-    + There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
+    + `search` - performs the search calls from api
+    + `inout` - There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
       into Redis for easy retrieval by the application
     + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource
       there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which
       covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings
-      model, and storing and querying those embeddings in Redis Search. This is the solution I eventually turned into
+      model, ([Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)) and storing and querying those embeddings in Redis Search. This is the solution I eventually turned into
       the application directory structure.
 + `docs` - This serves and rebuilds `viberary.pizza`
 

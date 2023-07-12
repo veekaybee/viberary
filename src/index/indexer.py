@@ -25,6 +25,7 @@ class Indexer:
         author_field,
         index_name,
         link_field,
+        review_count_field,
         nvecs=0,
         dim=0,
         max_edges=0,
@@ -43,6 +44,7 @@ class Indexer:
         self.title_field_name = title_field
         self.author_field_name = author_field
         self.link_field_name = link_field
+        self.review_count_field_name = review_count_field
         self.float_type = float_type
         self.index_name = index_name
         self.distance_metric = distance_metric
@@ -55,7 +57,7 @@ class Indexer:
         Reads Parquet file and processes in Pandas
         in chunks
 
-        index: title, author, link, embeddings
+        index: title, author, link, review_count, embeddings
         """
 
         parquet = self.filepath
@@ -75,7 +77,11 @@ class Indexer:
         df_dict = final_df.to_dict("split")
         data = df_dict["data"]
         # Data: Index, title, author, Link, embeddings
-        my_dict = {item[1]: (item[0], item[2], item[3], item[4]) for item in data if len(item) == 5}
+        my_dict = {
+            item[1]: (item[0], item[2], item[3], item[4], item[5])
+            for item in data
+            if len(item) == 6
+        }
 
         return my_dict
 
@@ -104,6 +110,7 @@ class Indexer:
             TextField(self.title_field_name),
             TextField(self.author_field_name),
             TextField(self.link_field_name),
+            TextField(self.review_count_field_name),
         )
         logging.info(f"using {self.vector_field_name}, {self.float_type}, {self.dim}")
         logging.info(f"using {schema}")
@@ -124,7 +131,7 @@ class Indexer:
 
         # v: title, author, Link, embeddings
         for k, v in vector_dict.items():
-            np_vector = v[3].astype(np.float64)
+            np_vector = v[4].astype(np.float64)
             pipe.hset(
                 f"{self.index_name}:{k}",
                 mapping={
@@ -132,6 +139,7 @@ class Indexer:
                     self.title_field_name: v[0],
                     self.author_field_name: v[1],
                     self.link_field_name: v[2],
+                    self.review_count_field_name: v[3],
                 },
             )
             if k % 5000 == 0:
