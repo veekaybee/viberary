@@ -111,11 +111,11 @@ class KNNSearch:
         deduped_list = []
 
         for l1, l2 in zip(result_list, result_list[1:]):
-            print(l1[1], l2[1])
-            print(l1[4], l2[4])
             if l1[1] == l2[1]:
                 if l1[4] > l2[4]:
                     deduped_list.append(l1)
+                elif l1[4] == l2[4]:
+                    deduped_list.append(l2)
                 else:
                     deduped_list.append(l2)
             else:
