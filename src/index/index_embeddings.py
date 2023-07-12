@@ -6,7 +6,7 @@ from inout.redis_conn import RedisConnection
 
 # Load Learned Embeddings Data
 embedding_data: Path = (
-    f.get_project_root() / "src" / "training_data" / "20230710_learned_embeddings.snappy"
+    f.get_project_root() / "src" / "training_data" / "20230711_learned_embeddings.snappy"
 )
 
 # Instantiate indexer
@@ -17,6 +17,7 @@ indexer = Indexer(
     author_field="author",
     title_field="title",
     link_field="link",
+    review_count_field="review_count",
     index_name="viberary",
     nvecs=800000,
     dim=768,
@@ -32,7 +33,9 @@ indexer = Indexer(
 indexer.drop_index()
 
 # Load Embeddings
-indexer.write_embeddings_to_search_index(columns=["title", "index", "author", "link", "embeddings"])
+indexer.write_embeddings_to_search_index(
+    columns=["title", "index", "author", "link", "review_count", "embeddings"]
+)
 
 # Recreate schema based on Indexer
 indexer.create_search_index_schema()

@@ -40,3 +40,4 @@ exclude = [
 
 pythonpath = "src"
 testpaths = "src"
+norecursedirs = "docs *.egg-info .git appdir .tox"
