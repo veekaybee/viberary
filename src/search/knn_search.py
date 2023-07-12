@@ -96,6 +96,7 @@ class KNNSearch:
             for index, val in enumerate(result_list, 1)
         ]
 
+
     def dedup_by_number_of_reviews(
         self, result_list: List[Tuple[float, str, str, str, int]]
     ) -> List[Tuple[float, str, str, str, int]]:
@@ -104,11 +105,12 @@ class KNNSearch:
         Args:
             result_list ():
 
-        Returns: Deduped list by title and number of reviews
 
+        Returns: Deduped list by title and number of reviews
         """
 
         deduped_list = []
+
 
         titles = set()
 
@@ -118,5 +120,6 @@ class KNNSearch:
                 titles.add(element[1])
             else:
                 pass
+
 
         return deduped_list[0:10]
