@@ -81,7 +81,7 @@ class KNNSearch:
 
         logging.info(f"query:{query}, results:{[[i[1], i[2], i[3], i[4]] for i in index_vector]}")
 
-        deduped_results = self.dedup_by_score(index_vector)
+        deduped_results = self.dedup_by_number_of_reviews(index_vector)
         scored_results = self.rescore(deduped_results)
 
         return scored_results
@@ -96,7 +96,8 @@ class KNNSearch:
             for index, val in enumerate(result_list, 1)
         ]
 
-    def dedup_by_score(
+
+    def dedup_by_number_of_reviews(
         self, result_list: List[Tuple[float, str, str, str, int]]
     ) -> List[Tuple[float, str, str, str, int]]:
         """
@@ -104,21 +105,21 @@ class KNNSearch:
         Args:
             result_list ():
 
-        Returns: Deduped list by nubmer of reviews
 
+        Returns: Deduped list by title and number of reviews
         """
 
         deduped_list = []
 
-        for l1, l2 in zip(result_list, result_list[1:]):
-            if l1[1] == l2[1]:
-                if l1[4] > l2[4]:
-                    deduped_list.append(l1)
-                elif l1[4] == l2[4]:
-                    deduped_list.append(l2)
-                else:
-                    deduped_list.append(l2)
+
+        titles = set()
+
+        for element in result_list:
+            if element[1] not in titles:
+                deduped_list.append(element)
+                titles.add(element[1])
             else:
-                deduped_list.append(l2)
+                pass
+
 
         return deduped_list[0:10]

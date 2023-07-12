@@ -1,13 +1,12 @@
 from pathlib import Path
 
 from index.indexer import Indexer
-from inout import file_reader as f
+from inout.file_reader import get_config_file as config
 from inout.redis_conn import RedisConnection
 
-# Load Learned Embeddings Data
-embedding_data: Path = (
-    f.get_project_root() / "src" / "training_data" / "20230711_learned_embeddings.snappy"
-)
+# Load Embeddings Data
+conf = config()
+embedding_data = Path(conf["training_data"]["path"]) / Path(conf["training_data"]["file"])
 
 # Instantiate indexer
 indexer = Indexer(
