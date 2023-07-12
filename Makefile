@@ -14,16 +14,7 @@ test:
 	pytest
 
 embed:
-<<<<<<< HEAD
-<<<<<<< HEAD
 	docker exec -it viberary-flask-1 python /viberary/src/index/index_embeddings.py
-
-=======
-	docker exec -it viberary-flask-1 python /app/src/index/index_embeddings.py
->>>>>>> 57fb5c2 (rerank)
-=======
-	docker exec -it viberary-flask-1 python /viberary/src/index/index_embeddings.py
->>>>>>> e4ee750 (Deduping, reranking, and adding config)
 
 build:
 	docker compose build
