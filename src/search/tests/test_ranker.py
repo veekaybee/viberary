@@ -48,7 +48,6 @@ def test_dedup(redis_mock):
     ]
 
     rescore = KNNSearch(redis_mock).dedup_by_number_of_reviews(result_list)
-    print(rescore)
     assert rescore == expected_list
 
 
