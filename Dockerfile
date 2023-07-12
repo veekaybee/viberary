@@ -1,4 +1,4 @@
-FROM bitnami/pytorch 
+FROM bitnami/pytorch
 USER root
 
 
@@ -10,21 +10,15 @@ ENV PYTHONUNBUFFERED 1
 COPY requirements.txt requirements.txt
 
 RUN --mount=type=cache,target=~/.cache/pip  pip install -r requirements.txt
-COPY . /app
-COPY src/ /app
+COPY . /viberary
+COPY src/ /viberary
 
-RUN mkdir /app/data; exit 0
-RUN chmod 777 /app/data; exit 0
-ENV TRANSFORMERS_CACHE=/app/data
-ENV SENTENCE_TRANSFORMERS_HOME=/app/data
-ENV PYTHONPATH "${PYTHONPATH}:/app/src"
+RUN mkdir /viberary/data; exit 0
+RUN chmod 777 /viberary/data; exit 0
+ENV TRANSFORMERS_CACHE=/viberary/data
+ENV SENTENCE_TRANSFORMERS_HOME=/viberary/data
+ENV PYTHONPATH "${PYTHONPATH}:/viberary/src"
 
-WORKDIR /app/src
+WORKDIR /viberary/src
 
-CMD python  /app/src/api/app.py
-
-
-
-
-
-
+CMD python  /viberary/src/api/app.py

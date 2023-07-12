@@ -37,15 +37,33 @@ def test_rescore(redis_mock):
 def test_dedup(redis_mock):
     result_list = [
         (0.888, "dogs", "lassie", "http://", 10),
-        (0.888, "dogs", "lassie", "http://", 20),
+        (0.666, "dogs", "lassie", "http://", 20),
         (0.777, "cats", "hello kitty", "http://", 30),
         (0.666, "birds", "big bird", "http://", 40),
     ]
     expected_list = [
-        (0.888, "dogs", "lassie", "http://", 20),
+        (0.888, "dogs", "lassie", "http://", 10),
         (0.777, "cats", "hello kitty", "http://", 30),
         (0.666, "birds", "big bird", "http://", 40),
     ]
 
-    rescore = KNNSearch(redis_mock).dedup_by_score(result_list)
+    rescore = KNNSearch(redis_mock).dedup_by_number_of_reviews(result_list)
+    print(rescore)
+    assert rescore == expected_list
+
+
+def test_skip_dedup(redis_mock):
+    result_list = [
+        (0.888, "dogs", "lassie", "http://", 10),
+        (0.777, "cats", "hello kitty", "http://", 30),
+        (0.666, "dogs", "lassie", "http://", 20),
+        (0.666, "birds", "big bird", "http://", 40),
+    ]
+    expected_list = [
+        (0.888, "dogs", "lassie", "http://", 10),
+        (0.777, "cats", "hello kitty", "http://", 30),
+        (0.666, "birds", "big bird", "http://", 40),
+    ]
+
+    rescore = KNNSearch(redis_mock).dedup_by_number_of_reviews(result_list)
     assert rescore == expected_list

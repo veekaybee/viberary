@@ -16,9 +16,9 @@ services:
     ports:
       - '80:5000'
     volumes:
-      - ./src/training_data:/app/src/training_data
+      - ./src/training_data:/viberary/src/training_data
     environment:
-      - FLASK_APP=/src/api/app.py
+      - FLASK_APP=/viberary/api/app.py
       - REDIS_HOST=redis
     depends_on:
       - redis

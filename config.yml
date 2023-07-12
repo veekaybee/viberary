@@ -9,7 +9,8 @@ input_data:
   authors:
   reviews:
 training_data:
-  path:
+  path: "/viberary/src/training_data/"
+  file: "20230711_learned_embeddings.snappy"
 embeddings_data:
   path:
 
