@@ -8,6 +8,7 @@ from inout.redis_conn import RedisConnection
 conf = config()
 embedding_data = Path(conf["training_data"]["path"]) / Path(conf["training_data"]["file"])
 
+
 # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),

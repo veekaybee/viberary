@@ -16,7 +16,6 @@ test:
 embed:
 	docker exec -it viberary-flask-1 python /viberary/src/index/index_embeddings.py
 
-
 build:
 	docker compose build
 
