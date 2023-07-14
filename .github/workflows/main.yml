@@ -36,5 +36,4 @@ jobs:
           ruff --format=github --target-version=py39 .
       - name: Test with pytest
         run: |
-          cd /viberary
           pytest
