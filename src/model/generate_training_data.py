@@ -4,7 +4,7 @@ from pathlib import Path
 
 import duckdb
 
-from inout import file_reader as f
+from inout.file_reader import get_config_file as config
 
 """Generates training dataset for converting to SBERT
 Source data https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/home
@@ -13,13 +13,13 @@ Source data https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/home
 
 class TrainingDataGenerator:
     def __init__(self):
-        logging.config.fileConfig(f.get_project_root() / "logging.conf")
+        conf = config()
+        logging.config.fileConfig(Path(conf["logging"]["path"]))
         self.con = duckdb.connect("viberary.db")
-        self.root_path = Path("viberary" / f.get_project_root())
 
-        self.books = Path(self.root_path / "src" / "data" / "goodreads_books.json")
-        self.authors = Path(self.root_path / "src" / "data" / "goodreads_book_authors.json")
-        self.reviews = Path(self.root_path / "src" / "data" / "goodreads_reviews_dedup.json")
+        self.books = Path(conf["data"]["books"])
+        self.authors = Path(conf["data"]["authors"])
+        self.reviews = Path(conf["data"]["reviews"])
 
     def _get_date_and_hour(self) -> str:
         current_date = datetime.now()
@@ -55,19 +55,20 @@ class TrainingDataGenerator:
         )
         logging.info("Creating reviews..")
         duckdb_conn.sql(reviews_query)
+
         logging.info("Creating books..")
         duckdb_conn.sql(books_query)
+
         logging.info("Creating authors..")
         duckdb_conn.sql(authors_query)
+
         logging.info("Creating author_ids..")
         duckdb_conn.sql(author_ids_query)
 
     def _get_join_tables_query(self, duckdb_conn):
         date = self._get_date_and_hour()
 
-        output_path: Path = (
-            f.get_project_root() / "src" / "training_data" / f"{date}_training.parquet"
-        )
+        output_path: Path = self.conf["training_data"]["path"] / f"{date}_training.parquet"
 
         query = """SELECT
         review_text,

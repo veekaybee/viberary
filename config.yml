@@ -4,18 +4,36 @@ cache:
 
 
 # Data Config
-input_data:
-  books:
-  authors:
-  reviews:
+data:
+  books: "/viberary/src/data/goodreads_books.json"
+  authors: "/viberary/src/data/goodreads_book_authors.json"
+  reviews: "/viberary/src/data/goodreads_reviews_dedup.jso"
 training_data:
-  path: "/viberary/src/training_data/"
-  file: "20230711_learned_embeddings.snappy"
+  path: "src/training_data/"
+  file: "2023071112_training.parquet"
 embeddings_data:
-  path:
+  path: "src/training_data/"
+  file: "20230711_learned_embeddings.snappy"
 
+# Logging
+logging:
+  path: "logging.conf"
 
 # Redis Search Config
+search:
+  index_name: "viberary"
+  top_k: 50
+  nvecs: 800000
+  dim: 768 # embedding size, needs to be same for both towers
+  max_edges: 40 # maximum allowed outgoing edges for each node in the graph in each layer.
+  ef: 200 # maximum allowed potential outgoing edges candidates for each node in the graph
+  distance_metric: "COSINE"
+  float_type: "FLOAT64"
+  index_type: "HNSW"
+
 
 
 # SBERT Model Config
+
+model:
+  name: "sentence-transformers/msmarco-distilbert-base-v3"

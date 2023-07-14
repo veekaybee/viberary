@@ -81,7 +81,7 @@
 					<a class="nav-link fw-bold py-1 px-0 active" aria-current="page"
 						href="https://www.vickiboykis.com">Home</a>
 					<a class="nav-link fw-bold py-1 px-0"
-						href="how.html">About Viberary</a>
+						href="{{ url_for('how') }}">About Viberary</a>
 					<a class="nav-link fw-bold py-1 px-0" href="https://github.com/veekaybee/viberary">GitHub</a>
 				</nav>
 			</div>
@@ -89,11 +89,20 @@
 
 
 		<main class="px-3">
-			<img src="/static/assets/img/vibe_book.png" width="300" height="300">
+			<img src="/static/assets/img/vibe_book.png" width="200" height="200">
 
-			<h1 class="cover-heading">Viberary<button type="button" class="btn btn-outline-primary btn-sm">&nbspAlpha</button></h1>
+			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Alpha</button></h1>
 			<hr>
-			<h4>Tired of bad book recommendations? <br>Search by &#10024;vibe&#10024;! </h4>
+			<h4>Tired of bad book recommendations? <br>Search by &#10024;vibe&#10024;! </h4><br>
+
+			Or try some pre-warmed vibes!
+
+			<div class="btn-group" role="group" aria-label="Basic example">
+			  <button type="button" class="btn btn-primary mr-1" type="submit">Funny sci-fi</button>
+			  <button type="button"  class="btn btn-primary mr-1" type="submit">Romantic hijinx</button>
+			  <button type="button"  class="btn btn-primary mr-1" type="submit">Feel-good dog books</button>
+			</div>
+			<br>
 
 			<div class="callout callout-info">
 
@@ -103,7 +112,7 @@
 				<form action="{{ url_for('search') }}" method="POST">
 					<div class="input-group mb-3">
 						<input type="text" class="form-control" id="query" name="query" value="{{query}}"
-							placeholder="Funny scifi or historical novel set in Africa or moody classic drama" required>
+							placeholder="Funny scifi or moody classic drama" required>
 						<div class="input-group-append">
 							<button class="btn btn-primary" type="submit">Search</button>
 						</div>

@@ -1,14 +1,13 @@
 import logging
 import logging.config
-from typing import Dict, List
+from pathlib import Path
 
 import numpy as np
-import pandas as pd
-import pyarrow.parquet as pq
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 
-from inout import file_reader as f
+from index.parquet_reader import ParquetReader
+from inout.file_reader import get_config_file as config
 
 """
 Indexes embeddings from a file into a Redis instance
@@ -23,23 +22,19 @@ class Indexer:
         vector_field,
         title_field,
         author_field,
-        index_name,
         link_field,
         review_count_field,
+        float_type,
+        index_name,
+        index_type,
+        distance_metric,
         nvecs=0,
         dim=0,
         max_edges=0,
         ef=0,
-        index_type="HNSW",
-        distance_metric="COSINE",
-        float_type="FLOAT64",
     ) -> None:
         self.conn = redis_conn
         self.filepath = filepath
-        self.dim = dim
-        self.nvecs = nvecs
-        self.max_edges = max_edges
-        self.ef = ef
         self.vector_field_name = vector_field
         self.title_field_name = title_field
         self.author_field_name = author_field
@@ -47,43 +42,14 @@ class Indexer:
         self.review_count_field_name = review_count_field
         self.float_type = float_type
         self.index_name = index_name
-        self.distance_metric = distance_metric
         self.index_type = index_type
-        logging.config.fileConfig(f.get_project_root() / "logging.conf")
-
-    # TODO: unit test these columns and parquet writes
-    def file_to_embedding_dict(self, columns: List) -> Dict:
-        """
-        Reads Parquet file and processes in Pandas
-        in chunks
-
-        index: title, author, link, review_count, embeddings
-        """
-
-        parquet = self.filepath
-
-        logging.info(f"Creating dataframe from {parquet}...")
-
-        parquet_file = pq.ParquetFile(str(parquet))
-
-        final_df = pd.DataFrame()
-
-        for i, batch in enumerate(parquet_file.iter_batches(columns=columns)):
-            logging.info(f"Loading RecordBatch {i}")
-            df = batch.to_pandas()
-            final_df = final_df.append(df, ignore_index=True)
-
-        # Format as dict for read into Redis
-        df_dict = final_df.to_dict("split")
-        data = df_dict["data"]
-        # Data: Index, title, author, Link, embeddings
-        my_dict = {
-            item[1]: (item[0], item[2], item[3], item[4], item[5])
-            for item in data
-            if len(item) == 6
-        }
-
-        return my_dict
+        self.distance_metric = distance_metric
+        self.nvecs = nvecs
+        self.dim = dim
+        self.max_edges = max_edges
+        self.ef = ef
+        conf = config()
+        logging.config.fileConfig(Path(conf["logging"]["path"]))
 
     def drop_index(self):
         """Delete Redis index but does not delete underlying data"""
@@ -126,7 +92,7 @@ class Indexer:
         r = self.conn
         pipe = r.pipeline(transaction=False)
 
-        vector_dict = self.file_to_embedding_dict(columns)
+        vector_dict = ParquetReader(self.filepath).file_to_embedding_dict(columns)
         logging.info(f"Inserting vector into Redis search index {self.index_name}")
 
         # v: title, author, Link, embeddings

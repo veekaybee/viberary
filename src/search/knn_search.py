@@ -5,8 +5,11 @@ import numpy as np
 from redis.commands.search.query import Query
 from sentence_transformers import SentenceTransformer
 
-from inout import file_reader as f
+from inout.file_reader import get_config_file as config
 from search.sanitize_input import InputSanitizer
+
+# Project Config
+conf = config()
 
 
 class KNNSearch:
@@ -15,15 +18,15 @@ class KNNSearch:
         redis_conn,
     ) -> None:
         self.conn = redis_conn
-        self.index = "viberary"
+        self.index = conf["search"]["index_name"]
         self.vector_field = "vector"
         self.title_field = "title"
         self.author_field = "author"
         self.link_field = "link"
         self.review_count_field = "review_count"
-        logging.config.fileConfig(f.get_project_root() / "logging.conf")
+        logging.config.fileConfig(conf["logging"]["path"])
         self.sanitizer = InputSanitizer()
-        self.embedder = SentenceTransformer("sentence-transformers/msmarco-distilbert-base-v3")
+        self.embedder = SentenceTransformer(conf["model"]["name"])
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.embedder.encode(query_string, convert_to_tensor=False)
@@ -32,7 +35,6 @@ class KNNSearch:
     def top_knn(
         self,
         query,
-        top_k=50,
     ) -> List[Tuple[float, str, str, str, int]]:
         """Return top k vector results from model
 
@@ -45,6 +47,7 @@ class KNNSearch:
         """
         r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
+        top_k = conf["search"]["top_k"]
 
         query_vector = self.vectorize_query(sanitized_query).astype(np.float64).tobytes()
 

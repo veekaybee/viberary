@@ -20,7 +20,7 @@ build:
 	docker compose build
 
 up:
-	docker compose up -d
+	docker compose -p 'viberary' up -d
 
 down:
 	docker compose down

@@ -7,15 +7,13 @@
 			<tr>
 				<th>Author</th>
 				<th>Title</th>
-				<th>Rank</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for item in data %}
 			<tr>
 				<td>{{ item[2] if item[2] is not none }}</td>
-				<td><a href="{{ item[3] }}">{{ item[1] if item[1] is not none}}</a></td>
-				<td>{{ item[5] }}</td>
+				<td><p class="text-left"><a href="{{ item[3] }}">{{ item[1] if item[1] is not none}}</a></p></td>
 			</tr>
 			{% endfor %}
 		</tbody>
