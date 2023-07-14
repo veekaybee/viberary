@@ -1,16 +1,14 @@
 import logging.config
-from pathlib import Path
 
 from flask import Flask, render_template, request
 
-from inout.file_reader import get_config_file as config
+from inout.file_reader import get_config_file as cf
 from inout.redis_conn import RedisConnection
 from search.knn_search import KNNSearch
 
 app = Flask(__name__)
-conf = config()
-logger = Path(conf["logging"]["path"])
-logging.config.fileConfig()
+conf = cf()
+logging.config.fileConfig(conf["logging"]["path"])
 
 
 def return_model_results(word: str) -> str:

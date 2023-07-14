@@ -35,6 +35,8 @@ def test_convert_dataframe_to_dict(tmpdir):
 
     assert result.keys() == expected_output.keys()
 
+    # assert that values of the dictionaries are equal unless dict element is np.array
+    # then assert specific equality of that array
     assert (
         a == b if not isinstance(a, np.array) else a == b.all()
         for a, b in zip(result.values(), expected_output.values())

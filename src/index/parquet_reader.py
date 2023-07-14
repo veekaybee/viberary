@@ -31,7 +31,7 @@ class ParquetReader:
         for i, batch in enumerate(parquet_file.iter_batches(columns=columns)):
             logging.info(f"Loading RecordBatch {i}")
             df = batch.to_pandas()
-            final_df = final_df.append(df, ignore_index=True)
+            final_df = pd.concat([final_df, df])
 
         # Format as dict for read into Redis
         df_dict = final_df.to_dict("split")
