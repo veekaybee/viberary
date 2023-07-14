@@ -6,29 +6,35 @@ from inout.redis_conn import RedisConnection
 
 # Load Embeddings Data
 conf = config()
-embedding_data = Path(conf["training_data"]["path"]) / Path(conf["training_data"]["file"])
-
+filepath = Path(f"{conf['embeddings_data']['path']}{conf['embeddings_data']['file']}")
+index_name = conf["search"]["index_name"]
+nvecs = conf["search"]["nvecs"]
+dim = conf["search"]["dim"]
+max_edges = conf["search"]["max_edges"]
+ef = conf["search"]["ef"]
+distance_metric = conf["search"]["distance_metric"]
+float_type = conf["search"]["float_type"]
+index_type = conf["search"]["index_type"]
 
 # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),
-    embedding_data,
+    filepath=filepath,
     vector_field="vector",
-    author_field="author",
     title_field="title",
+    author_field="author",
+    index_name=index_name,
     link_field="link",
     review_count_field="review_count",
-    index_name="viberary",
-    nvecs=800000,
-    dim=768,
-    max_edges=40,  # maximum allowed outgoing edges for each node in the graph in each layer.
-    ef=200,  # maximum allowed potential outgoing edges candidates for each node in the graph
-    distance_metric="COSINE",
-    float_type="FLOAT64",
-    index_type="HNSW",
+    index_type=index_type,
+    distance_metric=distance_metric,
+    float_type=float_type,
+    nvecs=nvecs,
+    dim=dim,
+    max_edges=max_edges,
+    ef=ef,
 )
 
-# Create search index
 # Delete existing index
 indexer.drop_index()
 
@@ -38,6 +44,7 @@ indexer.write_embeddings_to_search_index(
 )
 
 # Recreate schema based on Indexer
+# This step has to happen after the hset, otherwise it will be slow
 indexer.create_search_index_schema()
 
 
