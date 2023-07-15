@@ -10,6 +10,7 @@ services:
 
 
   flask:
+    container_name: viberary
     build:
       context: .
       dockerfile: Dockerfile

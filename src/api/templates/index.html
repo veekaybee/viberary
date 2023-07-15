@@ -38,6 +38,19 @@
 			}
 		}
 
+		 @media screen and (max-width: 767px) {
+		  .button-wrap {
+			display: block;
+			margin-bottom: 20px;
+			text-align: center;
+		  }
+
+		  .button-text-wrap {
+			text-align: center;
+		  }
+
+}
+
 		.b-example-divider {
 			height: 3rem;
 			background-color: rgba(0, 0, 0, .1);
@@ -102,42 +115,29 @@
 		<main class="px-3">
 			<img src="/static/assets/img/vibe_book.png" width="200" height="200">
 
-			<div  class=" row d-flex justify-content-center align-content-center "  >
-			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Alpha</button></h1>
+			<div class="row">
+			  <div class="col-md-3"></div>
+			  <div class="col-md-6">
+				  <h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Alpha</button></h1>
 			<hr>
-			<h4>Tired of bad book recommendations? <br>Search by &#10024;vibe&#10024; or try one of ours!  <br></h4>
-		<div class="btn-toolbar align-content-center" >
-			  <form action="{{ url_for('search') }}" method="POST">
-				<div class="input-group mx-auto">
-				  <div class="input-group-append">
-					  <div role="group" class="btn-group mr-2" >
-					<input type="hidden" name="query" value="funny scifi">
-					<button class="btn btn-primary mr-3 custom-button" type="submit">Funny scifi</button>
-				  		</div>
-					  </div>
-					<div class="input-group-append">
-						<div role="group" class="btn-group mr-2" >
-					<input type="hidden" name="query" value="YA fantasy female lead">
-					<button class="btn btn-primary mr-3 custom-button" type="submit" name="query" value="YA fantasy female lead">YA fantasy female lead</button>
+			<h4>Tired of bad genre-based book recommendations? <br><br>Search by &#10024;vibe&#10024; or try one of ours!  <br></h4> </div>
+				<form action="/search" method="post">
+				  <div class="btn-group d-flex flex-wrap" role="group">
+					<button type="submit" class="btn btn-primary" name="query" value="funny scifi">funny sci-fi</button>
+					<button type="submit" class="btn btn-secondary" name="query" value="YA swords and magic">YA swords and magic</button>
+					<button type="submit" class="btn btn-info" name="query" value="cold-blooded revenge">cold-blooded revenge</button>
 				  </div>
-						</div>
-					<div class="input-group-append">
-						<div role="group" class="btn-group mr-2" >
-					<input type="hidden" name="query" value="cold-booded revenge">
-					<button class="btn btn-primary mr-3 custom-button" type="submit" name="query" value="cold-booded revenge">Cold-blooded revenge</button>
-				  </div>
-						</div>
-					<div class="input-group-append">
-						<div role="group" class="btn-group mr-2" >
-					<input type="hidden" name="query" value="cats">
-					<button class="btn btn-primary mr-3 custom-button" type="submit" name="query" value="cats">cats</button>
-				  </div>
-						</div>
-				</div>
-			  </form>
+				</form>
+
+
+
 			</div>
 
-				<div></div>
+
+
+
+
+
 
 			<div id='div2'>
 				<form action="{{ url_for('search') }}" method="POST">
