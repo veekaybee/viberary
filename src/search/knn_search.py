@@ -1,3 +1,4 @@
+import json
 import logging.config
 from typing import List, Tuple
 
@@ -82,7 +83,11 @@ class KNNSearch:
             review_count = i["review_count"]
             index_vector.append((score, title, author, link, review_count))
 
-        logging.info(f"query:{query}, results:{[[i[1], i[2], i[3], i[4]] for i in index_vector]}")
+        log_data = {"query": query, "results": [[i[1], i[2], i[3], i[4]] for i in index_vector]}
+
+        log_message = json.dumps(log_data)
+
+        logging.info(log_message)
 
         deduped_results = self.dedup_by_number_of_reviews(index_vector)
         scored_results = self.rescore(deduped_results)
