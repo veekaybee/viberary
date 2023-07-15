@@ -1,8 +1,7 @@
-# This Makefile lints, formats, and tests your Python code.
 
-.PHONY: all lint format test
+.PHONY: all lint format test embed build up down logs
 
-all: lint format test
+ci: lint format test
 
 lint:
 	ruff
