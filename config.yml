@@ -7,7 +7,7 @@ cache:
 data:
   books: "/viberary/src/data/goodreads_books.json"
   authors: "/viberary/src/data/goodreads_book_authors.json"
-  reviews: "/viberary/src/data/goodreads_reviews_dedup.jso"
+  reviews: "/viberary/src/data/goodreads_reviews_dedup.json"
 training_data:
   path: "src/training_data/"
   file: "2023071112_training.parquet"
@@ -37,3 +37,4 @@ search:
 
 model:
   name: "sentence-transformers/msmarco-distilbert-base-v3"
+  onnx_path: "src/training_data/onnx"

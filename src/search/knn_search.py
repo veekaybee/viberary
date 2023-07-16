@@ -4,9 +4,9 @@ from typing import List, Tuple
 
 import numpy as np
 from redis.commands.search.query import Query
-from sentence_transformers import SentenceTransformer
 
 from inout.file_reader import get_config_file as config
+from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
 from search.sanitize_input import InputSanitizer
 
 # Project Config
@@ -27,10 +27,10 @@ class KNNSearch:
         self.review_count_field = "review_count"
         logging.config.fileConfig(conf["logging"]["path"])
         self.sanitizer = InputSanitizer()
-        self.embedder = SentenceTransformer(conf["model"]["name"])
+        self.model = SentenceEmbeddingPipeline()
 
     def vectorize_query(self, query_string) -> np.ndarray:
-        query_embedding = self.embedder.encode(query_string, convert_to_tensor=False)
+        query_embedding = self.model(query_string)
         return query_embedding
 
     def top_knn(

@@ -1,8 +1,10 @@
 from pathlib import Path
 
+from index.index_fields import IndexFields
 from index.indexer import Indexer
 from inout.file_reader import get_config_file as config
 from inout.redis_conn import RedisConnection
+from model.onnx_converter import ONNXConverter
 
 # Load Embeddings Data
 conf = config()
@@ -16,16 +18,11 @@ distance_metric = conf["search"]["distance_metric"]
 float_type = conf["search"]["float_type"]
 index_type = conf["search"]["index_type"]
 
-# Instantiate indexer
+# # Instantiate indexer
 indexer = Indexer(
     RedisConnection().conn(),
     filepath=filepath,
-    vector_field="vector",
-    title_field="title",
-    author_field="author",
     index_name=index_name,
-    link_field="link",
-    review_count_field="review_count",
     index_type=index_type,
     distance_metric=distance_metric,
     float_type=float_type,
@@ -35,18 +32,29 @@ indexer = Indexer(
     ef=ef,
 )
 
+fields = IndexFields()
+
 # Delete existing index
 indexer.drop_index()
 
 # Load Embeddings
 indexer.write_embeddings_to_search_index(
-    columns=["title", "index", "author", "link", "review_count", "embeddings"]
+    columns=[
+        fields.title_field,
+        fields.index_field,
+        fields.author_field,
+        fields.link_field,
+        fields.review_count_field,
+        fields.embeddings_field,
+    ]
 )
 
 # Recreate schema based on Indexer
 # This step has to happen after the hset, otherwise it will be slow
 indexer.create_search_index_schema()
 
-
 # Check Search Index Metadata
 indexer.get_search_index_metadata()
+
+# Convert model to ONNX and include in `training_data`
+ONNXConverter().convert_to_onnx()
