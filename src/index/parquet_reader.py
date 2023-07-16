@@ -1,11 +1,19 @@
 import logging
 import logging.config
-from typing import Dict, List
+from typing import Dict, List, TypedDict
 
 import pandas as pd
 import pyarrow.parquet as pq
 
 from inout.file_reader import get_config_file as cf
+
+
+class Book(TypedDict):
+    title: str
+    author: str
+    link: str
+    review_count: int
+    embeddings: List[float]
 
 
 class ParquetReader:
@@ -14,7 +22,7 @@ class ParquetReader:
         logging.config.fileConfig(conf["logging"]["path"])
         self.filepath = filepath
 
-    def file_to_embedding_dict(self, columns: List) -> Dict:
+    def file_to_embedding_dict(self, columns: List) -> Dict[int, Book]:
         """
         Reads Parquet file and processes in Pandas
         in chunks
@@ -37,9 +45,14 @@ class ParquetReader:
         df_dict = final_df.to_dict("split")
         data = df_dict["data"]
 
-        # Data: Index, title, author, Link, embeddings
-        embedding_dict = {
-            item[1]: (item[0], item[2], item[3], item[4], item[5])
+        embedding_dict: dict[int, Book] = {
+            item[1]: {
+                "title": item[0],
+                "author": item[2],
+                "link": item[3],
+                "review_count": item[4],
+                "embeddings": item[5],
+            }
             for item in data
             if len(item) == 6
         }

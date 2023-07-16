@@ -6,6 +6,7 @@ import numpy as np
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 
+from index.index_fields import IndexFields
 from index.parquet_reader import ParquetReader
 from inout.file_reader import get_config_file as config
 
@@ -19,11 +20,6 @@ class Indexer:
         self,
         redis_conn,
         filepath,
-        vector_field,
-        title_field,
-        author_field,
-        link_field,
-        review_count_field,
         float_type,
         index_name,
         index_type,
@@ -35,11 +31,12 @@ class Indexer:
     ) -> None:
         self.conn = redis_conn
         self.filepath = filepath
-        self.vector_field_name = vector_field
-        self.title_field_name = title_field
-        self.author_field_name = author_field
-        self.link_field_name = link_field
-        self.review_count_field_name = review_count_field
+        self.fields = IndexFields()
+        self.vector_field_name = self.fields.vector_field
+        self.title_field_name = self.fields.title_field
+        self.author_field_name = self.fields.author_field
+        self.link_field_name = self.fields.link_field
+        self.review_count_field_name = self.fields.review_count_field
         self.float_type = float_type
         self.index_name = index_name
         self.index_type = index_type
@@ -66,7 +63,6 @@ class Indexer:
         """Create Redis index with schema parameters from config"""
         logging.info("Creating redis schema...")
 
-        # title, author, Link, embeddings
         schema = (
             VectorField(
                 self.vector_field_name,
@@ -97,15 +93,15 @@ class Indexer:
 
         # v: title, author, Link, embeddings
         for k, v in vector_dict.items():
-            np_vector = v[4].astype(np.float64)
+            np_vector = v["embeddings"].astype(np.float64)
             pipe.hset(
                 f"{self.index_name}:{k}",
                 mapping={
                     self.vector_field_name: np_vector.tobytes(),
-                    self.title_field_name: v[0],
-                    self.author_field_name: v[1],
-                    self.link_field_name: v[2],
-                    self.review_count_field_name: v[3],
+                    self.title_field_name: v["title"],
+                    self.author_field_name: v["author"],
+                    self.link_field_name: v["link"],
+                    self.review_count_field_name: v["review_count"],
                 },
             )
             if k % 5000 == 0:
