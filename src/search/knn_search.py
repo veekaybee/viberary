@@ -5,6 +5,7 @@ from typing import List, Tuple
 import numpy as np
 from redis.commands.search.query import Query
 
+from index.index_fields import IndexFields
 from inout.file_reader import get_config_file as config
 from model.onnx_embedding_generator import ONNXEmbeddingGenerator
 from search.sanitize_input import InputSanitizer
@@ -18,11 +19,12 @@ class KNNSearch:
         conf = config()
         self.conn = redis_conn
         self.index = conf["search"]["index_name"]
-        self.vector_field = "vector"
-        self.title_field = "title"
-        self.author_field = "author"
-        self.link_field = "link"
-        self.review_count_field = "review_count"
+        self.fields = IndexFields()
+        self.vector_field = self.fields.vector_field
+        self.title_field = self.fields.title_field
+        self.author_field = self.fields.author_field
+        self.link_field = self.fields.link_field
+        self.review_count_field = self.fields.review_count_field
         logging.config.fileConfig(conf["logging"]["path"])
         self.sanitizer = InputSanitizer()
         self.model = ONNXEmbeddingGenerator()
