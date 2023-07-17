@@ -17,6 +17,7 @@ class KNNSearch:
         redis_conn,
     ) -> None:
         conf = config()
+        logging.config.fileConfig(conf["logging"]["path"])
         self.conn = redis_conn
         self.index = conf["search"]["index_name"]
         self.fields = IndexFields()
@@ -25,7 +26,7 @@ class KNNSearch:
         self.author_field = self.fields.author_field
         self.link_field = self.fields.link_field
         self.review_count_field = self.fields.review_count_field
-        logging.config.fileConfig(conf["logging"]["path"])
+
         self.sanitizer = InputSanitizer()
         self.model = ONNXEmbeddingGenerator()
 

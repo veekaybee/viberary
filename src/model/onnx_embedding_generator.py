@@ -1,19 +1,21 @@
+import logging.config
 from pathlib import Path
 from typing import List
 
 from optimum.onnxruntime import ORTModelForFeatureExtraction
 from transformers import AutoTokenizer
 
+from inout.file_reader import get_config_file as config
 from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
 
 
 class ONNXEmbeddingGenerator:
     def __init__(self):
-        # conf = config()
-        # logging.config.fileConfig("/Users/vicki/viberary/logging.conf")
+        conf = config()
+        logging.config.fileConfig(conf["logging"]["path"])
         self.onnx_path = Path("embedding_model")
         self.model = ORTModelForFeatureExtraction.from_pretrained(
-            "sentence-transformers/msmarco-distilbert-base-v3", export=True
+            self.conf["model"]["name"], export=True
         )
         self.tokenizer = AutoTokenizer.from_pretrained(
             "sentence-transformers/msmarco-distilbert-base-v3"
