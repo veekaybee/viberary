@@ -6,11 +6,8 @@ import numpy as np
 from redis.commands.search.query import Query
 
 from inout.file_reader import get_config_file as config
-from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
+from model.onnx_embedding_generator import ONNXEmbeddingGenerator
 from search.sanitize_input import InputSanitizer
-
-# Project Config
-conf = config()
 
 
 class KNNSearch:
@@ -18,6 +15,7 @@ class KNNSearch:
         self,
         redis_conn,
     ) -> None:
+        conf = config()
         self.conn = redis_conn
         self.index = conf["search"]["index_name"]
         self.vector_field = "vector"
@@ -27,10 +25,10 @@ class KNNSearch:
         self.review_count_field = "review_count"
         logging.config.fileConfig(conf["logging"]["path"])
         self.sanitizer = InputSanitizer()
-        self.model = SentenceEmbeddingPipeline()
+        self.model = ONNXEmbeddingGenerator()
 
     def vectorize_query(self, query_string) -> np.ndarray:
-        query_embedding = self.model(query_string)
+        query_embedding = self.model.generate_embeddings(query_string)
         return query_embedding
 
     def top_knn(
@@ -48,7 +46,7 @@ class KNNSearch:
         """
         r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
-        top_k = conf["search"]["top_k"]
+        top_k = self.conf["search"]["top_k"]
 
         query_vector = self.vectorize_query(sanitized_query).astype(np.float64).tobytes()
 
