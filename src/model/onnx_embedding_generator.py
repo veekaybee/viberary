@@ -11,8 +11,8 @@ from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
 
 class ONNXEmbeddingGenerator:
     def __init__(self):
-        conf = config()
-        logging.config.fileConfig(conf["logging"]["path"])
+        self.conf = config()
+        logging.config.fileConfig(self.conf["logging"]["path"])
         self.onnx_path = Path("embedding_model")
         self.model = ORTModelForFeatureExtraction.from_pretrained(
             self.conf["model"]["name"], export=True

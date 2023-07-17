@@ -26,7 +26,6 @@ class KNNSearch:
         self.author_field = self.fields.author_field
         self.link_field = self.fields.link_field
         self.review_count_field = self.fields.review_count_field
-
         self.sanitizer = InputSanitizer()
         self.model = ONNXEmbeddingGenerator()
 
