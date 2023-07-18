@@ -57,4 +57,4 @@ indexer.create_search_index_schema()
 indexer.get_search_index_metadata()
 
 # Convert model to ONNX and include in `training_data`
-ONNXEmbeddingGenerator.checkpoint_model()
+ONNXEmbeddingGenerator().checkpoint_model()

@@ -13,13 +13,11 @@ class ONNXEmbeddingGenerator:
     def __init__(self):
         self.conf = config()
         logging.config.fileConfig(self.conf["logging"]["path"])
-        self.onnx_path = Path("embedding_model")
+        self.onnx_path = Path("onnx")
         self.model = ORTModelForFeatureExtraction.from_pretrained(
             self.conf["model"]["name"], export=True
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            "sentence-transformers/msmarco-distilbert-base-v3"
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(self.conf["model"]["name"])
         self.ctx_pipeline = SentenceEmbeddingPipeline(model=self.model, tokenizer=self.tokenizer)
 
     def checkpoint_model(self):
