@@ -5,12 +5,10 @@ from typing import List, Tuple
 import numpy as np
 from redis.commands.search.query import Query
 
+from index.index_fields import IndexFields
 from inout.file_reader import get_config_file as config
-from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
+from model.onnx_embedding_generator import ONNXEmbeddingGenerator
 from search.sanitize_input import InputSanitizer
-
-# Project Config
-conf = config()
 
 
 class KNNSearch:
@@ -18,24 +16,27 @@ class KNNSearch:
         self,
         redis_conn,
     ) -> None:
+        self.conf = config()
+        logging.config.fileConfig(self.conf["logging"]["path"])
         self.conn = redis_conn
-        self.index = conf["search"]["index_name"]
-        self.vector_field = "vector"
-        self.title_field = "title"
-        self.author_field = "author"
-        self.link_field = "link"
-        self.review_count_field = "review_count"
-        logging.config.fileConfig(conf["logging"]["path"])
+        self.index = self.conf["search"]["index_name"]
+        self.fields = IndexFields()
+        self.vector_field = self.fields.vector_field
+        self.title_field = self.fields.title_field
+        self.author_field = self.fields.author_field
+        self.link_field = self.fields.link_field
+        self.review_count_field = self.fields.review_count_field
         self.sanitizer = InputSanitizer()
-        self.model = SentenceEmbeddingPipeline()
+        self.model = ONNXEmbeddingGenerator()
 
     def vectorize_query(self, query_string) -> np.ndarray:
-        query_embedding = self.model(query_string)
-        return query_embedding
+        query_embedding = self.model.generate_embeddings(query_string)
+        numpy_embedding = query_embedding.numpy()
+        return numpy_embedding
 
     def top_knn(
         self,
-        query,
+        query:str,
     ) -> List[Tuple[float, str, str, str, int]]:
         """Return top k vector results from model
 
@@ -48,7 +49,7 @@ class KNNSearch:
         """
         r = self.conn
         sanitized_query = self.sanitizer.parse_and_sanitize_input(query)
-        top_k = conf["search"]["top_k"]
+        top_k = self.conf["search"]["top_k"]
 
         query_vector = self.vectorize_query(sanitized_query).astype(np.float64).tobytes()
 
@@ -108,7 +109,8 @@ class KNNSearch:
         self, result_list: List[Tuple[float, str, str, str, int]]
     ) -> List[Tuple[float, str, str, str, int]]:
         """
-        Dedup ranked list of 50 elements by title by number of reviews and returns subest of top elements
+        Dedup ranked list of 50 elements by title by number of reviews
+        and returns subest of top elements
         Args:
             result_list ():
 

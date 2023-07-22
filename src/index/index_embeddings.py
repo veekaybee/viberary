@@ -4,7 +4,6 @@ from index.index_fields import IndexFields
 from index.indexer import Indexer
 from inout.file_reader import get_config_file as config
 from inout.redis_conn import RedisConnection
-from model.onnx_converter import ONNXConverter
 
 # Load Embeddings Data
 conf = config()
@@ -55,6 +54,3 @@ indexer.create_search_index_schema()
 
 # Check Search Index Metadata
 indexer.get_search_index_metadata()
-
-# Convert model to ONNX and include in `training_data`
-ONNXConverter().convert_to_onnx()

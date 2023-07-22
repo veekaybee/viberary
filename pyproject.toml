@@ -23,8 +23,7 @@ exclude = '''
 profile = "black"
 
 [tool.ruff]
-
-line-length = 120
+line-length = 100
 
 exclude = [
     ".git",
