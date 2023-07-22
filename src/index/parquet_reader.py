@@ -18,8 +18,8 @@ class Book(TypedDict):
 
 class ParquetReader:
     def __init__(self, filepath):
-        conf = cf()
-        logging.config.fileConfig(conf["logging"]["path"])
+        self.conf = cf()
+        logging.config.fileConfig(self.conf["logging"]["path"])
         self.filepath = filepath
 
     def file_to_embedding_dict(self, columns: List) -> Dict[int, Book]:

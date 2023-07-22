@@ -78,7 +78,8 @@ class TrainingDataGenerator:
         goodreads_auth_ids.average_rating,
         goodreads_authors.name AS author,
         text_reviews_count,
-        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description || goodreads_authors.name as sentence
+        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description 
+        || goodreads_authors.name as sentence
         FROM goodreads_auth_ids
         JOIN goodreads_reviews
         ON goodreads_auth_ids.book_id = goodreads_reviews.book_id

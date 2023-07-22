@@ -109,7 +109,8 @@ class KNNSearch:
         self, result_list: List[Tuple[float, str, str, str, int]]
     ) -> List[Tuple[float, str, str, str, int]]:
         """
-        Dedup ranked list of 50 elements by title by number of reviews and returns subest of top elements
+        Dedup ranked list of 50 elements by title by number of reviews
+        and returns subest of top elements
         Args:
             result_list ():
 

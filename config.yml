@@ -17,7 +17,7 @@ embeddings_data:
 
 # Logging
 logging:
-  path: "/viberary/logging.conf"
+  path: "logging.conf"
 
 # Redis Search Config
 search:
@@ -36,4 +36,4 @@ search:
 # SBERT Model Config
 model:
   name: "sentence-transformers/msmarco-distilbert-base-v3"
-  onnx_path: "/viberary/sentence-transformers/msmarco-distilbert-base-v3_onnx/"
+  onnx_path: "sentence-transformers/msmarco-distilbert-base-v3_onnx/"

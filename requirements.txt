@@ -12,6 +12,7 @@ sentence_transformers==2.2.2
 tqdm==4.64.1
 fakeredis
 optimum[exporters,onnxruntime]==1.9.1
+onnx
 evaluate
 mkl-include
 mkl
