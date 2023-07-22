@@ -1,12 +1,19 @@
 import pytest
 from fakeredis import FakeRedis
 
-from search.knn_search import KNNSearch
-
+from search.knn_search import KNNSearch,ONNXEmbeddingGenerator
+import pytest
+from unittest.mock import Mock
 
 @pytest.fixture
 def redis_mock():
     return FakeRedis()
+
+@pytest.fixture
+def setup():
+    model = Mock()
+    onnx_path = "path"
+    return model, onnx_path
 
 
 def parse_and_sanitize_input():
@@ -17,7 +24,7 @@ def parse_and_sanitize_input():
     assert input == sanitized_input
 
 
-def test_rescore(redis_mock):
+def test_rescore(redis_mock, setup):
     result_list = [
         (0.888, "dogs", "lassie", "http://", 1, 0),
         (0.777, "cats", "hello kitty", "http://", 2, 1),
