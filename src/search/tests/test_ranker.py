@@ -1,8 +1,7 @@
 import pytest
 from fakeredis import FakeRedis
 
-from search.knn_search import KNNSearch,ONNXEmbeddingGenerator
-import pytest
+from search.knn_search import KNNSearch
 from unittest.mock import Mock
 
 @pytest.fixture
