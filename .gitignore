@@ -1,14 +1,14 @@
 # Data files
-goodreads_books.json
-notebooks/memray-results/*
-jsonparquet/target/*
-jsonparquet/src/main/resources/*
 bin/*
 lib/
 .DS_Store
-notebooks/my-db./*
-notebooks/goodreads_parquet.parquet/*
 .ipynb_checkpoints
+
+# Docker Compose Override for arm64 arch
+docker-compose.override.yml
+
+# Models
+src/notebooks/sentence-transformers/*
 
 # JAVA
 # Compiled class file
@@ -17,15 +17,9 @@ notebooks/goodreads_parquet.parquet/*
 # IML
 jsonparquet/jsontoparquet.iml
 
-# IDEA
-jsonparquet/.idea/*
 
 # Target
 *target/*
-
-#IML
-jsonparquet/iml*
-
 
 # Package Files #
 *.jar

@@ -1,7 +1,6 @@
 FROM bitnami/pytorch
 USER root
 
-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
@@ -15,8 +14,6 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     -y git
 
 RUN --mount=type=cache,target=~/.cache/pip  pip install -r requirements.txt
-COPY . /viberary
-COPY src/ /viberary
 
 RUN mkdir /viberary/data; exit 0
 RUN chmod 777 /viberary/data; exit 0
@@ -25,6 +22,4 @@ ENV SENTENCE_TRANSFORMERS_HOME=/viberary/data
 ENV PYTHONPATH "${PYTHONPATH}:/viberary/src"
 ENV WORKDIR=/viberary
 WORKDIR $WORKDIR
-RUN git init .
 
-CMD python  /viberary/src/api/app.py

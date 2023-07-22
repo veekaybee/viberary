@@ -2,6 +2,8 @@
 .PHONY: all lint format test embed build up down logs
 
 ci: lint format test
+intel: build up-intel embed
+arm: build up-arm embed
 
 lint:
 	ruff
@@ -18,8 +20,15 @@ embed:
 build:
 	docker compose build
 
-up:
+up-intel:
 	docker compose up -d
+
+up-arm:
+	export DOCKER_DEFAULT_PLATFORM=linux/amd64
+	docker compose up -d
+
+onnx:
+	optimum-cli export onnx --model sentence-transformers/msmarco-distilbert-base-v3 /viberary/src/training_data/sentence-transformers/msmarco-distilbert-base-v3_onnx/
 
 down:
 	docker compose down

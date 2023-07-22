@@ -34,7 +34,6 @@ search:
 
 
 # SBERT Model Config
-
 model:
   name: "sentence-transformers/msmarco-distilbert-base-v3"
-  onnx_path: "src/training_data/onnx"
+  onnx_path: "/viberary/src/training_data/sentence-transformers/msmarco-distilbert-base-v3_onnx/"

@@ -8,22 +8,17 @@ from transformers import AutoTokenizer
 from inout.file_reader import get_config_file as config
 from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
 
-
 class ONNXEmbeddingGenerator:
     def __init__(self):
         self.conf = config()
         logging.config.fileConfig(self.conf["logging"]["path"])
-        self.onnx_path = Path("onnx")
+        self.onnx_path = Path(self.conf["logging"]["path"])
         self.model = ORTModelForFeatureExtraction.from_pretrained(
-            self.conf["model"]["name"], export=True
+            self.onnx_path, export=True
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.conf["model"]["name"])
-        self.ctx_pipeline = SentenceEmbeddingPipeline(model=self.model, tokenizer=self.tokenizer)
-
-    def checkpoint_model(self):
-        self.model.save_pretrained(self.onnx_path)
-        self.tokenizer.save_pretrained(self.onnx_path)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.onnx_path)
+        self.pipeline = SentenceEmbeddingPipeline(model=self.model, tokenizer=self.tokenizer)
 
     def generate_embeddings(self, inputs: List[str]):
-        embeddings = self.ctx_pipeline(inputs)
+        embeddings = self.pipeline(inputs)
         return embeddings
