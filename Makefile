@@ -28,7 +28,7 @@ up-arm:
 	docker compose up -d
 
 onnx:
-	optimum-cli export onnx --model sentence-transformers/msmarco-distilbert-base-v3 make
+	docker exec -it viberary optimum-cli export onnx --model sentence-transformers/msmarco-distilbert-base-v3 sentence-transformers/msmarco-distilbert-base-v3_onnx/
 
 down:
 	docker compose down

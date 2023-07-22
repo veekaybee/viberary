@@ -16,10 +16,10 @@ class KNNSearch:
         self,
         redis_conn,
     ) -> None:
-        conf = config()
-        logging.config.fileConfig(conf["logging"]["path"])
+        self.conf = config()
+        logging.config.fileConfig(self.conf["logging"]["path"])
         self.conn = redis_conn
-        self.index = conf["search"]["index_name"]
+        self.index = self.conf["search"]["index_name"]
         self.fields = IndexFields()
         self.vector_field = self.fields.vector_field
         self.title_field = self.fields.title_field
@@ -31,11 +31,12 @@ class KNNSearch:
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.model.generate_embeddings(query_string)
-        return query_embedding
+        numpy_embedding = query_embedding.numpy()
+        return numpy_embedding
 
     def top_knn(
         self,
-        query,
+        query:str,
     ) -> List[Tuple[float, str, str, str, int]]:
         """Return top k vector results from model
 

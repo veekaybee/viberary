@@ -12,9 +12,9 @@ class ONNXEmbeddingGenerator:
     def __init__(self):
         self.conf = config()
         logging.config.fileConfig(self.conf["logging"]["path"])
-        self.onnx_path = Path(self.conf["logging"]["path"])
+        self.onnx_path = Path(self.conf["model"]["onnx_path"])
         self.model = ORTModelForFeatureExtraction.from_pretrained(
-            self.onnx_path, export=True
+            self.onnx_path
         )
         self.tokenizer = AutoTokenizer.from_pretrained(self.onnx_path)
         self.pipeline = SentenceEmbeddingPipeline(model=self.model, tokenizer=self.tokenizer)
