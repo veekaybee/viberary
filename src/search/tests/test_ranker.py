@@ -52,7 +52,7 @@ def test_dedup(redis_mock):
     rescore = KNNSearch().dedup_by_number_of_reviews(result_list)
     assert rescore == expected_list
 
-
+@patch.object(KNNSearch, '__init__', knn_search_mock)
 def test_skip_dedup(redis_mock):
     result_list = [
         (0.888, "dogs", "lassie", "http://", 10),
