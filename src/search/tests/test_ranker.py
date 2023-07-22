@@ -66,5 +66,5 @@ def test_skip_dedup(redis_mock):
         (0.666, "birds", "big bird", "http://", 40),
     ]
 
-    rescore = KNNSearch(redis_mock).dedup_by_number_of_reviews(result_list)
+    rescore = KNNSearch().dedup_by_number_of_reviews(result_list)
     assert rescore == expected_list
