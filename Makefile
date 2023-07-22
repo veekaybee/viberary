@@ -6,7 +6,7 @@ intel: build up-intel embed
 arm: build up-arm embed
 
 lint:
-	ruff
+	ruff check .
 
 format:
 	black .

@@ -4,7 +4,6 @@ from index.index_fields import IndexFields
 from index.indexer import Indexer
 from inout.file_reader import get_config_file as config
 from inout.redis_conn import RedisConnection
-from model.onnx_embedding_generator import ONNXEmbeddingGenerator
 
 # Load Embeddings Data
 conf = config()
