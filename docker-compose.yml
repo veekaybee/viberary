@@ -8,22 +8,21 @@ services:
     container_name: redis
     command: redis-server --port 6379 --appendonly yes  --protected-mode no  --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so
 
-  flask:
+  web:
     container_name: viberary
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/prod/Dockerfile
     ports:
-      - '80:5000'
+      - '80:8000'
     volumes:
       - ./:/viberary
       - ./viberary/src/training_data:/training_data
     environment:
-      - FLASK_APP=/viberary/src/api/app.py
       - REDIS_HOST=redis
     depends_on:
       - redis
-    command: python /viberary/src/api/app.py
+
 
 volumes:
   redis-data:
