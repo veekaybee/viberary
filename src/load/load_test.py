@@ -9,6 +9,6 @@ class MyUser(HttpUser):
 
     @task(2)
     def send_query(self):
-        response = self.client.get("http://staging.viberary.pizza/search/")
+        response = self.client.get("http://staging.viberary.pizza/search?query=scifi")
         print("Response status code:", response.status_code)
         print("Response content:", response.text)
