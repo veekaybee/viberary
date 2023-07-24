@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/local/Dockerfile
     ports:
-      - '5001:5000'
+      - '8000:8000'
     volumes:
       - ./:/viberary
       - ./viberary/src/training_data:/training_data
@@ -24,7 +24,7 @@ services:
     depends_on:
       - redis
     platform: linux/amd64
-    command: gunicorn --bind 0.0.0.0:5000 src.api.wsgi:app
+    command: gunicorn -b 0.0.0.0:8000 -w 4 src.api.wsgi:app
 
 
 volumes:
