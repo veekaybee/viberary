@@ -135,7 +135,7 @@
 			<div id='div2'>
 				<form action="{{ url_for('search') }}" method="POST">
 					<div class="input-group mb-3">
-						<input type="text" class="form-control" id="query" name="query" value="{{query}}"
+						<input type="text" class="form-control" id="query" name="query_dict" value="{{ query}}"
 							placeholder="Funny scifi or moody classic drama" required>
 						<div class="input-group-append">
 							<button class="btn btn-primary" type="submit">Search</button>
