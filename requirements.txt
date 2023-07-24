@@ -5,6 +5,7 @@ evaluate
 fakeredis
 gitdb==4.0.10
 gunicorn
+locust
 mkl
 mkl-include
 onnx
