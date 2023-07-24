@@ -30,7 +30,13 @@ def how():
     return render_template("how.html")
 
 
-@app.route("/search", methods=["POST"])
+@app.route("/search", methods=["POST","GET"])
 def search():
-    word = request.form["query"]
+    word = None
+
+    if request.method == "POST":
+        word = request.form.get("query", "")
+    elif request.method == "GET":
+        word = request.args.get("query", "")
+
     return return_model_results(word)
