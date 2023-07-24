@@ -27,6 +27,7 @@ services:
     command: gunicorn -b 0.0.0.0:8000 -w 4 src.api.wsgi:app
 
 
+
 volumes:
   redis-data:
 
