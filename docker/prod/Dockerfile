@@ -24,5 +24,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/viberary/src:/opt/bitnami/python/lib/python3.8/si
 ENV WORKDIR=/viberary
 WORKDIR $WORKDIR
 
-ENTRYPOINT /bin/bash
 

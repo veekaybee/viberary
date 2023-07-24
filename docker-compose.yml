@@ -7,23 +7,25 @@ services:
       - redis-data:/data
     container_name: redis
     command: redis-server --port 6379 --appendonly yes  --protected-mode no  --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so
+    platform: linux/amd64
 
-  flask:
+  web:
     container_name: viberary
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/local/Dockerfile
     ports:
-      - '80:5000'
+      - '5001:5000'
     volumes:
       - ./:/viberary
       - ./viberary/src/training_data:/training_data
     environment:
-      - FLASK_APP=/viberary/src/api/app.py
       - REDIS_HOST=redis
     depends_on:
       - redis
-    command: python /viberary/src/api/app.py
+    platform: linux/amd64
+    command: gunicorn --bind 0.0.0.0:5000 src.api.wsgi:app
+
 
 volumes:
   redis-data:

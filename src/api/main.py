@@ -2,13 +2,16 @@ import logging.config
 
 from flask import Flask, render_template, request
 
-from inout.file_reader import get_config_file as cf
+from inout.file_reader import get_root_dir,get_config_file as cf
 from inout.redis_conn import RedisConnection
 from search.knn_search import KNNSearch
 
 app = Flask(__name__)
+
 conf = cf()
-logging.config.fileConfig(conf["logging"]["path"])
+conf_path = conf["logging"]["path"]
+root_dir = get_root_dir()
+logging.config.fileConfig(f"{root_dir}/{conf_path}")
 
 
 def return_model_results(word: str) -> str:
@@ -31,9 +34,3 @@ def how():
 def search():
     word = request.form["query"]
     return return_model_results(word)
-
-
-# Local testing model only
-if __name__ == "__main__":
-    logging.info("Starting Flask")
-    app.run(debug=True, host="0.0.0.0", port=5000)
