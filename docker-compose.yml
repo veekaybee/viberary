@@ -24,7 +24,7 @@ services:
     depends_on:
       - redis
     platform: linux/amd64
-    command: gunicorn -b 0.0.0.0:8000 -w 4 src.api.wsgi:app
+    command: gunicorn -b 0.0.0.0:8000 -w 4 src.api.wsgi:app -t 900
 
 
 
