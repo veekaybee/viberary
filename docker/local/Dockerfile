@@ -4,7 +4,7 @@ USER root
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements.txt requirements.txt
+COPY ../../requirements.txt requirements.txt
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
@@ -24,5 +24,5 @@ ENV PYTHONPATH "${PYTHONPATH}:/viberary/src:/opt/bitnami/python/lib/python3.8/si
 ENV WORKDIR=/viberary
 WORKDIR $WORKDIR
 
-ENTRYPOINT /bin/bash
+
 

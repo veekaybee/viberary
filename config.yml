@@ -2,6 +2,7 @@ cache:
   name: redis
   port: 6379
 
+root_path: "/viberary"
 
 # Data Config
 data:
