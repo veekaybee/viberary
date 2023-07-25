@@ -12,6 +12,10 @@ src/notebooks/sentence-transformers/*
 data/
 sentence-transformers
 
+#logs
+*.log
+logs/
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
