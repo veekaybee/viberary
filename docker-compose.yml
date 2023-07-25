@@ -19,6 +19,7 @@ services:
     volumes:
       - ./:/viberary
       - ./viberary/src/training_data:/training_data
+      - /mnt/viberary:/viberary/logs
     environment:
       - REDIS_HOST=redis
     depends_on:
@@ -28,5 +29,3 @@ services:
 
 volumes:
   redis-data:
-
-

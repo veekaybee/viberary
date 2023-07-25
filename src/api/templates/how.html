@@ -11,6 +11,8 @@
 
 
 	<link href="/static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="module" src="/static/js/md-block.js"></script>
+
 
 	<style>
 		.bd-placeholder-img {
@@ -91,15 +93,42 @@
 		<main class="px-3">
 			<img src="/static/assets/img/vibe_book.png" width="200" height="200">
 
-			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Alpha</button></h1>
+			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Beta</button></h1>
 			<hr>
-			<h4>Tired of bad book recommendations? <br>Search by &#10024;vibe&#10024;! </h4>
-
 			<div class="callout callout-info">
 
-				<h1 class="mt-5">TL;DR</h1>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-      <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
+
+      <p class="text-justify">
+          <div style="text-align: left">
+        <md-block>
+
+              # What is it?
+              Viberary is a semantic search engine that will find books based on mood rather than traditional keywords like genre or author, although it can do that, too!
+             What's a vibe? Hard to define, but anything like a mood, a feeling, a color, a phrase, much like Netflix's categories for movies.
+             A traditional search for a book might be for "scifi", a vibe search might be, "funny sci-fi in space with feeling"
+
+              Traditional search engines work by doing lexical matching and looking up words against an inverted index that maps each word and the document each word is located in.
+              So for example
+
+              # Why recommend books?
+
+              I love reading! Books, especially fiction, make life worth living.  Check out my Goodreads, and check out my book reviews from [2021](https://vickiboykis.com/essays/2022-01-02-favorite-books/),
+              [2020](https://vickiboykis.com/essays/2021-04-16-favorite-books/),[2019](https://vickiboykis.com/essays/2020-01-01-books/), and you get the idea.
+              In sifting through recommended books, though, Goodreads is very bad because Amazon has a business incentive to make it bad.
+              One of my favorite formats of book recommendations [has been Biblioracle](https://themorningnews.org/article/greetings-from-the-biblioracle), where readers send John Warner, an extremely well-read novelist,
+            recommends people books based on the last five books they've read. In the world of recommendations, at scale, this is known as collaborative filtering, and I
+            initially wanted to
+
+              I wanted to do a personal project that picked up some of my work [updating post categorization](https://engineering.tumblr.com/post/148350944656/categorizing-posts-on-tumblr) when I [previously worked at Tumblr](https://vickiboykis.com/2022/07/25/looking-back-at-two-years-at-automattic-and-tumblr/) and
+              serving them [through Streambuilder](https://engineering.tumblr.com/post/722102563011493888/streambuilder-our-open-source-framework-for) and combine it with my love for building
+              [end-to-end ML applications](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/) - last time I built one I used GPT-2(!), and I am also currently extremely interested
+              in the intersection between recommendations and search. Finally, I recently finished writing a paper on embeddings, so I knew I wanted to do a project
+              that had all of these elements.
+
+
+          </md-block>
+            </div>
+      </p>
 
 				<h1 class="mt-5">Data</h1>
       <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>

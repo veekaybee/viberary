@@ -1,0 +1,195 @@
+redis     | 1:C 25 Jul 2023 10:16:28.202 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis     | 1:C 25 Jul 2023 10:16:28.203 # Redis version=6.2.13, bits=64, commit=00000000, modified=0, pid=1, just started
+redis     | 1:C 25 Jul 2023 10:16:28.203 # Configuration loaded
+redis     | 1:M 25 Jul 2023 10:16:28.204 * monotonic clock: POSIX clock_gettime
+redis     | 1:M 25 Jul 2023 10:16:28.211 * Running mode=standalone, port=6379.
+redis     | 1:M 25 Jul 2023 10:16:28.211 # Server initialized
+redis     | 1:M 25 Jul 2023 10:16:28.219 * <search> Redis version found by RedisSearch : 6.2.13 - oss
+redis     | 1:M 25 Jul 2023 10:16:28.220 * <search> RediSearch version 2.6.12 (Git=HEAD-11b44a2d)
+redis     | 1:M 25 Jul 2023 10:16:28.220 * <search> Low level api version 1 initialized successfully
+redis     | 1:M 25 Jul 2023 10:16:28.221 * <search> concurrent writes: OFF, gc: ON, prefix min length: 2, prefix max expansions: 200, query timeout (ms): 500, timeout policy: return, cursor read size: 1000, cursor max idle (ms): 300000, max doctable size: 1000000, max number of search results:  1000000, search pool size: 20, index pool size: 8,
+redis     | 1:M 25 Jul 2023 10:16:28.223 * <search> Initialized thread pool!
+redis     | 1:M 25 Jul 2023 10:16:28.224 * <search> Enabled diskless replication
+redis     | 1:M 25 Jul 2023 10:16:28.224 * <search> Enabled role change notification
+redis     | 1:M 25 Jul 2023 10:16:28.224 * Module 'search' loaded from /opt/redis-stack/lib/redisearch.so
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> version: 20407 git sha: a4412b3 branch: HEAD
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> Exported RedisJSON_V1 API
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> Exported RedisJSON_V2 API
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> Exported RedisJSON_V3 API
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> Enabled diskless replication
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <ReJSON> Created new data type 'ReJSON-RL'
+redis     | 1:M 25 Jul 2023 10:16:28.227 * Module 'ReJSON' loaded from /opt/redis-stack/lib/rejson.so
+redis     | 1:M 25 Jul 2023 10:16:28.227 * <search> Acquired RedisJSON_V3 API
+redis     | 1:M 25 Jul 2023 10:16:28.231 * Ready to accept connections
+viberary  | [38;5;6m [38;5;5m10:16:28.38 [0m
+viberary  | [38;5;6m [38;5;5m10:16:28.41 [0m[1mWelcome to the Bitnami pytorch container[0m
+viberary  | [38;5;6m [38;5;5m10:16:28.43 [0mSubscribe to project updates by watching [1mhttps://github.com/bitnami/containers[0m
+viberary  | [38;5;6m [38;5;5m10:16:28.44 [0mSubmit issues and feature requests at [1mhttps://github.com/bitnami/containers/issues[0m
+viberary  | [38;5;6m [38;5;5m10:16:28.46 [0m
+viberary  |
+viberary  |
+viberary  | [2023-07-25 10:16:28 +0000] [1] [INFO] Starting gunicorn 21.2.0
+viberary  | [2023-07-25 10:16:28 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+viberary  | [2023-07-25 10:16:28 +0000] [1] [INFO] Using worker: sync
+viberary  | [2023-07-25 10:16:28 +0000] [15] [INFO] Booting worker with pid: 15
+viberary  | 2023-07-25 10:16:51,932 - src.api.main - ERROR - Exception on /search [POST]
+viberary  | Traceback (most recent call last):
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/flask/app.py", line 2528, in wsgi_app
+viberary  |     response = self.full_dispatch_request()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/flask/app.py", line 1825, in full_dispatch_request
+viberary  |     rv = self.handle_user_exception(e)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/flask/app.py", line 1823, in full_dispatch_request
+viberary  |     rv = self.dispatch_request()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+viberary  |     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+viberary  |   File "/viberary/src/api/main.py", line 42, in search
+viberary  |     return return_model_results(word)
+viberary  |   File "/viberary/src/api/main.py", line 19, in return_model_results
+viberary  |     data = retriever.top_knn(word)
+viberary  |   File "/viberary/src/search/knn_search.py", line 74, in top_knn
+viberary  |     results = r.ft(self.index).search(q, query_params=params_dict)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/commands/search/commands.py", line 420, in search
+viberary  |     res = self.execute_command(SEARCH_CMD, *args)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/client.py", line 1258, in execute_command
+viberary  |     return conn.retry.call_with_retry(
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/retry.py", line 46, in call_with_retry
+viberary  |     return do()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/client.py", line 1259, in <lambda>
+viberary  |     lambda: self._send_command_parse_response(
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/client.py", line 1235, in _send_command_parse_response
+viberary  |     return self.parse_response(conn, command_name, **options)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/client.py", line 1275, in parse_response
+viberary  |     response = connection.read_response()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/redis/connection.py", line 882, in read_response
+viberary  |     raise response
+viberary  | redis.exceptions.ResponseError: viberary: no such index
+viberary  | [2023-07-25 10:55:39 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:15)
+viberary  | [2023-07-25 10:55:39 +0000] [1] [ERROR] Worker (pid:15) exited with code 1
+viberary  | [2023-07-25 10:55:39 +0000] [1] [ERROR] Worker (pid:15) exited with code 1.
+viberary  | [2023-07-25 10:55:39 +0000] [39] [INFO] Booting worker with pid: 39
+viberary  | [2023-07-25 11:33:36 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:39)
+viberary  | [2023-07-25 11:33:37 +0000] [1] [ERROR] Worker (pid:39) exited with code 1
+viberary  | [2023-07-25 11:33:37 +0000] [1] [ERROR] Worker (pid:39) exited with code 1.
+viberary  | [2023-07-25 11:33:37 +0000] [56] [INFO] Booting worker with pid: 56
+viberary  | [2023-07-25 12:01:41 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:56)
+viberary  | [2023-07-25 12:01:42 +0000] [1] [ERROR] Worker (pid:56) exited with code 1
+viberary  | [2023-07-25 12:01:42 +0000] [1] [ERROR] Worker (pid:56) exited with code 1.
+viberary  | [2023-07-25 12:01:42 +0000] [73] [INFO] Booting worker with pid: 73
+viberary  | [2023-07-25 12:51:28 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:73)
+viberary  | [2023-07-25 12:51:28 +0000] [1] [ERROR] Worker (pid:73) exited with code 1
+viberary  | [2023-07-25 12:51:28 +0000] [1] [ERROR] Worker (pid:73) exited with code 1.
+viberary  | [2023-07-25 12:51:28 +0000] [90] [INFO] Booting worker with pid: 90
+viberary  | [2023-07-25 13:12:40 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:90)
+viberary  | [2023-07-25 13:12:40 +0000] [1] [ERROR] Worker (pid:90) exited with code 1
+viberary  | [2023-07-25 13:12:40 +0000] [1] [ERROR] Worker (pid:90) exited with code 1.
+viberary  | [2023-07-25 13:12:40 +0000] [107] [INFO] Booting worker with pid: 107
+viberary  | [2023-07-25 13:40:00 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:107)
+viberary  | [2023-07-25 13:40:01 +0000] [1] [ERROR] Worker (pid:107) exited with code 1
+viberary  | [2023-07-25 13:40:01 +0000] [1] [ERROR] Worker (pid:107) exited with code 1.
+viberary  | [2023-07-25 13:40:01 +0000] [124] [INFO] Booting worker with pid: 124
+viberary  | [2023-07-25 14:33:30 +0000] [1] [CRITICAL] WORKER TIMEOUT (pid:124)
+viberary  | [2023-07-25 14:33:31 +0000] [1] [ERROR] Worker (pid:124) exited with code 1
+viberary  | [2023-07-25 14:33:31 +0000] [1] [ERROR] Worker (pid:124) exited with code 1.
+viberary  | [2023-07-25 14:33:31 +0000] [141] [INFO] Booting worker with pid: 141
+viberary  | [2023-07-25 14:33:34 +0000] [141] [ERROR] Exception in worker process
+viberary  | Traceback (most recent call last):
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/arbiter.py", line 609, in spawn_worker
+viberary  |     worker.init_process()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/workers/base.py", line 134, in init_process
+viberary  |     self.load_wsgi()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+viberary  |     self.wsgi = self.app.wsgi()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/base.py", line 67, in wsgi
+viberary  |     self.callable = self.load()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+viberary  |     return self.load_wsgiapp()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+viberary  |     return util.import_app(self.app_uri)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/util.py", line 371, in import_app
+viberary  |     mod = importlib.import_module(module)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/importlib/__init__.py", line 127, in import_module
+viberary  |     return _bootstrap._gcd_import(name[level:], package, level)
+viberary  |   File "<frozen importlib._bootstrap>", line 1014, in _gcd_import
+viberary  |   File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+viberary  |   File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+viberary  |   File "<frozen importlib._bootstrap>", line 671, in _load_unlocked
+viberary  |   File "<frozen importlib._bootstrap_external>", line 843, in exec_module
+viberary  |   File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+viberary  |   File "/viberary/src/api/wsgi.py", line 3, in <module>
+viberary  |     from src.api.main import app
+viberary  |   File "/viberary/src/api/main.py", line 14, in <module>
+viberary  |     logging.config.fileConfig(f"{root_dir}/{conf_path}")
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/config.py", line 80, in fileConfig
+viberary  |     _install_loggers(cp, handlers, disable_existing_loggers)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/config.py", line 204, in _install_loggers
+viberary  |     log.addHandler(handlers[hand])
+viberary  | KeyError: 'fileHandler'
+viberary  | [2023-07-25 14:33:34 +0000] [141] [INFO] Worker exiting (pid: 141)
+viberary  | [2023-07-25 14:33:34 +0000] [1] [ERROR] Worker (pid:141) exited with code 3
+viberary  | [2023-07-25 14:33:34 +0000] [1] [ERROR] Shutting down: Master
+viberary  | [2023-07-25 14:33:34 +0000] [1] [ERROR] Reason: Worker failed to boot.
+viberary exited with code 3
+viberary  | [38;5;6m [38;5;5m15:26:07.69 [0m
+viberary  | [38;5;6m [38;5;5m15:26:07.71 [0m[1mWelcome to the Bitnami pytorch container[0m
+viberary  | [38;5;6m [38;5;5m15:26:07.73 [0mSubscribe to project updates by watching [1mhttps://github.com/bitnami/containers[0m
+viberary  | [38;5;6m [38;5;5m15:26:07.75 [0mSubmit issues and feature requests at [1mhttps://github.com/bitnami/containers/issues[0m
+viberary  | [38;5;6m [38;5;5m15:26:07.76 [0m
+viberary  |
+viberary  |
+viberary  | [2023-07-25 15:26:07 +0000] [1] [INFO] Starting gunicorn 21.2.0
+viberary  | [2023-07-25 15:26:07 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+viberary  | [2023-07-25 15:26:07 +0000] [1] [INFO] Using worker: sync
+viberary  | [2023-07-25 15:26:07 +0000] [15] [INFO] Booting worker with pid: 15
+viberary  | [2023-07-25 15:26:10 +0000] [15] [ERROR] Exception in worker process
+viberary  | Traceback (most recent call last):
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/arbiter.py", line 609, in spawn_worker
+viberary  |     worker.init_process()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/workers/base.py", line 134, in init_process
+viberary  |     self.load_wsgi()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+viberary  |     self.wsgi = self.app.wsgi()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/base.py", line 67, in wsgi
+viberary  |     self.callable = self.load()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+viberary  |     return self.load_wsgiapp()
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+viberary  |     return util.import_app(self.app_uri)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/site-packages/gunicorn/util.py", line 371, in import_app
+viberary  |     mod = importlib.import_module(module)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/importlib/__init__.py", line 127, in import_module
+viberary  |     return _bootstrap._gcd_import(name[level:], package, level)
+viberary  |   File "<frozen importlib._bootstrap>", line 1014, in _gcd_import
+viberary  |   File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+viberary  |   File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+viberary  |   File "<frozen importlib._bootstrap>", line 671, in _load_unlocked
+viberary  |   File "<frozen importlib._bootstrap_external>", line 843, in exec_module
+viberary  |   File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+viberary  |   File "/viberary/src/api/wsgi.py", line 3, in <module>
+viberary  |     from src.api.main import app
+viberary  |   File "/viberary/src/api/main.py", line 14, in <module>
+viberary  |     logging.config.fileConfig(f"{root_dir}/{conf_path}")
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/config.py", line 79, in fileConfig
+viberary  |     handlers = _install_handlers(cp, formatters)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/config.py", line 145, in _install_handlers
+viberary  |     h = klass(*args, **kwargs)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/handlers.py", line 200, in __init__
+viberary  |     BaseRotatingHandler.__init__(self, filename, 'a', encoding, delay)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/handlers.py", line 55, in __init__
+viberary  |     logging.FileHandler.__init__(self, filename, mode, encoding, delay)
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/__init__.py", line 1147, in __init__
+viberary  |     StreamHandler.__init__(self, self._open())
+viberary  |   File "/opt/bitnami/python/lib/python3.8/logging/__init__.py", line 1176, in _open
+viberary  |     return open(self.baseFilename, self.mode, encoding=self.encoding)
+viberary  | FileNotFoundError: [Errno 2] No such file or directory: '/mnt/viberary/output.log'
+viberary  | [2023-07-25 15:26:10 +0000] [15] [INFO] Worker exiting (pid: 15)
+viberary  | [2023-07-25 15:26:10 +0000] [1] [ERROR] Worker (pid:15) exited with code 3
+viberary  | [2023-07-25 15:26:10 +0000] [1] [ERROR] Shutting down: Master
+viberary  | [2023-07-25 15:26:10 +0000] [1] [ERROR] Reason: Worker failed to boot.
+viberary exited with code 3
+redis     | 1:signal-handler (1690298851) Received SIGTERM scheduling shutdown...
+redis     | 1:M 25 Jul 2023 15:27:31.936 # User requested shutdown...
+redis     | 1:M 25 Jul 2023 15:27:31.937 * Calling fsync() on the AOF file.
+redis     | 1:M 25 Jul 2023 15:27:31.937 * Saving the final RDB snapshot before exiting.
+redis     | 1:M 25 Jul 2023 15:27:31.942 * DB saved on disk
+redis     | 1:M 25 Jul 2023 15:27:31.942 # Redis is now ready to exit, bye bye...
+redis exited with code 0
