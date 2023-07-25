@@ -7,7 +7,10 @@ import pyarrow.parquet as pq
 from src.index.parquet_reader import ParquetReader
 
 
-def test_convert_dataframe_to_dict(tmpdir):
+def test_convert_dataframe_to_dict(tmpdir, mocker):
+    mocker.patch("src.index.parquet_reader.cf", return_value={"logging": {"path": "mock_log_path"}})
+    mocker.patch("src.index.parquet_reader.logging.config.fileConfig")
+
     pq.write_table(
         pa.table(
             {
