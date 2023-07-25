@@ -12,6 +12,7 @@ onnx
 optimum[exporters,onnxruntime]==1.9.1
 pandas==1.5.3
 pyarrow==12.0.0
+pytest-mock
 redis==4.5.3
 sentence_transformers==2.2.2
 -f https://download.pytorch.org/whl/torch_stable.html
