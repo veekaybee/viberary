@@ -1,5 +1,5 @@
 
-.PHONY: all lint format test embed build up down logs
+.PHONY: all lint format test embed build up down logs save
 
 ci: lint format test
 intel: build up-intel embed
@@ -35,3 +35,6 @@ down:
 
 logs:
 	docker compose logs -f -t
+
+save:
+	nohup docker compose logs -f > output.log &
