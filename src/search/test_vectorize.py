@@ -1,9 +1,8 @@
 import time
 
-from knn_search import KNNSearch
-
 from conf.config_manager import ConfigManager
 from conf.redis_conn import RedisConnection
+from search.knn_search import KNNSearch
 
 print(ConfigManager().set_logger_config())
 retriever = KNNSearch(RedisConnection().conn(), ConfigManager())
