@@ -1,11 +1,11 @@
 import redis
 
-from inout.file_reader import get_config_file as conf
+from conf.config_manager import ConfigManager
 
 
 class RedisConnection:
     def __init__(self):
-        self.config = conf()
+        self.config = ConfigManager().get_config_file()
 
     def conn(self) -> redis.Redis:
         host = self.config["cache"]["name"]

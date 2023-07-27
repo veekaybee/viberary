@@ -4,7 +4,7 @@ from pathlib import Path
 
 import duckdb
 
-from inout.file_reader import get_config_file as config
+from conf import get_config_file as config
 
 """Generates training dataset for converting to SBERT
 Source data https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/home
@@ -78,7 +78,7 @@ class TrainingDataGenerator:
         goodreads_auth_ids.average_rating,
         goodreads_authors.name AS author,
         text_reviews_count,
-        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description 
+        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description
         || goodreads_authors.name as sentence
         FROM goodreads_auth_ids
         JOIN goodreads_reviews

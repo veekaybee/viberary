@@ -1,12 +1,12 @@
 from pathlib import Path
 
+from conf.config_manager import ConfigManager
+from conf.redis_conn import RedisConnection
 from index.index_fields import IndexFields
 from index.indexer import Indexer
-from inout.file_reader import get_config_file as config
-from inout.redis_conn import RedisConnection
 
 # Load Embeddings Data
-conf = config()
+conf = ConfigManager().get_config_file()
 filepath = Path(f"{conf['embeddings_data']['path']}{conf['embeddings_data']['file']}")
 index_name = conf["search"]["index_name"]
 nvecs = conf["search"]["nvecs"]

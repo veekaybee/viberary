@@ -5,7 +5,7 @@ from typing import Dict, List, TypedDict
 import pandas as pd
 import pyarrow.parquet as pq
 
-from inout.file_reader import get_config_file as cf
+from conf.config_manager import ConfigManager
 
 
 class Book(TypedDict):
@@ -18,7 +18,7 @@ class Book(TypedDict):
 
 class ParquetReader:
     def __init__(self, filepath):
-        self.conf = cf()
+        self.conf = ConfigManager().get_config_file()
         logging.config.fileConfig(self.conf["logging"]["path"])
         self.filepath = filepath
 
