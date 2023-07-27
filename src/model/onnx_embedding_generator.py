@@ -8,10 +8,10 @@ from model.sentence_embedding_pipeline import SentenceEmbeddingPipeline
 
 
 class ONNXEmbeddingGenerator:
-    def __init__(self, conf):
-        self.conf = conf.get_config_file()
+    def __init__(self, conf_manager):
+        self.conf = conf_manager.get_config_file()
         self.onnx_path = self.conf["model"]["onnx_path"]
-        self.root_path = conf.get_root_dir()
+        self.root_path = conf_manager.get_root_dir()
         self.onnx_path = Path(f"{self.root_path}/{self.onnx_path}")
         self.model = ORTModelForFeatureExtraction.from_pretrained(self.onnx_path)
         self.tokenizer = AutoTokenizer.from_pretrained(self.onnx_path)

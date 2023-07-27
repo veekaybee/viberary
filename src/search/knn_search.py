@@ -14,8 +14,8 @@ class KNNSearch:
     fields = ["score", "title", "author", "link", "review_count"]
     BookEntries = namedtuple("BookEntries", fields)
 
-    def __init__(self, redis_conn, conf) -> None:
-        self.conf = conf.get_config_file()
+    def __init__(self, redis_conn, conf_manager) -> None:
+        self.conf = conf_manager.get_config_file()
         self.conn = redis_conn
         self.index = self.conf["search"]["index_name"]
         self.fields = IndexFields()
@@ -24,7 +24,7 @@ class KNNSearch:
         self.author_field = self.fields.author_field
         self.link_field = self.fields.link_field
         self.review_count_field = self.fields.review_count_field
-        self.model = ONNXEmbeddingGenerator(conf)
+        self.model = ONNXEmbeddingGenerator(conf_manager)
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.model.generate_embeddings(query_string)
