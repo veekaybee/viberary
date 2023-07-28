@@ -1,14 +1,13 @@
 import logging
 import logging.config
-from pathlib import Path
 
 import numpy as np
 from redis.commands.search.field import TextField, VectorField
 from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 
+from conf.config_manager import ConfigManager
 from index.index_fields import IndexFields
 from index.parquet_reader import ParquetReader
-from inout.file_reader import get_config_file as config
 
 """
 Indexes embeddings from a file into a Redis instance
@@ -45,8 +44,10 @@ class Indexer:
         self.dim = dim
         self.max_edges = max_edges
         self.ef = ef
-        conf = config()
-        logging.config.fileConfig(Path(conf["logging"]["path"]))
+        self.cm = ConfigManager()
+        self.conf = self.cm.get_config_file()
+        self.conn = redis_conn
+        self.cm.set_logger_config()
 
     def drop_index(self):
         """Delete Redis index but does not delete underlying data"""

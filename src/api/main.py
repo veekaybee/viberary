@@ -1,24 +1,17 @@
-import logging.config
-
 from flask import Flask, render_template, request
 
-from inout.file_reader import get_config_file as cf
-from inout.file_reader import get_root_dir
-from inout.redis_conn import RedisConnection
+from conf.config_manager import ConfigManager
+from conf.redis_conn import RedisConnection
 from search.knn_search import KNNSearch
 
 app = Flask(__name__)
 
-conf = cf()
-conf_path = conf["logging"]["path"]
-root_dir = get_root_dir()
-logging.config.fileConfig(f"{root_dir}/{conf_path}")
 
-retriever = KNNSearch(RedisConnection().conn())
+retriever = KNNSearch(RedisConnection().conn(), ConfigManager())
 
 
-def return_model_results(word: str, retriever) -> str:
-    data = retriever.top_knn(word)
+def get_model_results(word: str, search_conn) -> str:
+    data = search_conn.top_knn(word)
     return render_template("index.html", data=data, query=word)
 
 
@@ -33,7 +26,7 @@ def how():
 
 
 @app.route("/search", methods=["POST", "GET"])
-def search():
+def search() -> str:
     word = None
 
     if request.method == "POST":
@@ -41,4 +34,4 @@ def search():
     elif request.method == "GET":
         word = request.args.get("query", "")
 
-    return return_model_results(word)
+    return get_model_results(word, retriever)

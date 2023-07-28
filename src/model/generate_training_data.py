@@ -4,7 +4,7 @@ from pathlib import Path
 
 import duckdb
 
-from inout.file_reader import get_config_file as config
+from conf.config_manager import ConfigManager
 
 """Generates training dataset for converting to SBERT
 Source data https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/home
@@ -13,13 +13,13 @@ Source data https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/home
 
 class TrainingDataGenerator:
     def __init__(self):
-        conf = config()
-        logging.config.fileConfig(Path(conf["logging"]["path"]))
+        self.conf = ConfigManager().get_config_file()
+        logging.config.fileConfig(Path(self.conf["logging"]["path"]))
         self.con = duckdb.connect("viberary.db")
 
-        self.books = Path(conf["data"]["books"])
-        self.authors = Path(conf["data"]["authors"])
-        self.reviews = Path(conf["data"]["reviews"])
+        self.books = Path(self.conf["data"]["books"])
+        self.authors = Path(self.conf["data"]["authors"])
+        self.reviews = Path(self.conf["data"]["reviews"])
 
     def _get_date_and_hour(self) -> str:
         current_date = datetime.now()
@@ -78,7 +78,7 @@ class TrainingDataGenerator:
         goodreads_auth_ids.average_rating,
         goodreads_authors.name AS author,
         text_reviews_count,
-        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description 
+        review_text || goodreads_auth_ids.title || goodreads_auth_ids.description
         || goodreads_authors.name as sentence
         FROM goodreads_auth_ids
         JOIN goodreads_reviews
