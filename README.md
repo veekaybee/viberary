@@ -2,20 +2,18 @@
 
 ![]()
 
-Since the project is actively in exploration and development, there are a lot of winding codepaths, experiments, and
-dead ends in the codebase. It is not production-grade yet for ANY definition of production.
 
 🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a> <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a>
 🚧
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
 
-Viberary is a search engine that will eventually recommend you books based not on genre or title, but vibe by
+Viberary is a search engine that recommends you books based not on genre or title, but vibe by
 performing [semantic search](https://en.wikipedia.org/wiki/Semantic_search)
 across [a set of learned embeddings](https://vickiboykis.com/what_are_embeddings/index.html) on a dataset of books from
 Goodreads and their metadata.
 
-The idea is to return book recommendations based on the vibe of the book that you put in.
+It returns a list of book recommendationss based on the vibe of the book that you put in.
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt,
 and get back a list of books. This project came out of experiences I had where recommendations for movies, TV, and music
 have fairly been good, but book recommendations are always a problem.

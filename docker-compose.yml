@@ -13,7 +13,7 @@ services:
     container_name: viberary
     build:
       context: .
-      dockerfile: docker/local/Dockerfile
+      dockerfile: docker/prod/Dockerfile
     ports:
       - '8000:8000'
     volumes:

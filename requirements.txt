@@ -6,6 +6,7 @@ fakeredis
 gitdb==4.0.10
 gunicorn
 locust
+markdown2
 mkl
 mkl-include
 onnx
