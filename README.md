@@ -3,7 +3,7 @@
 ![]()
 
 
-🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a> <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /> </a><img src="https://img.shields.io/badge/under%20construction-FF8C00" /></a>
+🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> -in Beta release</a>
 🚧
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
@@ -13,53 +13,46 @@ performing [semantic search](https://en.wikipedia.org/wiki/Semantic_search)
 across [a set of learned embeddings](https://vickiboykis.com/what_are_embeddings/index.html) on a dataset of books from
 Goodreads and their metadata.
 
-It returns a list of book recommendationss based on the vibe of the book that you put in.
+It returns a list of book recommendations based on the vibe of the book that you put in.
 So you don't put in "I want science fiction", you'd but in "atmospheric, female lead, worldbuilding, funny" as a prompt,
 and get back a list of books. This project came out of experiences I had where recommendations for movies, TV, and music
 have fairly been good, but book recommendations are always a problem.
 
-![](https://github.com/veekaybee/viberary/blob/main/assets/cats.png)
+For much, much more detail see the how page on the project website.
 
-## Architecture:
+## App Architecture
 
-![](https://github.com/veekaybee/viberary/blob/main/assets/actual_architecture.png)
+<img src="static/assets/img/tactical_app.png" alt="drawing" width="600"/>
 
-Work so far:
+It's a [two-tower](https://blog.reachsumit.com/posts/2023/03/two-tower-model/) semantic retrieval model that encodes both the query and the corpus using the
+[Sentence Transformers pretrained asymmetric MSMarco Model](https://www.sbert.net/docs/pretrained-models/msmarco-v3.html).
 
-- [X] Explore the data
-    + Post
-      0: [Working with the data in BigQuery](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/)
-    + Post
-      1: [Working with the data in Pandas](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/)
-    + Post 2: [Doing research with ChatGPT](https://vickiboykis.com/2023/02/26/what-should-you-use-chatgpt-for/)
-- [X] Build a baseline model in Word2Vec. [Released here](https://github.com/veekaybee/viberary/releases/tag/v0.0.1)
-- [X] [Deep dive on embeddings](https://vickiboykis.com/what_are_embeddings/)
-  and [LaTeX Resource](https://vickiboykis.com/latex_resources/)
-- [x] Deploy the baseline model to "prod" (aka a single server) and test it out. Word2Vec Demo:
+<img src="static/assets/img/tactical_app.png" alt="drawing" width="600"/>
 
-https://user-images.githubusercontent.com/3837836/230725711-62d7b203-e4c3-4188-a9fd-14ea74db876e.mov
+The training data is generated locally in DuckDB and the model is converted to ONNX for low-latency inference, with [corpus embeddings learned on AWS P3 instances](https://github.com/veekaybee/viberary/blob/main/src/model/generate_embeddings.ipynb) against the same model and stored in Redis and retrieved using the [Redis Search](https://redis.io/docs/interact/search-and-query/) module using the [HNSW algorithm](https://arxiv.org/abs/1603.09320) included as part of the Redis search module. Results are served through a Flask API running [Gunicorn](https://gunicorn.org/) and served to a Bootstrap front-end.
 
-- [ ] Build a model [using BERT](https://github.com/veekaybee/viberary/tree/bert) and also deploy that and evaluate them
-  against each other. In progress on the main branch.
+<img src="static/assets/img/physical_arch.png" alt="drawing" width="600"/>
 
-https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d672410dd1
+It's served from two Digital Ocean droplets behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between a web server and Redis image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with AWS Route53 serving as the domain registrar and load balancer router.
+
+The artifact is generated through GitHub actions on the main branch of the repo and then I manually refresh the docker image on the droplets through a set of Makefile commands.
 
 # Running the project
 
 1. Fork/clone the repo
-2. go to the project root
-3. You'll need the [embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) at the root of
-   the `/app/src/` repo.
-4. `make build` - Builds the docker image
+2. Go to the project root (`viberary`)
+3. Donwload the [corpus embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) to
+`/viberary/src/training_data`.
+4. Go to the root of the repo and run `make onnx` to generate the runnable model artifact.
+5. `make build-arm (or make build-intel)` - Builds the docker image depending on your architecture
 4. `make up` - Docker compose running in background
-5. `make embed`indexes the embeddings once the web server is running
-7. `localhost:5000` - the web server
+5. `make embed` - indexes the embeddings once the web server is running
+7. `localhost:8000` - Loads the web server
 
 # Monitoring the project
 
 1. `make logs` for logs
 
-# TODO: Redis monitoring
 
 # Repo Structure
 
@@ -67,13 +60,11 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
     + `api` - Flask sever that calls the model, includes a search endpoint. Eventually will be rewritten in Go (for
       performance reasons)
     + `training_data` - generated training data
-    + `model` - The actual BERT model. Includes data generated for generating embeddings and also the code used
-      to generate the embeddings, on an EC2 instance.
-          - Right now in production only BERT gets called from the API.
+    + `model` - The actual BERT model. Includes data generated for generating embeddings and also the code used to generate the embeddings, on an EC2 instance.
     + `index` includes an indexer which indexes embeddings generated in `model` into a Redis instance. Redis and the Flask app talk to each
           other through an app running via `docker-compose` and the `Dockerfile` for the main app instance.
     + `search` - performs the search calls from api
-    + `inout` - There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
+    + `conf` - There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
       into Redis for easy retrieval by the application
     + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource
       there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which
@@ -84,13 +75,13 @@ https://github.com/veekaybee/viberary/assets/3837836/e25e2fee-a2bb-4c09-897c-10d
 
 # CONTRIBUTING
 
-Not organized enough for meaningful contributions yet but should be soon.
+Happy to take contributions, please follow instructions above for building and testing locally, make sure all unit tests pass and your branch passes locally before issuing a PR.
 
 ## Relevant Literature and Bibliography
 
 + My [paper on embeddings and its bibliography](https://vickiboykis.com/what_are_embeddings/index.html)
 + [Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning](https://arxiv.org/abs/2006.02282)
-+ [PinnerSage"(https://arxiv.org/abs/2007.03634)
++ [PinnerSage](https://arxiv.org/abs/2007.03634)
 + [My Research Rabbit Collection](https://www.researchrabbitapp.com/collection/public/R6DO98QNZP)
 
 ## Input Data
@@ -184,7 +175,13 @@ Note these are all encoded as strings!
 }
 ```
 
-## Embeddings Sample
+## Roadmap
 
-<img width="648" alt="Screen Shot 2023-02-18 at 2 10 15 PM" src="https://user-images.githubusercontent.com/3837836/219883909-cb615361-9356-4b62-936f-4ea7c6719296.png">
-ROADMAP
+Here's a list of refinements I'd like to make to this project:
+
+1. Include a "I'm Feeling Lucky" type button that generates one good vibe-y recommendation at random.
+2. Build out [a feature/model store](https://github.com/veekaybee/viberary/issues/73) for the model and the training data, will likely just be hosted in DigitalOcean as well, nothing super fancy, but right now it's annoying to move these artifacts around, but not annoying enough where I had enough time to build one.
+3. If model performance becomes an issue, migrate the API to Java ([Go was my first choice](https://github.com/veekaybee/viberary/issues/15) but it doens't have a very good ONNX story at the moment)
+4. Add Prometheus and Grafana. I had these initially but they created too much overhead and Digital Ocean default monitoring is good enough.
+5. [Query autocompletion](https://github.com/veekaybee/viberary/issues/70) in the search bar
+6. [Chart of most recommended books](https://github.com/veekaybee/viberary/issues/65) based on log data on the site

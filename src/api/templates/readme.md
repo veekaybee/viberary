@@ -87,26 +87,42 @@ Given the recent rise in interest of semantic search based by vector databases, 
 
 # Architecting Semantic Search
 
-There are several parts making up semantic search :
+There are several key stages to in building semantic search:
+
+<img src="static/assets/img/modelsteps.png" alt="drawing" width="600"/>
+
 
 1. Data Collection
-2. Modeling and understanding the approach
-3. Engineering and Ops
-4. UI Design
+2. Modeling and generating embeddings
+3. Indexing the embeddings
+3. Model Inference and Front end design
 
-Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user. We have to somehow update those documents, via an indexing function, and we then have to filter them, either manually or through machine learning, then rank them, also using either algorithms or heuristics, and then present them to some user front-end.
 
+Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user. We have to update those documents, via an indexing function, and we then have to filter them, either manually or through machine learning, then rank them, also using either algorithms or heuristics, and then present them to the user in a front-end.
 
 
 # Project Architecture Decisions
 
-I had several requirements for this project. First, I wanted to a project that was well-scoped so that I wouldn't get tired, and so that I would ship it, because the worst ML project is the one that remains unshipped. [As Mitch writes](https://mitchellh.com/writing/building-large-technical-projects), "give yourself a good demo."
+I had several requirements for this project given these steps. First, I wanted to a project that was well-scoped so that I wouldn't get tired, and so that I would ship it, because the worst ML project is the one that remains unshipped. [As Mitch writes](https://mitchellh.com/writing/building-large-technical-projects), "give yourself a good demo."
 
 Second, I wanted to explore new technologies while also being careful of not wasting [my innovation tokens](https://mcfunley.com/choose-boring-technology). In other words, I wanted to build something normcore, i.e. using the right tool for the right job, and [not going overboard.](https://vicki.substack.com/p/you-dont-need-kafka)
 
 The third factor was to try to ignore [the noisiness of the current ML ecsystem](https://vickiboykis.com/2022/11/10/how-i-learn-machine-learning/), which comes out with a new model and a new product and a new wrapper for the model for the product every day. I can't say this was easy: it is extremely hard to ignore the noise and just build, particularly given all the discourse around LLMs in the ML community, and now in society at large, but I tried my best to work with tech that had been established for at least a couple years if not more to avoid life on the bleeding edge, particularly given the brittleness of Python's packaging compatibility ecosystem.
 
-I wish I could say that I was able to plan all of this out in advance, and the project that I eventually shipped was exactly what I had envisioned. But, like with any engineering effort, I had a bunch of false starts and dead ends. I started out [using Big Cloud](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/), a strategic mistake that cost me a lot of time and frustration because I couldn't see inside the cloud components and slowed down development cycles.  I eventually moved to data processing using DuckDB, but [it still look a long time](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/), as is typically the case in any data-centric project. Then, I spent a long time [working through creating models in Word2Vec](https://github.com/veekaybee/viberary/releases/tag/v0.0.1) so I could get some context for baseline text retrieval methods in the pre-Transformer era. Word2Vec was harder to  implement in PyTorch than using Gensim, and I took a long time before I got there.
+I wish I could say that I was able to plan all of this out in advance, and the project that I eventually shipped was exactly what I had envisioned. But, like with any engineering effort, I had a bunch of false starts and dead ends.
+
+I started out [using Big Cloud](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/), a strategic mistake that cost me a lot of time and frustration because I couldn't see inside the cloud components and slowed down development cycles.  I eventually moved to data processing using DuckDB, but [it still look a long time](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/), as is typically the case in any data-centric project.
+
+Then, I spent a long time [working through creating baseline models in Word2Vec](https://github.com/veekaybee/viberary/releases/tag/v0.0.1) so I could get some context for baseline text retrieval methods in the pre-Transformer era.
+
+I started out trying to implement Word2Vec in PyTorch which gave me a really good understanding of how it worked for my paper, but slowed me down in engineering implementation, since
+
+Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and correctly routing Nginx.
+
+
+Within my architecture itself, I ended up making a number of enormous changes to my app several times until I settled on a structure that worked.
+
+
 
 My project tech stack, as it now stands is:
 
@@ -115,11 +131,13 @@ My project tech stack, as it now stands is:
 
 
 
+# The Training Data
+
+I'm using a
 
 
 
-
-# The Two Towers
+# The Model
 
 Semantic search straddles the space between search and recommendations, which, thanks to
 
@@ -132,9 +150,7 @@ I started reading more about how I could use this here.
 In order to do next-book recommendations well, I'd need a large set of user data in order to formualte the data
 as a collaborative filtering problem, so that was out. But
 
-# The training data
 
-I'm using a
 
 # The Mixture of Experts
 
@@ -149,21 +165,6 @@ In the world of
 recommendations, at scale, this is known as collaborative filtering, and I
 initially wanted to
 
-I wanted to do a personal project that picked up some of my work [updating post
-categorization](https://engineering.tumblr.com/post/148350944656/categorizing-posts-on-tumblr)
-when I [previously worked at
-Tumblr](https://vickiboykis.com/2022/07/25/looking-back-at-two-years-at-automattic-and-tumblr/)
-and  serving them [through
-Streambuilder](https://engineering.tumblr.com/post/722102563011493888/streambuilder-our-open-source-framework-for)
-and combine it with my love for building [end-to-end ML
-applications](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/) - last
-time I built one I used GPT-2(!), and I am also currently extremely interested
-in the intersection between recommendations and search. Finally, I recently finished writing a
-paper on embeddings, so I knew I wanted to do a project
-that had all of these elements.
-
-We can try to approximate this with
-traditional search in a number of ways.
 
 
 
@@ -172,7 +173,7 @@ traditional search in a number of ways.
 # Getting the UI Right
 
 
-# Key Learnings
+# Key Takeaways
 
 Don't use the cloud if you don't have to
 
@@ -207,9 +208,8 @@ True semantic search is very hard and involves a lot of algorithmic fine-tuning.
 
 # Resources
 
-+ Relevant Search by Turnbull and Berryman
-+ Introduction to Information Retrieval
-+ Search Course
-+ What Are Embeddings
-+ Papers: Ecommerce and this one If you are interested in much, much more detail, I recommend Grant and Daniel's course on Search Fundamentals and Search with Machine Learning, which I've taken and can recommend strongly as a way to understand all these concepts. I am not affiliated with the program or with them, but I liked the class.
-https://corise.com/course/search-fundamentals
++ [Relevant Search by Turnbull and Berryman](https://www.manning.com/books/relevant-search)
++ [Corise Search Course](https://corise.com/course/search-fundamentals) and Search with Machine Learning - I've taken these, and have nothing to sell except the fact that Grant and Daniel are aweosme. [Code is here.](https://github.com/gsingers/search_fundamentals_course)
++ [What Are Embeddings](https://vickiboykis.com/what_are_embeddings/) - during the process of writing this I came up with a lot of sources included in the site and bibliography
++ [Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning](https://arxiv.org/abs/2006.02282)
++ [Pretrained Transformers for Text Ranking: BERT and Beyond](https://arxiv.org/pdf/2010.06467.pdf)
