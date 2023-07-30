@@ -83,11 +83,13 @@ Biblioracle](https://themorningnews.org/article/greetings-from-the-biblioracle),
 send John Warner, an extremely well-read novelist, a list of the last five books they've read and he recommends their next read
 based on their reading preferences. He is rarely wrong.
 
+Finally, Goodreads native recommendations, even though I am an extremely active site user, are not great. [They have no incentive to make them good](https://countercraft.substack.com/p/goodreads-has-no-incentive-to-be) because they were purchased by Amazon to stifle competition, which is unfortunate since I generally love the site.
+
 Given the recent rise in interest of semantic search based by vector databases, as well as [the paper I just finished on embeddings](http://vickiboykis.com/what_are_embeddings/), I thought it would interesting if I could create a book recommendation engine. This idea eventually evolved into the thinking that, given my project constraints and preferences, what I had was really a semantic search problem aimed specifically at surfacing books.
 
 # Architecting Semantic Search
 
-There are several key stages to in building semantic search:
+There are several stages to in building semantic search:
 
 <img src="static/assets/img/modelsteps.png" alt="drawing" width="600"/>
 
@@ -98,7 +100,9 @@ There are several key stages to in building semantic search:
 3. Model Inference and Front end design
 
 
-Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user. We have to update those documents, via an indexing function, and we then have to filter them, either manually or through machine learning, then rank them, also using either algorithms or heuristics, and then present them to the user in a front-end.
+Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user.
+
+We  update those documents, via an indexing function, and we then filter them, either manually or through machine learning, then rank them, also using either algorithms or heuristics, and then present them to the user in a front-end.
 
 
 # Project Architecture Decisions
@@ -120,20 +124,115 @@ I started out trying to implement Word2Vec in PyTorch which gave me a really goo
 Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and correctly routing Nginx.
 
 
-Within my architecture itself, I ended up making a number of enormous changes to my app several times until I settled on a structure that worked.
-
-
-
 My project tech stack, as it now stands is:
-
+primarily Python with:
 + Original data in JSON files
 + Processed using the Python Client for DuckDB
++ Encoding of documents into model embeddings with SBERT, [specifically the MS-Marco Asymmetric model](https://www.sbert.net/examples/applications/semantic-search/README.html#symmetric-vs-asymmetric-semantic-search)
++ A Redis instance that indexes the embeddings into a special search index for retrieval
++ A Flask API that has a search query route that encodes the query with the same MSMarco model and then runs HNSW lookup in realtime against the Redis search index
++ A Bootstrap UI that returns the top 10 ranked results
++ Redis and Flask encapsulated in a networked docker compose configuration via Dockerfile, depending on the architecture (arm or AMD)
++ a Makefile that does a bunch of routine things around the app like reindexing the embeddigns and bringing up the app
++ Nginx on the hosting server to reverse-proxy requests from the load balancer
++ pre-commit for formatting and linting
++ a logging module for capturing queries and outputs
++ and some tests in pytest
 
 
 
 # The Training Data
 
-I'm using a
+UCSD Book Graph, with the critical part being
+the [user-generated shelf labels.](https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/books). [Sample row:](https://gist.github.com/veekaybee/e8ea5dcf5632fd6345096023dc18159e)
+Note these are all encoded as strings!
+
+```json
+{
+  "isbn": "0413675106",
+  "text_reviews_count": "2",
+  "series": [
+    "1070125"
+  ],
+  "country_code": "US",
+  "language_code": "",
+  "popular_shelves": [
+    {
+      "count": "2979",
+      "name": "to-read"
+    },
+    {
+      "count": "291",
+      "name": "philosophy"
+    },
+    {
+      "count": "187",
+      "name": "non-fiction"
+    },
+    {
+      "count": "80",
+      "name": "religion"
+    },
+    {
+      "count": "76",
+      "name": "spirituality"
+    },
+    {
+      "count": "76",
+      "name": "nonfiction"
+    }
+  ],
+  "asin": "",
+  "is_ebook": "false",
+  "average_rating": "3.81",
+  "kindle_asin": "",
+  "similar_books": [
+    "888460",
+    "734023",
+    "147311",
+    "219106",
+    "313972",
+    "238866",
+    "196325",
+    "200137",
+    "588008",
+    "112774",
+    "2355135",
+    "336248",
+    "520437",
+    "421044",
+    "870160",
+    "534289",
+    "64794",
+    "276697"
+  ],
+  "description": "Taoist philosophy explained using examples from A A Milne's Winnie-the-Pooh.",
+  "format": "",
+  "link": "https://www.goodreads.com/book/show/89371.The_Te_Of_Piglet",
+  "authors": [
+    {
+      "author_id": "27397",
+      "role": ""
+    }
+  ],
+  "publisher": "",
+  "num_pages": "",
+  "publication_day": "",
+  "isbn13": "9780413675101",
+  "publication_month": "",
+  "edition_information": "",
+  "publication_year": "",
+  "url": "https://www.goodreads.com/book/show/89371.The_Te_Of_Piglet",
+  "image_url": "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png",
+  "book_id": "89371",
+  "ratings_count": "11",
+  "work_id": "41333541",
+  "title": "The Te Of Piglet",
+  "title_without_series": "The Te Of Piglet"
+}
+```
+
+There are a couple of things to note about the data.
 
 
 
@@ -152,7 +251,7 @@ as a collaborative filtering problem, so that was out. But
 
 
 
-# The Mixture of Experts
+# Productionizing the Model and Digital Ocean
 
 
 
@@ -166,12 +265,9 @@ recommendations, at scale, this is known as collaborative filtering, and I
 initially wanted to
 
 
-
-
-# The Architecture
-
 # Getting the UI Right
 
+Search UIs can be notoriously hard because they are so open-ended
 
 # Key Takeaways
 
@@ -213,3 +309,4 @@ True semantic search is very hard and involves a lot of algorithmic fine-tuning.
 + [What Are Embeddings](https://vickiboykis.com/what_are_embeddings/) - during the process of writing this I came up with a lot of sources included in the site and bibliography
 + [Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning](https://arxiv.org/abs/2006.02282)
 + [Pretrained Transformers for Text Ranking: BERT and Beyond](https://arxiv.org/pdf/2010.06467.pdf)
++ [Advanced IR Youtube Series](https://www.youtube.com/playlist?list=PLSg1mducmHTPZPDoal4m59pPxxsceXF-y)
