@@ -4,15 +4,21 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Vibes only!">
+	<meta name="description" content="Find your book vibe semantically!">
 	<meta name="author" content="Vicki Boykis">
 	<meta name="generator" content="Hugo 0.108.0">
 	<title>Viberary</title>
+	<link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico">
 
 
 	<link href="/static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
 	<style>
+
+		 .custom-button {
+			margin-right: 10px; /* Adjust the margin value as per your preference */
+		  }
+
 		.bd-placeholder-img {
 			font-size: 1.125rem;
 			text-anchor: middle;
@@ -21,11 +27,30 @@
 			user-select: none;
 		}
 
+		#div2 {
+
+		border:1px; margin:10px;
+
+		}
+
 		@media (min-width: 768px) {
 			.bd-placeholder-img-lg {
 				font-size: 3.5rem;
 			}
 		}
+
+		 @media screen and (max-width: 767px) {
+		  .button-wrap {
+			display: block;
+			margin-bottom: 20px;
+			text-align: center;
+		  }
+
+		  .button-text-wrap {
+			text-align: center;
+		  }
+
+}
 
 		.b-example-divider {
 			height: 3rem;
@@ -78,10 +103,10 @@
 			<div>
 				<h3 class="float-md-start mb-0">Viberary</h3>
 				<nav class="nav nav-masthead justify-content-center float-md-end">
-					<a class="nav-link fw-bold py-1 px-0"
-						href="{{ url_for('index') }} ">Home</a>
 					<a class="nav-link fw-bold py-1 px-0 active" aria-current="page"
-						href="{{ url_for('how') }}">About Viberary</a>
+						href="{{ url_for('index') }}">Home</a>
+					<a class="nav-link fw-bold py-1 px-0"
+						href="{{ url_for('render_template_from_markdown') }}">About Viberary</a>
 					<a class="nav-link fw-bold py-1 px-0" href="https://github.com/veekaybee/viberary">GitHub</a>
 				</nav>
 			</div>
@@ -91,27 +116,16 @@
 		<main class="px-3">
 			<img src="/static/assets/img/vibe_book.png" width="200" height="200">
 
-			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Alpha</button></h1>
+			<h1 class="cover-heading">Viberary&nbsp<button type="button" class="btn btn-outline-primary btn-sm">Beta</button></h1>
 			<hr>
-			<h4>Tired of bad book recommendations? <br>Search by &#10024;vibe&#10024;! </h4>
-
 			<div class="callout callout-info">
 
-				<h1 class="mt-5">TL;DR</h1>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-      <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
+				<p class="text-justify">
+				<div style="text-align: left">
+					{% block content %}{% endblock %}
+				</div>
+				</p>
 
-				<h1 class="mt-5">Data</h1>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-      <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
-
-				<h1 class="mt-5">Model</h1>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-      <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
-
-				<h1 class="mt-5">Infra</h1>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-      <p>Use <a href="../sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
 
 			</div>
 
