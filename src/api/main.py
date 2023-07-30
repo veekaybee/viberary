@@ -25,13 +25,12 @@ def index():
 
 @app.route("/how", methods=["POST", "GET"])
 def render_template_from_markdown():
-    # Read the Markdown file and convert it to HTML
     root = conf.get_root_dir()
     with open(f"{root}/src/api/templates/readme.md", "r") as f:
         markdown_content = f.read()
     html_content = markdown2.markdown(markdown_content)
 
-    return render_template("readme.html", markdown_content=html_content)
+    return render_template("how_markdown.html", markdown_content=html_content)
 
 
 @app.route("/search", methods=["POST", "GET"])

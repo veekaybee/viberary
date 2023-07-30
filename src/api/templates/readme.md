@@ -1,7 +1,4 @@
-{% extends "how.html" %}
-
-{% block content %}
-# What is it????
+# What is it?
 Viberary is a semantic search engine. It finds books based on vibe rather than exact
 keyword matches by genre, author, and title. Traditional search engines work by doing lexical
 matching - that is if you type in "Nutella into the search engine, it will try to find all
@@ -38,7 +35,9 @@ I could formulate this as a machine learning problem in the information retrieva
 
 # The Two Towers
 
-Typically, a common feature of modern recommendation systems is the two tower model
+To understand the context of information retrieval
+
+Typically, a common feature of modern recommendation and ranking systems is the two tower model. We have an item we'd like to recommend.
 
 I started reading more about how I could use this here.
 
@@ -88,6 +87,3 @@ where the user expects their query to match exactly, so users have specific expe
 
 But in order to really do <b>vibe search</b> right and not involve as much manual labelling, we
 need to build a semantic search engine.
-
-    {{ markdown_content|safe }}
-{% endblock %}
