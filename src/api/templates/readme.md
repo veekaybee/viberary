@@ -602,23 +602,7 @@ jobs:
 
 Once the code is on the server, I tear down, rebuild, and reload the docker image through the makefile, and also add embeddings:
 
-```
-.PHONY: all lint format test embed build up down logs save
-
-ci: lint format test
-intel: build up-intel embed
-arm: build up-arm embed
-
-lint:
-	ruff check .
-
-format:
-	black .
-
-test:
-	pytest
-
-embed:
+```embed:
 	docker exec -it viberary python /viberary/src/index/index_embeddings.py
 
 build:
@@ -639,9 +623,6 @@ down:
 
 logs:
 	docker compose logs -f -t
-
-save:
-	nohup docker compose logs -f > output.log &
 ```
 
 Now, we have a working app.
@@ -655,7 +636,7 @@ One thing that I realized as I was load testing was that my model was slow, and 
 
 + __Getting to a testable prototype is key__. I did all my initial exploratory work locally in Jupyter notebooks, [including working with Redis](https://github.com/veekaybee/viberary/blob/main/src/notebooks/05_duckdb_0.7.1.ipynb), so I could see the data output of each cell. I [strongly believe](https://vickiboykis.com/2021/11/07/the-programmers-brain-in-the-lands-of-exploration-and-production/) working with a REPL will get you the fastest results immediately. Then, when I had a strong enough grasp of all my datatypes and data flow, I immediately moved the code into object-oriented, testable modules. Once you know you need structure, you need it immediately because it will allow you to develop more quickly with reusable, modular components.
 
-+ Vector sizes and models are important. If you don't watch your hyperparameters, if you pick the wrong model for your given machine learning task, the results are going to be bad and it won't work at all.
++ __Vector sizes and models are important__. If you don't watch your hyperparameters, if you pick the wrong model for your given machine learning task, the results are going to be bad and it won't work at all.
 
 + __Don't use the cloud if you don't have to__. I'm using DigitalOcean, which is really, really, really nice for medium-sized companies and projects and is often overlooked over AWS and GCP. I'm very versant in cloud, but it's nice to not have to use BigCloud if you don't have to and to be able to do a lot more with your server directly. DigitalOcean has reasonable pricing, reasonable servers, and a few extra features like monitoring, load balancing, and block storage that are nice coming from BigCloud land, but don't overwhlem you with choices. They also recently acquired [Paperspace](https://www.paperspace.com/), which I've used before to train models, so should have GPU integration.
 
@@ -663,7 +644,6 @@ One thing that I realized as I was load testing was that my model was slow, and 
 
 + __Docker still takes time__  I spent a great amount of time on Docker. Why is Docker different than my local environment? How do I get the image to build quickly and why is my image now 3 GB? What do people do with CUDA libraries (exclude them if you don't think you need them initially, it turns out). I spent a lot of time making sure this process worked well enough for me to not get frustrated rebuilding hundreds of times. Relatedly,  __Do not switch laptop architectures in the middle of a project__ .
 
-+ Unsupervised learning is still hard.
 
 And finally,
 
