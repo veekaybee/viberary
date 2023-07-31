@@ -185,3 +185,4 @@ Here's a list of refinements I'd like to make to this project:
 4. Add Prometheus and Grafana. I had these initially but they created too much overhead and Digital Ocean default monitoring is good enough.
 5. [Query autocompletion](https://github.com/veekaybee/viberary/issues/70) in the search bar
 6. [Chart of most recommended books](https://github.com/veekaybee/viberary/issues/65) based on log data on the site
+7. Include a toggle for multi-lingual search. I haven't tried this out well at all, and most of the books are in English, but I'd like to see if it's a possibility, as well as investigate how well this model handles it.
