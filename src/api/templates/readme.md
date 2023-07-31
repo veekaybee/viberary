@@ -1,5 +1,5 @@
-<img src="static/assets/img/learningtired.png" alt="drawing" width="600"/>
 
+<img src="static/assets/img/learningtired.png" alt="drawing" width="600"/>
 
 *TL;DR*: Viberary helps you find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
@@ -63,6 +63,7 @@ These labels were then incorporated into Netflix's [recommendation architectures
 
 It can be easier to incorporate these kinds of features into recommendations than search because the process of recommendation is the process of implicitly learning user preferences through data about the user and offering them suggestions of content or items to purchase based on their past history, as well as the history of users across the site, or based on the properties of the content itself. As such, [recommender interfaces often include lists of suggestions](https://www.nngroup.com/articles/recommendation-guidelines/) like "you might like.." or "recommended for you", or "because you interacted with X.."
 
+
 Search, on the other hand, is an activity where the user expects their query to match exactly, so users have specific expectations of modern search interfaces:
 
 1. They are [extremely responsive and low-latency](http://glinden.blogspot.com/2006/11/marissa-mayer-at-web-20.html)
@@ -72,6 +73,7 @@ Search, on the other hand, is an activity where the user expects their query to 
 So, in some ways , there is a conflict between a traditional search interface and semantic search, because semantic search is in that gray area between search and recommendations and traditional search expects exact results for exact queries.
 
 Many search engines today, Google included, use a blend of traditional keyword search and semantic search to offer both direct results and related content, and with the explosion of generative AI and chat-based search and recommendation interfaces, this [division is becoming even blurrier.](https://docs.google.com/presentation/d/12aoYVaqus600NEuWASw_eF9xSDXGUMzGedAftfqBCCE/edit)
+
 
 <img src="static/assets/img/searchandrec.png" alt="drawing" width="600"/>
 
@@ -91,6 +93,7 @@ reads a lot puts a list like this together. One of my favorite formats of book r
 Biblioracle](https://themorningnews.org/article/greetings-from-the-biblioracle), where readers
 send John Warner, an extremely well-read novelist, a list of the last five books they've read and he recommends their next read
 based on their reading preferences. He is rarely wrong.
+
 
 Finally, Goodreads native recommendations, even though I am an extremely active site user, are not great. [After Amazon purchased them to remove competition, there is no incentive to tune recommendations or search results](https://countercraft.substack.com/p/goodreads-has-no-incentive-to-be).
 
@@ -119,9 +122,10 @@ There are several stages to in building semantic search:
 3. Model Inference and Front end design
 
 
-Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user.
 
+Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities: there is a set of documents that we have, that we'd like to filter through to get to the right documents presented to the user.
 We  update those documents, via an indexing function, and we then filter them, either manually or through machine learning, then rank them, also using either algorithms or heuristics, and then present them to the user in a front-end.
+
 
 
 # Project Architecture Decisions
@@ -141,6 +145,7 @@ Then, I spent a long time [working through creating baseline models in Word2Vec]
 I started out trying to implement Word2Vec in PyTorch which gave me a really good understanding of how it worked for my paper, but slowed me down in engineering implementation, since
 
 Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and correctly routing Nginx.
+
 
 
 My project tech stack, as it now stands is:
@@ -666,7 +671,6 @@ I have a couple things on the roadmap I'd like to accomplish.
 
 We'll see how many of these I get to - I'd love to do at least the random button.
 
-
 # Resources
 
 + [Relevant Search by Turnbull and Berryman](https://www.manning.com/books/relevant-search)
@@ -675,3 +679,4 @@ We'll see how many of these I get to - I'd love to do at least the random button
 + [Towards Personalized and Semantic Retrieval: An End-to-End Solution for E-commerce Search via Embedding Learning](https://arxiv.org/abs/2006.02282)
 + [Pretrained Transformers for Text Ranking: BERT and Beyond](https://arxiv.org/pdf/2010.06467.pdf)
 + [Advanced IR Youtube Series](https://www.youtube.com/playlist?list=PLSg1mducmHTPZPDoal4m59pPxxsceXF-y)
+
