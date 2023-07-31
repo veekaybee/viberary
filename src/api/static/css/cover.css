@@ -59,3 +59,23 @@ body {
   color: #fff;
   border-bottom-color: #fff;
 }
+
+code {
+  font-family: "Courier New", monospace;
+  background-color: #f7f7f7;
+  padding: 2px 4px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: #000; /* Set code text color to black */
+  font-weight: bold;
+}
+
+blockquote {
+  border-left: 2px solid #ccc; /* Adding a left border to the blockquote */
+  margin: 10px 0; /* Adding some vertical margin for spacing */
+  padding: 10px; /* Adding padding inside the blockquote */
+  font-style: italic; /* Making the text italic */
+  background-color: #f7f7f7; /* Adding a background color for the blockquote */
+  color: #555; /* Setting the text color */
+
+}

@@ -1,3 +1,4 @@
+import logging
 import logging.config
 import re
 from collections import namedtuple
@@ -15,7 +16,9 @@ class KNNSearch:
     BookEntries = namedtuple("BookEntries", fields)
 
     def __init__(self, redis_conn, conf_manager) -> None:
+        self.cm = conf_manager
         self.conf = conf_manager.get_config_file()
+        self.cm.set_logger_config()
         self.conn = redis_conn
         self.index = self.conf["search"]["index_name"]
         self.fields = IndexFields()
@@ -94,7 +97,7 @@ class KNNSearch:
 
     def dedup_by_number_of_reviews(self, result_list: BookEntries) -> BookEntries:
         """
-        Dedup ranked list of 50 elements
+        Dedup ranked list of k elements
         Args:
             result_list ():
 
