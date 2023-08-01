@@ -1,6 +1,8 @@
 
 <img src="static/assets/img/learningtired.png" alt="drawing" width="600"/>
 
+### August 1, 2023
+
 *TL;DR*: Viberary is a side project that I created to help you find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/).
 
 This project is a lot of fun, but conclusively proves to me what I've known all along about myself: reaching MLE (machine learning enlightenment) is the process of working through modeling, engineering,and UI concerns, and connecting everything together - [the system in production is the reward.](https://vickiboykis.com/2021/09/23/reaching-mle-machine-learning-enlightenment/)
@@ -160,10 +162,16 @@ Second, I wanted to explore new technologies while also being careful of not was
 
 The third factor was to try to ignore [the hype blast of the current ML ecsystem](https://vickiboykis.com/2022/11/10/how-i-learn-machine-learning/), which comes out with a new model and a new product and a new wrapper for the model for the product every day. It wasn't easy. It is extremely hard to ignore the noise and just build, particularly given all the discourse around LLMs and now in society at large.
 
+Finally, I wanted to build everything as a traditional self-contained app with various components that were [easy to understand by their names](https://vickiboykis.com/2023/06/29/naming-things/), and reusable components across the app. The architecture as it stands looks like this:
+
+<script src="https://gist.github.com/veekaybee/0b2974c18b11f6b436b7fc620234c98a.js"></script>
+
 
 I wish I could say that I planned all of this out in advance, and the project that I eventually shipped was exactly what I had envisioned. But, like with any engineering effort, I had a bunch of false starts and dead ends. I started out [using Big Cloud](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/), a strategic mistake that cost me a lot of time and frustration because I couldn't see inside the cloud components and slowed down development cycles.  I eventually moved to data processing using DuckDB, but [it still look a long time to make this change](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/), as is typically the case in any data-centric project.
 
 Then, I spent a long time [working through creating baseline models in Word2Vec](https://github.com/veekaybee/viberary/releases/tag/v0.0.1) so I could get some context for baseline text retrieval methods in the pre-Transformer era.  Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and correctly routing Nginx.
+
+Generally, though, I'm really happy with this project, [guided by the spirit of Normconf](https://normconf.com/) and all the great normcore ML engineering ideas [I both put in and took away from](https://vickiboykis.com/2022/12/22/everything-i-learned-about-accidentally-running-a-successful-tech-conference/) people in the field looking to build practical solutions.
 
 ## Tech Stack
 
@@ -352,190 +360,59 @@ The hard part for me was in getting users to understand how to write a successfu
 On top of all of this, I worked to make the site load quickly both on web and mobile, since most people are mobile-first when accessing sites in 2023. And finally, I changed the color to a lighter pink to be more legible. This concludes the graphic design is my passion section of this piece.
 
 
- # DigitalOcean, Docker, and Production
+# DigitalOcean, Docker, and Production
 
  ---
 
- Now that this all works in a development environment, it's time to scale it for production. There are many, many considerations. The one I wanted to focus on included:
+ Now that this all worked in a development environment, it was time to scale it for production. My top requirements included being able to develop locally quickly and reproduce that environment almost exactly on my production instances, a fast build time for CI/CD and for Docker images, the ability to horizontally add more nodes if I needed to but [not mess with autoscaling or complicated AWS solutions](https://www.youtube.com/watch?app=desktop&v=9BXMWDXiugg), and [smaller Docker images than is typical](https://www.youtube.com/watch?v=kx-SeGbkNPU&list=PLYXaKIsOZBsu3h2SSKEovRn7rGy7wkUAV&index=5) for
+ AI apps, [which can easily balloon to 10 GB with Cuda GPU-based layers.](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/).  Since my dataset is fairly small and the app itself worked fairly well locally, I decided to stick with CPU-based operations for the time being, at least until I get to a volume of traffic where it's a problem.
 
- + reproducible environments, aka not developing on my laptop
- + very simple manipulation of resources in the cloud
- + The ability to spin up and down resources quickly
- + Fast CI/CD
+ Another concern I had was that, halfway through the project (never do this), I got a new Macbook M2 machine, which meant [a whole new world of pain](https://www.youtube.com/watch?v=I4wkCSd7iMM) in shipping code consistently between `arm` and `intel` architectures.
 
- For this stack, I started by creating a Dockerfile that encompassed all the pieces of the web app. The redis instance has its own Dockerfile, from Redis, that I don't want to mess with.
 
- In the app dockerfile, I want to make sure to have the fastest load time possible, so I follow [Docker best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/) of having the layers that change the most last, caching, and mounting files into the Docker image so I'm not constantly copying data.
+ My deployment story works like this. The web app is developed in a Docker container that I have symlinked via bind mounts to my local directory so that I write code in PyCharm and changes are reflected in the Docker container. The web docker container is networked to Redis via Docker's internal network. The web app is available at 8000 on the host machine, and, in production in Nginx, proxies port 80 so we can reach the main domain without typing in ports and hit Viberary.  In the app dockerfile, I want to make sure to have the fastest load time possible, so I follow [Docker best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/) of having the layers that change the most last, caching, and mounting files into the Docker image so I'm not constantly copying data.
 
- ```
- FROM bitnami/pytorch
-USER root
+ <script src="https://gist.github.com/veekaybee/9a514e89847a1d0b6fcd3910ad56c39e.js"></script>
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ The docker image base for the web is `bitnami:pytorch` and it installs requirements via `requirements.txt`
 
-COPY ../../requirements.txt requirements.txt
+ I have two Dockerfiles, one local and one for production. The production is linked from the `docker-compose` file and correctly builds on the Digital Ocean server. The local one is linked from the `docker-compose.override` file, which is excluded from version control, but which works only locally, so that each environment gets the proper build directives.
 
-RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
-    --mount=target=/var/cache/apt,type=cache,sharing=locked \
-    rm -f /etc/apt/apt.conf.d/docker-clean \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install \
-    -y git
 
-RUN --mount=type=cache,target=~/.cache/pip  pip install -r requirements.txt
-RUN pip uninstall dataclasses -y
-
-RUN mkdir /viberary/data; exit 0
-RUN chmod 777 /viberary/data; exit 0
-ENV TRANSFORMERS_CACHE=/viberary/data
-ENV SENTENCE_TRANSFORMERS_HOME=/viberary/data
-ENV PYTHONPATH "${PYTHONPATH}:/viberary/src:/opt/bitnami/python/lib/python3.8/site-packages"
-ENV WORKDIR=/viberary
-WORKDIR $WORKDIR
-```
+<pre><code>
+├── docker
+│   ├── local
+│   │   └── Dockerfile
+│   └── prod
+│       └── Dockerfile
+├── docker-compose.override.yml
+├── docker-compose.yml
+</pre></code>
 
 The Docker compose takes this Dockerfile and networks it to the Redis container.
 
-```
-version: "3.8"
+<script src="https://gist.github.com/veekaybee/c661b50e364e4f6d1dc283a57eb6a6d9.js"></script>
 
-services:
-  redis:
-    image: redis/redis-stack-server:latest
-    volumes:
-      - redis-data:/data
-    container_name: redis
-    command: redis-server --port 6379 --appendonly yes  --protected-mode no  --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so
-    platform: linux/amd64
+All of this is run through a Makefile that has commands to build, serve, spin down, and run onnx model creation from the root of the directory. Once I'm happy with my code, I push a branch to GitHub where github actions runs basic tests and linting on code that should, in theory, already be checked since I have `precommit` set up. [The pre-commit hook](https://github.com/veekaybee/viberary/blob/main/.pre-commit-config.yaml) lints it and cleans everything up, including black, ruff, and isort, before I even push to a branch.
 
-  web:
-    container_name: viberary
-    build:
-      context: .
-      dockerfile: docker/prod/Dockerfile
-    ports:
-      - '8000:8000'
-    volumes:
-      - ./:/viberary
-      - ./viberary/src/training_data:/training_data
-      - /mnt/viberary:/viberary/logs
-    environment:
-      - REDIS_HOST=redis
-    depends_on:
-      - redis
-    platform: linux/amd64
-    command: gunicorn -b 0.0.0.0:8000 -w 4 src.api.wsgi:app -t 900
+Then, once the branch passes, I merge into main. The main branch does tests and pushes the latest git commit to the Digital Ocean server. I then manually go to the server, bring down the old docker image and spin up the new one, and the code changes are live.
 
-volumes:
-  redis-data:
-```
+ <img src="static/assets/img/deploy.png" alt="drawing" width="600"/>
 
- finally outputting everything to port 80 via nginx, which I configured on each DigitalOcean droplet that I created.
+Finally, on the server, I have a very scientific shell script that helps me configure each additional machine. Since I only needed to do two, it's fine that it's fairly manual at the moment.
 
-```
-server {
-    listen 80;
-    server_name ip address;
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
-    root /var/www/src/api/static;
+<script src="https://gist.github.com/veekaybee/f5ff921355e6cd3970bd097dcb0fbc35.js"></script>
 
-    location / {
-        include uwsgi_params;
-        uwsgi_pass unix:/var/www/viberary.sock;
-        proxy_pass http://127.0.0.1:8000;
-    }
-}
-```
+Finally everything is routed to port 80 via nginx, which I configured on each DigitalOcean droplet that I created. I load balanced two droplets behind a load balancer, pointing to the same web address, a domain I bought from Amazon's Route 53.
 
-Digital Ocean is a fantastic resource that provides low-maintenance servers for small projects exactly like this one, and in order to create redundancy, I load balanced two droplets behind a load balancer, pointing to the same web address, a domain I bought from Amazon's route 53.
+<script src="https://gist.github.com/veekaybee/f18ce09aa50c7cfdcb61300770ef8f52.js"></script>
 
-When I push code, it [first goes through a pre-commit hook](https://github.com/veekaybee/viberary/blob/main/.pre-commit-config.yaml) that lints it and cleans everything up, including black, ruff, and isort.
 
-Then, GitHub actions builds the artifact icnluding running pytest, which it sends to my server using GitHub Secrets config.
+Now, we have a working app. The final part of this was load testing, which I did with [Python's Locust library](https://locust.io/), which provides a nice interface for running any type of code against any endpoint that you specify. One thing that I realized as I was load testing was that my model was slow, and search expects instant results, so I converted it to an [ONNX artifact](https://blog.vespa.ai/stateful-model-serving-how-we-accelerate-inference-using-onnx-runtime/) and had to change the related code, as well.
 
-```
-name: Python package and deploy
+ <img src="static/assets/img/locust.jpeg" alt="drawing" width="600"/>
 
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.9" ]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v3
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install ruff pytest
-      - name: Lint with ruff
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          ruff --format=github --select=E9,F63,F7,F82 --target-version=py39 .
-          # default set of ruff rules with GitHub Annotations
-          ruff --format=github --target-version=py39 .
-      - name: Test with pytest
-        run: |
-          pytest
-
-      - name: install ssh keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: connect and pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull origin main && exit"
-      - name: cleanup
-        run: rm -rf ~/.ssh
-```
-
-Once the code is on the server, I tear down, rebuild, and reload the docker image through the makefile, and also add embeddings:
-
-```embed:
-	docker exec -it viberary python /viberary/src/index/index_embeddings.py
-
-build:
-	docker compose build
-
-up-intel:
-	docker compose up -d
-
-up-arm:
-	export DOCKER_DEFAULT_PLATFORM=linux/amd64
-	docker compose up -d
-
-onnx:
-	docker exec -it viberary optimum-cli export onnx --model sentence-transformers/msmarco-distilbert-base-v3 sentence-transformers/msmarco-distilbert-base-v3_onnx/
-
-down:
-	docker compose down
-
-logs:
-	docker compose logs -f -t
-```
-
-Now, we have a working app.
-
-The final part of this was load testing, which I did with [Python's Locust library](https://locust.io/), which provides a nice interface for running any type of code against any endpoint that you specify.
-
-One thing that I realized as I was load testing was that my model was slow, and search expects instant results, so I converted it to an [ONNX artifact](https://onnxruntime.ai/) and had to change the related code, as well.
+ Finally, I wrote a small logging module that propogates across the app and keeps track of everything in the docker compose logs.
 
 
 # Key Takeaways
@@ -550,12 +427,14 @@ One thing that I realized as I was load testing was that my model was slow, and 
 
 + __Docker still takes time__  I spent a great amount of time on Docker. Why is Docker different than my local environment? How do I get the image to build quickly and why is my image now 3 GB? What do people do with CUDA libraries (exclude them if you don't think you need them initially, it turns out). I spent a lot of time making sure this process worked well enough for me to not get frustrated rebuilding hundreds of times. Relatedly,  __Do not switch laptop architectures in the middle of a project__ .
 
++ __Deploying to production is magic__, even when you're a very lonely team of one, and as such [is filled with a lot of unknown variables](https://vickiboykis.com/2021/06/20/the-ritual-of-the-deploy/), so make your environments as absolutely reproducible as possible.
+
 
 And finally,
 
-+ True semantic search is very hard and involves a lot of algorithmic fine-tuning. People have been fine-tuning Google for years and years. Netflix had thousands of labelers. [Each company has teams of engineers working on search and recommendations](https://vicki.substack.com/p/what-we-talk-about-when-we-talk-about) to steer the algorithms in the right direction. Just take a look at the company formerly known as Twitter's algo stack.  It's fine if the initial results are not that great.
++ True semantic search is very hard and involves a lot of algorithmic fine-tuning, both in the machine learning, and in the UI, and in deployment processes. People have been fine-tuning Google for years and years. Netflix had thousands of labelers. [Each company has teams of engineers working on search and recommendations](https://vicki.substack.com/p/what-we-talk-about-when-we-talk-about) to steer the algorithms in the right direction. Just take a look at the company formerly known as Twitter's algo stack.  It's fine if the initial results are not that great.
 
-The important thing is to keep benchmarking the current model against previous models and to keep iterating and keep building
+The important thing is to keep benchmarking the current model against previous models and to keep iterating and keep on building.
 
 
 # Next Steps
