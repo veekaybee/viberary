@@ -3,8 +3,7 @@
 ![]()
 
 
-🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> -in Beta release</a>
-🚧
+🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> -in Beta release</a> 🚧
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
 
@@ -18,7 +17,7 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 and get back a list of books. This project came out of experiences I had where recommendations for movies, TV, and music
 have fairly been good, but book recommendations are always a problem.
 
-For much, much more detail see the how page on the project website.
+For much, much more detail see the [how page on the project website.](http://staging.viberary.pizza/how)
 
 ## App Architecture
 
@@ -51,8 +50,7 @@ The artifact is generated through GitHub actions on the main branch of the repo 
 
 # Monitoring the project
 
-1. `make logs` for logs
-
+`make logs` for logs
 
 # Repo Structure
 
