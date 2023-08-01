@@ -8,8 +8,7 @@ from search.knn_search import KNNSearch
 app = Flask(__name__)
 
 
-retriever = KNNSearch(RedisConnection().conn(), ConfigManager())
-
+retriever = KNNSearch(RedisConnection().conn())
 conf = ConfigManager()
 
 

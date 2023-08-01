@@ -31,7 +31,7 @@ class ConfigManager:
             config = yaml.safe_load(file)
             return config
 
-    def set_logger_config(self):
-        root_dir = self.get_root_dir()
-        self.config_path = Path(f"{root_dir}/logging.conf")
-        return self.config_path
+    def get_logger_path(self) -> Path:
+        conf = self.get_config_file()
+        path = conf["logging"]["path"]
+        return path

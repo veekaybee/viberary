@@ -6,6 +6,7 @@ from typing import List, Tuple
 import numpy as np
 from redis.commands.search.query import Query
 
+from conf.config_manager import ConfigManager
 from index.index_fields import IndexFields
 from model.onnx_embedding_generator import ONNXEmbeddingGenerator
 
@@ -14,8 +15,11 @@ class KNNSearch:
     fields = ["score", "title", "author", "link", "review_count"]
     BookEntries = namedtuple("BookEntries", fields)
 
-    def __init__(self, redis_conn, conf_manager) -> None:
-        self.conf = conf_manager.get_config_file()
+    def __init__(self, redis_conn) -> None:
+        self.cm = ConfigManager()
+        self.logger_path = self.cm.get_logger_path()
+        logging.config.fileConfig(self.logger_path)
+        self.conf = self.cm.get_config_file()
         self.conn = redis_conn
         self.index = self.conf["search"]["index_name"]
         self.fields = IndexFields()
@@ -24,7 +28,7 @@ class KNNSearch:
         self.author_field = self.fields.author_field
         self.link_field = self.fields.link_field
         self.review_count_field = self.fields.review_count_field
-        self.model = ONNXEmbeddingGenerator(conf_manager)
+        self.model = ONNXEmbeddingGenerator(self.cm)
 
     def vectorize_query(self, query_string) -> np.ndarray:
         query_embedding = self.model.generate_embeddings(query_string)
@@ -85,7 +89,7 @@ class KNNSearch:
             for i in results_docs
         ]
 
-        log_data = {"query": query, "results": results.docs}
+        log_data = {"query": query, "results": [[i[1], i[2], i[3]] for i in index_vector]}
         logging.info(log_data)
 
         deduped_results = self.dedup_by_number_of_reviews(index_vector)
@@ -94,10 +98,7 @@ class KNNSearch:
 
     def dedup_by_number_of_reviews(self, result_list: BookEntries) -> BookEntries:
         """
-        Dedup ranked list of 50 elements
-        Args:
-            result_list ():
-
+        Dedup ranked list of k elements
         Returns: Deduped list by title
         """
 

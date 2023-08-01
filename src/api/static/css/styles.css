@@ -236,6 +236,21 @@ dd {
 
 blockquote {
   margin: 0 0 1rem;
+  border-left: 2px solid #ddd;
+    padding-left: 10px;
+    margin-left: 0;
+}
+
+
+
+/* CSS for code blocks */
+pre {
+  font-family: "Courier New", monospace;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  white-space: pre-wrap; /* Preserve line breaks */
 }
 
 b,
