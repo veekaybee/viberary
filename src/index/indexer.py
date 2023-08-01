@@ -45,9 +45,9 @@ class Indexer:
         self.max_edges = max_edges
         self.ef = ef
         self.cm = ConfigManager()
+        self.logger_path = self.cm.get_logger_path()
+        logging.config.fileConfig(self.logger_path)
         self.conf = self.cm.get_config_file()
-        self.conn = redis_conn
-        self.cm.set_logger_config()
 
     def drop_index(self):
         """Delete Redis index but does not delete underlying data"""

@@ -5,9 +5,9 @@ import logging.config
 from conf.config_manager import ConfigManager
 from src.api.main import app
 
-conf = ConfigManager()
-conf.set_logger_config()
-
 if __name__ == "__main__":
+    cm = ConfigManager()
+    logger_path = cm.get_logger_path()
+    logging.config.fileConfig(logger_path)
     logging.info("Starting Flask")
     app.run(debug=True)
