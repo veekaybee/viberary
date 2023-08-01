@@ -3,7 +3,7 @@
 ![]()
 
 
-🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> -in Beta release</a> 🚧
+🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> <img src="https://img.shields.io/badge/beta-blue"/> 🚧
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
 
@@ -21,16 +21,16 @@ For much, much more detail see the [how page on the project website.](http://sta
 
 ## App Architecture
 
-<img src="static/assets/img/tactical_app.png" alt="drawing" width="600"/>
+<img src="https://raw.githubusercontent.com/veekaybee/viberary/main/src/api/static/assets/img/viberary_arch.png" alt="drawing" width="600"/>
 
 It's a [two-tower](https://blog.reachsumit.com/posts/2023/03/two-tower-model/) semantic retrieval model that encodes both the query and the corpus using the
 [Sentence Transformers pretrained asymmetric MSMarco Model](https://www.sbert.net/docs/pretrained-models/msmarco-v3.html).
 
-<img src="static/assets/img/tactical_app.png" alt="drawing" width="600"/>
+<img src="https://raw.githubusercontent.com/veekaybee/viberary/main/src/api/static/assets/img/tactical_app.png" alt="drawing" width="600"/>
 
 The training data is generated locally in DuckDB and the model is converted to ONNX for low-latency inference, with [corpus embeddings learned on AWS P3 instances](https://github.com/veekaybee/viberary/blob/main/src/model/generate_embeddings.ipynb) against the same model and stored in Redis and retrieved using the [Redis Search](https://redis.io/docs/interact/search-and-query/) module using the [HNSW algorithm](https://arxiv.org/abs/1603.09320) included as part of the Redis search module. Results are served through a Flask API running [Gunicorn](https://gunicorn.org/) and served to a Bootstrap front-end.
 
-<img src="static/assets/img/physical_arch.png" alt="drawing" width="600"/>
+<img src="https://raw.githubusercontent.com/veekaybee/viberary/main/src/api/static/assets/img/physical_arch.png" alt="drawing" width="600"/>
 
 It's served from two Digital Ocean droplets behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between a web server and Redis image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with AWS Route53 serving as the domain registrar and load balancer router.
 
@@ -128,24 +128,7 @@ Note these are all encoded as strings!
   "average_rating": "3.81",
   "kindle_asin": "",
   "similar_books": [
-    "888460",
-    "734023",
-    "147311",
-    "219106",
-    "313972",
-    "238866",
-    "196325",
-    "200137",
-    "588008",
-    "112774",
-    "2355135",
-    "336248",
-    "520437",
-    "421044",
-    "870160",
-    "534289",
-    "64794",
-    "276697"
+    "888460"
   ],
   "description": "Taoist philosophy explained using examples from A A Milne's Winnie-the-Pooh.",
   "format": "",
@@ -184,4 +167,3 @@ Here's a list of refinements I'd like to make to this project:
 5. [Query autocompletion](https://github.com/veekaybee/viberary/issues/70) in the search bar
 6. [Chart of most recommended books](https://github.com/veekaybee/viberary/issues/65) based on log data on the site
 7. Include a toggle for multi-lingual search. I haven't tried this out well at all, and most of the books are in English, but I'd like to see if it's a possibility, as well as investigate how well this model handles it.
-

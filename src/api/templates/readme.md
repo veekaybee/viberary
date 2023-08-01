@@ -1,5 +1,5 @@
 
-<img src="static/assets/img/learningtired.png" alt="drawing" width="600"/>
+<img src="static/assets/img/learningtired.png" alt="drawing" class="img-fluid" width="500"/>
 
 ### August 1, 2023
 
@@ -15,15 +15,15 @@ and hope that people scope their efforts accordingly.
 Viberary's machine learning architecture is a [two-tower](https://blog.reachsumit.com/posts/2023/03/two-tower-model/) semantic retrieval model that encodes the user search query and the Goodreads book corpus using the
 [Sentence Transformers pretrained asymmetric MSMarco Model](https://www.sbert.net/docs/pretrained-models/msmarco-v3.html).
 
-<img src="static/assets/img/viberary_arch.png" alt="drawing" width="600"/>
+<img src="static/assets/img/viberary_arch.png" alt="drawing" class="img-fluid" width="600"/>
 
 The training data is generated locally by [proessing JSON in DuckDB](https://github.com/veekaybee/viberary/blob/main/src/model/generate_training_data.py) and the model is converted to ONNX for performant inference, with [corpus embeddings learned on AWS P3 instances](https://github.com/veekaybee/viberary/blob/main/src/model/generate_embeddings.ipynb) against the same model and stored in Redis. Retrieval happens using the [Redis Search](https://redis.io/docs/interact/search-and-query/) set with the [HNSW algorithm](https://arxiv.org/abs/1603.09320) to search on cosine similarity. Results are served through a Flask API running four [Gunicorn](https://gunicorn.org/) workers and served to a [Bootstrap front-end.](https://getbootstrap.com) using Flask's ability to statically reder [Jinja templates](https://jinja.palletsprojects.com/en/3.1.x/). There is no Javascript dependencies internal to the project.
 
-<img src="static/assets/img/tactical_app.png" alt="drawing" width="800"/>
+<img src="static/assets/img/tactical_app.png" alt="drawing" class="img-fluid" width="800"/>
 
 It's served from two [Digital Ocean droplets](https://www.digitalocean.com/products/droplets) behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between the web server and Redis Docker image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with [AWS Route53](https://aws.amazon.com/route53/) serving as the domain registrar and load balancer router.
 
-<img src="static/assets/img/physical_arch.png" alt="drawing" width="800"/>
+<img src="static/assets/img/physical_arch.png" alt="drawing" class="img-fluid" width="800"/>
 
 The deployable code artifact is generated through [GitHub actions](https://github.com/veekaybee/viberary/tree/main/.github/workflows) on the main branch of the repo and then I manually refresh the docker image on the droplets through a set of Makefile commands. This all works fairly well at this scale for now.
 
@@ -43,20 +43,20 @@ key/value pair where the key is the term and the value is a collection of all th
 
 A commonc classic retrieval method from an inverted index is BM25, which is based on TF-IDF and calculates a relevance score for each element in an inverted index. The retrieval mechanism first selects all the documents with the keyword from the index, the calculates a relevance score, then ranks the documents based on the relevance score.
 
-<img src="static/assets/img/inverted_index.png" alt="drawing" width="400"/>
+<img src="static/assets/img/inverted_index.png" alt="drawing" class="img-fluid" width="400"/>
 
 Semantic search, in contrast, looks for near-meanings based on, as ["AI-Powered Search"](https://www.manning.com/books/ai-powered-search) calls it, "things, not strings." [In other words,](https://www.manning.com/books/relevant-search)
 
 "Wouldn't it be nice if you could search for a term like "dog" and pull back documents that contain terms like "poodle, terrier, and beagle," even if those document happen to not use the word "dog?"
 
-<img src="static/assets/img/semantic_search.png" alt="drawing" width="400"/>
+<img src="static/assets/img/semantic_search.png" alt="drawing" class="img-fluid" width="400"/>
 
 Semantic search is a vibe. A vibe can be hard to define, but generally it's more of a feeling of association
 than something concrete: a mood, a color, or a phrase. Viberary will not give you exact matches for "Nutella", but if you type in "chocolately hazlenut goodness", the expectation is that you'd get back Nutella, and probably also "cake" and "Ferrerro Rocher". Semantic search methods include and semantic similarity measures, semantic query expansion.
 
 Typically today, search engines will try a number of both keyword-based and semantic approaches in a solution known as hybrid search. Semantic search includes methods like learning to rank, belnding several retrieval models, query expansion which looks to enhance search results by adding synonyms to the original query, contextual search based on the user's history and location, and vector similarity search, which looks to use NLP to help project the user's query in a vector space.
 
-<img src="static/assets/img/search_tree.png" alt="drawing" width="600"/>
+<img src="static/assets/img/search_tree.png" alt="drawing" class="img-fluid" width="600"/>
 
 
 The problem of semantic search  is one researchers and companies have been grappling with for decades in the field known as information retrieval, which started with roots in library science. [The paper introducing Google in 1998](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/334.pdf) even discusses the problems with keyword-only search,
@@ -87,7 +87,7 @@ As a result, in some ways, there is a tension between what makes  traditional se
 Many search engines today, Google included, use a blend of traditional keyword search and semantic search to offer both direct results and related content, and with the explosion of generative AI and chat-based search and recommendation interfaces, this [division is becoming even blurrier.](https://docs.google.com/presentation/d/12aoYVaqus600NEuWASw_eF9xSDXGUMzGedAftfqBCCE/edit)
 
 
-<img src="static/assets/img/searchandrec.png" alt="drawing" width="600"/>
+<img src="static/assets/img/searchandrec.png" alt="drawing" class="img-fluid" width="600"/>
 
 
 # Why semantically search books?
@@ -115,7 +115,7 @@ Content-based filtering, i.e. looking at a book's metadata rather than particula
 
 What I realized is that the user would have to provide the query context to seed the recommendations, and that we don't know anything about the user. At this point, based [on this heuristic,](https://md.ekstrandom.net/blog/2015/10/search-and-recsys) it starts to become a search problem.
 
-<img src="static/assets/img/searchrecscontext.png" alt="drawing" width="600"/>
+<img src="static/assets/img/searchrecscontext.png" alt="drawing" class="img-fluid" width="600"/>
 
 An additional consideration was that recommendation surfaces are also traditionally rows of cards or lists that are loaded when the user is logged in, something that I don't also don't have and don't want to implement from the front-end perspective. I'd like the user to be able to enter their own search query.
 
@@ -123,18 +123,18 @@ This idea eventually evolved into the thinking that, given my project constraint
 
 After a [literature search,](https://vickiboykis.com/2022/11/10/how-i-learn-machine-learning/), what I found was [a great paper](https://arxiv.org/pdf/2006.02282.pdf) that formulates the exact problem I wanted to solve, only in an ecommerce setting.
 
-<img src="static/assets/img/dpsr.png" alt="drawing" width="600"/>
+<img src="static/assets/img/dpsr.png" alt="drawing"  class="img-fluid" width="600"/>
 
 Their problem was more complicated in that, in addition to semantic search they also had to personalize it, and they also had to learn a model from scratch based on the data that they had, but the architecture was one that I could follow in my project, and the simplified online serving half was what I would be implementing.
 
-<img src="static/assets/img/dpsr2.png" alt="drawing" width="600"/>
+<img src="static/assets/img/dpsr2.png" alt="drawing" class="img-fluid" width="600"/>
 
 # Architecting Semantic Search
 
 ---
 There are several stages to building semantic search that overlap closely with the classical stages of [a four-stage recommender system](https://medium.com/nvidia-merlin/recommender-systems-not-just-recommender-models-485c161c755e):
 
-<img src="static/assets/img/model_steps.png" alt="drawing" width="600"/>
+<img src="static/assets/img/model_steps.png" alt="drawing" class="img-fluid" width="600"/>
 
 1. Data Collection
 2. Modeling and generating embeddings
@@ -145,7 +145,7 @@ and a fifth stage that's often not included in search/recsys architectures but t
 
 Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities that we've been developing for years. It's interesting to note that [Tapestry](https://dl.acm.org/doi/pdf/10.1145/138859.138867), one of the first industrial recommender systems created in the 1990s to collaboratively filter newsletters, has an extremely similar structure to any search and recommendation system today, including components for indexing and filtering.
 
-<img src="static/assets/img/tapestry.png" alt="drawing" width="600"/>
+<img src="static/assets/img/tapestry.png" alt="drawing" class="img-fluid" width="600"/>
 
 We start by collecting and processing a large set of documents. Our goal in information retrieval is to find the documents that are relevant to us, for any given definition of relevant. We  update these collections of documents to be searchable at scale via an indexing function.   We select a candidate set of relevant documents through either heuristics or machine learning. In our case, we do it by finding compressed numerical representations of text that are similar to the ones that we type into the query box. We generate these representations using an embedding space that's created with deep learning models in the transformer family.
 
@@ -225,7 +225,7 @@ There is a lot of good stuff in this data! So, like any good data scientist, I i
 
 The data input generally looks like this:
 
-<img src="static/assets/img/input_data.png" alt="drawing" width="600"/>
+<img src="static/assets/img/input_data.png" alt="drawing" class="img-fluid" width="600"/>
 
 Then,  I constructed several tables that I'd need to send to the embeddings model to generate embeddings for the text. I did this all in DuckDB. The final relationships between the tables look like this:
 
@@ -235,12 +235,12 @@ The `sentence` column which concatenates ```review_text || goodreads_auth_ids.ti
 
 There are a couple of things to note about the data. First, it's from 2019 so the recency on the recommendations from the data won't be great, but it should do fairly well on classical books. Second,  since [Goodreads no longer has an API](https://debugger.medium.com/goodreads-is-retiring-its-current-api-and-book-loving-developers-arent-happy-11ed764dd95), it's impossible to get this updated in any kind of reasonable way.  It's possible that future iterations of Viberary will use something like [Open Library](https://openlibrary.org/), but this will involve a lot of foundational data work. Third, there is a strong English-language bias in this data, which means we might not be able to get good results in other languages at query time if we want to make Viberary international.
 
-<img src="static/assets/img/eng.png" alt="drawing" width="600"/>
+<img src="static/assets/img/eng.png" alt="drawing" class="img-fluid" width="600"/>
 
 Finally, in looking at the data available per column, it looks like we have a pretty full set of data available for author, title, ratings, and description (lower percent means less null values per column) which means we'll be able to use most of our data for representing the corpus as embeddings.
 
 
-<img src="static/assets/img/percent_data.png" alt="drawing" width="600"/>
+<img src="static/assets/img/percent_data.png" alt="drawing" class="img-fluid" width="600"/>
 
 
 # The Model
@@ -263,7 +263,7 @@ Given a sentence, `a`, and a second sentence, `b`, from an input, upstream model
 
 Given two input sentences, we pass them through the sentence transformer network and uses mean-pooling (aka averaging) all the embeddings of words/subwords in the sentence, then compares the final [embedding using cosine similarity, a common distance measure that performs well  for multidimensional vector spaces](https://github.com/UKPLab/sentence-transformers/blob/master/docs/training/overview.md)
 
-<img src="static/assets/img/pooling.png" alt="drawing" width="600"/>
+<img src="static/assets/img/pooling.png" alt="drawing" class="img-fluid" width="600"/>
 
 Sentence Transformers has a number of pre-trained models that are on this architecutre, the most common of which is `sentence-transformers/all-MiniLM-L6-v2`, which [maps sentences and paragraphs](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) into a 384-dimension vector space. This means that each sentence is encoded in a vector of 384 values.
 
@@ -277,7 +277,7 @@ Learning embeddings was tricky not only in selecting the correct model, but also
 
 I first tried Colab, but soon found that, even at the paid tier, my instances would mysteriously get shut down or downgraded, particularly on Friday nights, when everyone is doing side projects.
 
-<img src="static/assets/img/colab.png" alt="drawing" width="600"/>
+<img src="static/assets/img/colab.png" alt="drawing" class="img-fluid" width="600"/>
 
 I then tried Paperspace but found its UI hard to navigate, although, ironically, recently it's been purchased by Digital Ocean which I always loved and have become even more a fan of over the course of this project. I settled on doing the training on AWS since I already have an account and, in doing PRs for PyTorch, [had already configured EC2 instances for deep learning.](https://vickiboykis.com/2022/07/26/how-to-prepare-an-aws-test-image-for-pytorch/)
 
@@ -305,14 +305,14 @@ Redis Search is an add-on to Redis that you can load as part of the [redis-stack
 
  For our learned embeddings which encompass ~800k documents, this process takes about ~1 minute.
 
- <img src="static/assets/img/indexing.png" alt="drawing" width="600"/>
+ <img src="static/assets/img/indexing.png" alt="drawing" class="img-fluid" width="600"/>
 
 # Lookups and Request/Response
 
 ---
  Now that we have the data in Redis, we can perform lookups within the request-response cycle. The process looks like this:
 
-  <img src="static/assets/img/request_response.png" alt="drawing" width="600"/>
+  <img src="static/assets/img/request_response.png" alt="drawing" class="img-fluid" width="600"/>
 
 
  Since we'll be doing this in the context of a web app, we write a small [Flask application](https://github.com/veekaybee/viberary/tree/main/src/api) that has several routes and captures the associated static files of the home page, the search box, and images, and takes a user query, runs it through the created search index object after cleaning the query, and returns a result:
@@ -342,8 +342,8 @@ Once we get the results from the API, we get back is a list of elements that inc
 Research has found, and perhaps your personal experience has proven, that it's hard to stare into a text box and know what to search for, particularly if
 the dataset is new to you. Additionally, [the UX of the SERP page matters greatly.](https://arxiv.org/ftp/arxiv/papers/2307/2307.01135.pdf) That's why generative AI products, such as Bard and OpenAI often have prompts or ideas of how to use that open-ended search box.
 
- <img src="static/assets/img/gpt.png" alt="drawing" width="600"/>
- <img src="static/assets/img/bard.png" alt="drawing" width="600"/>
+ <img src="static/assets/img/gpt.png" alt="drawing" class="img-fluid" width="600"/>
+ <img src="static/assets/img/bard.png" alt="drawing" class="img-fluid" width="600"/>
 
 The hard part for me was in getting users to understand how to write a successful vibe query that focused on semantic rather than direct search. I started out with a fairly simple results page that had the title and the rank of the results.
 
@@ -351,15 +351,15 @@ The hard part for me was in getting users to understand how to write a successfu
 
  It became clear that this was not satisfactory: there was no way to reference the author or to look up the book, and the ranking was confusing, particularly to non-developers who were not used to zero indexing.  I then iterated to including the links to the books so that people could introspect the results.
 
- <img src="static/assets/img/vibe2.jpeg" alt="drawing" width="600"/>
+ <img src="static/assets/img/vibe2.jpeg" alt="drawing" class="img-fluid" width="600"/>
 
  I removed the ranking because it felt more confusing and took up more computational power to include it, and additionally people generally understand that best search results are at the top. Finally, I added button suggestions for types of queries to write. I did this by looking at the list of Netflix original categories to see if I could create some of my own, and also by asking friends who had tested the app.
 
 
- <img src="static/assets/img/netflix_cats.png" alt="drawing" width="600"/>
+ <img src="static/assets/img/netflix_cats.png" alt="drawing" class="img-fluid" width="600"/>
 
 
- <img src="static/assets/img/vibe3.jpeg" alt="drawing" width="600"/>
+ <img src="static/assets/img/vibe3.jpeg" alt="drawing" class="img-fluid" width="600"/>
 
 On top of all of this, I worked to make the site load quickly both on web and mobile, since most people are mobile-first when accessing sites in 2023. And finally, I changed the color to a lighter pink to be more legible. This concludes the graphic design is my passion section of this piece.
 
@@ -401,7 +401,7 @@ All of this is run through a Makefile that has commands to build, serve, spin do
 
 Then, once the branch passes, I merge into main. The main branch does tests and pushes the latest git commit to the Digital Ocean server. I then manually go to the server, bring down the old docker image and spin up the new one, and the code changes are live.
 
- <img src="static/assets/img/deploy.png" alt="drawing" width="600"/>
+ <img src="static/assets/img/deploy.png" alt="drawing" class="img-fluid" width="600"/>
 
 Finally, on the server, I have a very scientific shell script that helps me configure each additional machine. Since I only needed to do two, it's fine that it's fairly manual at the moment.
 
@@ -414,7 +414,7 @@ Finally everything is routed to port 80 via nginx, which I configured on each Di
 
 Now, we have a working app. The final part of this was load testing, which I did with [Python's Locust library](https://locust.io/), which provides a nice interface for running any type of code against any endpoint that you specify. One thing that I realized as I was load testing was that my model was slow, and search expects instant results, so I converted it to an [ONNX artifact](https://blog.vespa.ai/stateful-model-serving-how-we-accelerate-inference-using-onnx-runtime/) and had to change the related code, as well.
 
- <img src="static/assets/img/locust.jpeg" alt="drawing" width="600"/>
+ <img src="static/assets/img/locust.jpeg" alt="drawing" class="img-fluid" width="600"/>
 
  Finally, I wrote a small logging module that propogates across the app and keeps track of everything in the docker compose logs.
 
