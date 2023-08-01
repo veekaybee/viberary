@@ -89,10 +89,10 @@ class KNNSearch:
             for i in results_docs
         ]
 
-        log_data = {"query": query, "results": [[i[1], i[2], i[3]] for i in index_vector]}
-        logging.info(log_data)
-
         deduped_results = self.dedup_by_number_of_reviews(index_vector)
+
+        log_data = {"query": query, "results": [[i[1], i[2], i[3]] for i in deduped_results]}
+        logging.info(log_data)
 
         return deduped_results
 

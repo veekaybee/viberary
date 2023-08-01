@@ -49,3 +49,6 @@ voila
 # Metrics and alerting agent
 curl -sSL https://repos.insights.digitalocean.com/install.sh | sudo bash
 ps aux | grep do-agent
+
+# Mount formatted volume for log backup
+https://docs.digitalocean.com/products/volumes/how-to/mount/
