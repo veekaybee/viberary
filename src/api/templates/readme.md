@@ -3,9 +3,13 @@
 
 ### August 1, 2023
 
-*TL;DR*: Viberary is a side project that I created to help you find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/).
+*TL;DR*: Viberary is a side project that I created to help you find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
 This project is a lot of fun, but conclusively proves to me what I've known all along about myself: reaching MLE (machine learning enlightenment) is the process of working through modeling, engineering,and UI concerns, and connecting everything together - [the system in production is the reward.](https://vickiboykis.com/2021/09/23/reaching-mle-machine-learning-enlightenment/)
+And, like any production-grade system, machine learning is not magic. Even if the data outputs are not deterministic, it takes thoughtful engineering and design
+choices to build such a system, something that I think gets overlooked these days in the ML community. I hope with this write-up
+to not only remind myself of what I did, but outline what it takes to build a production machine learning application, even a small one with a pre-trained model,
+and hope that people scope their efforts accordingly.
 
 ---
 Viberary's machine learning architecture is a [two-tower](https://blog.reachsumit.com/posts/2023/03/two-tower-model/) semantic retrieval model that encodes the user search query and the Goodreads book corpus using the
