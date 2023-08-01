@@ -3,7 +3,7 @@
 
 ### August 1, 2023
 
-*TL;DR*: Viberary is a side project that I created to help you find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
+*TL;DR*: Viberary is a side project that I created to find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
 This project is a lot of fun, but conclusively proves to me what I've known all along about myself: reaching MLE (machine learning enlightenment) is the process of working through modeling, engineering,and UI concerns, and connecting everything together - [the system in production is the reward.](https://vickiboykis.com/2021/09/23/reaching-mle-machine-learning-enlightenment/)
 And, like any production-grade system, machine learning is not magic. Even if the data outputs are not deterministic, it takes thoughtful engineering and design
@@ -443,7 +443,7 @@ The important thing is to keep benchmarking the current model against previous m
 
 # Next Steps
 
-I have a couple things on the roadmap I'd like to accomplish.
+I have a couple of things on the roadmap I'd like to accomplish.
 
 1. Include a "I'm Feeling Lucky" type button that generates one good vibe-y recommendation at random.
 2. Build out [a feature/model store](https://github.com/veekaybee/viberary/issues/73) for the model and the training data, will likely just be hosted in DigitalOcean as well, nothing super fancy, but right now it's annoying to move these artifacts around, but not annoying enough where I had enough time to build one.
