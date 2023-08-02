@@ -1,15 +1,19 @@
 
-<img src="static/assets/img/learningtired.png" alt="drawing" class="img-fluid" width="500"/>
+<center><img src="static/assets/img/learningtired.png" alt="drawing" class="img-fluid" width="500"/></center>
 
 ### August 1, 2023
 
 *TL;DR*: Viberary is a side project that I created to find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
-This project is a lot of fun, but conclusively proves to me what I've known all along about myself: reaching MLE (machine learning enlightenment) is the process of working through modeling, engineering,and UI concerns, and connecting everything together - [the system in production is the reward.](https://vickiboykis.com/2021/09/23/reaching-mle-machine-learning-enlightenment/)
+<div class="alert alert-primary" role="alert">
+			The GitHub <a href="https://github.com/veekaybee/viberary/issues">repo is here  </a>
+</div>
+
+This project is a lot of fun, but conclusively proves to me what I've known all along about myself: reaching MLE (machine learning enlightenment) is the cyclical process of working through modeling, engineering,and UI concerns, and connecting everything together - [the system in production is the reward.](https://vickiboykis.com/2021/09/23/reaching-mle-machine-learning-enlightenment/)
 And, like any production-grade system, machine learning is not magic. Even if the data outputs are not deterministic, it takes thoughtful engineering and design
-choices to build such a system, something that I think gets overlooked these days in the ML community. I hope with this write-up
-to not only remind myself of what I did, but outline what it takes to build a production machine learning application, even a small one with a pre-trained model,
-and hope that people scope their efforts accordingly.
+choices to build any system like this, something that I think gets overlooked these days in the ML community.
+
+I hope with this write-up to not only remind myself of what I did, but outline what it takes to build a production Transformer-based machine learning application, even a small one with a pre-trained model, and hope it serves as a resource and reference point.
 
 ---
 Viberary's machine learning architecture is a [two-tower](https://blog.reachsumit.com/posts/2023/03/two-tower-model/) semantic retrieval model that encodes the user search query and the Goodreads book corpus using the
@@ -21,13 +25,12 @@ The training data is generated locally by [proessing JSON in DuckDB](https://git
 
 <img src="static/assets/img/tactical_app.png" alt="drawing" class="img-fluid" width="800"/>
 
-It's served from two [Digital Ocean droplets](https://www.digitalocean.com/products/droplets) behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between the web server and Redis Docker image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with [AWS Route53](https://aws.amazon.com/route53/) serving as the domain registrar and load balancer router.
+It's served from two [Digital Ocean droplets](https://www.digitalocean.com/products/droplets) behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between the web server and Redis Docker image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with [Digital Ocean] serving as the domain registrar and load balancer router.
 
-<img src="static/assets/img/physical_arch.png" alt="drawing" class="img-fluid" width="800"/>
+<img src="static/assets/img/physical_arch_2.png" alt="drawing" class="img-fluid" width="800"/>
 
 The deployable code artifact is generated through [GitHub actions](https://github.com/veekaybee/viberary/tree/main/.github/workflows) on the main branch of the repo and then I manually refresh the docker image on the droplets through a set of Makefile commands. This all works fairly well at this scale for now.
 
-All of this is [in the repo.](https://github.com/veekaybee/viberary)
 
 # What is semantic search?
 
@@ -75,14 +78,13 @@ These labels were then incorporated into Netflix's [recommendation architectures
 
 It can be easier to incorporate these kinds of features into recommendations than search because the process of recommendation is the process of implicitly learning user preferences through data about the user and offering them suggestions of content or items to purchase based on their past history, as well as the history of users across the site, or based on the properties of the content itself. As such, [recommender interfaces often include lists of suggestions](https://www.nngroup.com/articles/recommendation-guidelines/) like `"you might like.."` or `"recommended for you"`, or `"because you interacted with X.."`
 
-
 Search, on the other hand, is an activity where the user expects their query to match results exactly, so users have specific expectations of modern search interfaces:
 
 1. They are [extremely responsive and low-latency](http://glinden.blogspot.com/2006/11/marissa-mayer-at-web-20.html)
 2. Results are accurate and we get what we need in the first page
 3. We use text boxes the same way [we have been conditioned](https://arxiv.org/pdf/2301.08613.pdf) to use Google Search over the past 30 years in the SERP (search engine results page)
 
-As a result, in some ways, there is a tension between what makes  traditional search interface and semantic search successful respectively, because semantic search is in that gray area between search and recommendations and traditional search expects exact results for exact queries. These are important aspects to keep in mind when designing conversational or semantic search interfaces.
+As a result, in some ways, there is a tension between what makes  traditional search interface and semantic search successful respectively, because semantic search is in that gray area between search and recommendations and traditional search expects exact results for exact queries. These are important aspects to keep in mind when designing conversational or semantic search interfaces. For more on this, [check out this recent article on Neeva.](https://www.theverge.com/2023/5/20/23731397/neeva-search-engine-google-shutdown)
 
 Many search engines today, Google included, use a blend of traditional keyword search and semantic search to offer both direct results and related content, and with the explosion of generative AI and chat-based search and recommendation interfaces, this [division is becoming even blurrier.](https://docs.google.com/presentation/d/12aoYVaqus600NEuWASw_eF9xSDXGUMzGedAftfqBCCE/edit)
 
@@ -295,9 +297,9 @@ Some are better, some are worse, it all depends on your criteria. Here were my c
 + an existing technology I'd worked with before
 + something I could host on my own and introspect
 + something that provided blazing-fast inference
-+ a software package where the documentation tells you O(n) performance time of [all its constitutent data structures](https://redis.io/docs/data-types/hashes/)
++ a software package where the documentation tells you `O(n)` performance time of [all its constitutent data structures](https://redis.io/docs/data-types/hashes/)
 
-I'm just kidding about the last one but it's one of the things I love about the Redis documentation. Since I'd previously worked with Redis as a cache, already knew it to be highly reliable and relatively simple to use, as well as plays well with high-traffic web apps and available packaged in Docker, which I would need for my next step to production, I went with [Redis Search](https://redis.io/docs/interact/search-and-query/), which offers storage and inference out of the box, as well as frequently updated Python modules.
+I'm kidding about the last one but it's one of the things I love about the Redis documentation. Since I'd previously worked with Redis as a cache, already knew it to be highly reliable and relatively simple to use, as well as plays well with high-traffic web apps and available packaged in Docker, which I would need for my next step to production, I went with [Redis Search](https://redis.io/docs/interact/search-and-query/), which offers storage and inference out of the box, as well as frequently updated Python modules.
 
 Redis Search is an add-on to Redis that you can load as part of the [redis-stack-server Docker image](https://github.com/RediSearch/RediSearch).
 
@@ -310,7 +312,7 @@ Redis Search is an add-on to Redis that you can load as part of the [redis-stack
 # Lookups and Request/Response
 
 ---
- Now that we have the data in Redis, we can perform lookups within the request-response cycle. The process looks like this:
+Now that we have the data in Redis, we can perform lookups within the request-response cycle. The process looks like this:
 
   <img src="static/assets/img/request_response.png" alt="drawing" class="img-fluid" width="600"/>
 
@@ -407,7 +409,7 @@ Finally, on the server, I have a very scientific shell script that helps me conf
 
 <script src="https://gist.github.com/veekaybee/f5ff921355e6cd3970bd097dcb0fbc35.js"></script>
 
-Finally everything is routed to port 80 via nginx, which I configured on each DigitalOcean droplet that I created. I load balanced two droplets behind a load balancer, pointing to the same web address, a domain I bought from Amazon's Route 53.
+Finally everything is routed to port 80 via nginx, which I configured on each DigitalOcean droplet that I created. I load balanced two droplets behind a load balancer, pointing to the same web address, a domain I bought from Amazon's Route 53. I eventually had to transfer the domain to Digital Ocean, because it's easier to manage SSL and HTTPS on the load balancer when all the machines are on the same provider.
 
 <script src="https://gist.github.com/veekaybee/f18ce09aa50c7cfdcb61300770ef8f52.js"></script>
 
