@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 from fakeredis import FakeRedis
@@ -18,12 +18,16 @@ def redis_mock():
     return FakeRedis()
 
 
-def knn_search_mock(redis_mock):
-    pass
+@pytest.fixture
+def mock_knn_search():
+    # Create a mock for the KNNSearch class
+    return Mock(spec=KNNSearch)
 
 
-@patch.object(KNNSearch, "__init__", knn_search_mock)
-def test_search_with_post_request(test_client):
-    response = test_client.post("/search", data={"query": "test_query"})
+def test_search_endpoint(test_client, mock_knn_search):
+    with patch("search.knn_search.KNNSearch", return_value=mock_knn_search):
+        response = test_client.post("/search", data={"query": "test_query"})
+
+    # Assertions on the redirect and the KNNSearch mock
     assert response.status_code == 302
     assert "/search/results?query=test_query" in response.headers["Location"]
