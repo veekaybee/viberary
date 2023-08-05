@@ -1,7 +1,7 @@
 
 <center><img src="static/assets/img/learningtired.png" alt="drawing" class="img-fluid" width="500"/></center>
 
-### August 1, 2023
+### August 5, 2023
 
 *TL;DR*: Viberary is a side project that I created to find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
@@ -36,15 +36,15 @@ The deployable code artifact is generated through [GitHub actions](https://githu
 
 ---
 
-Viberary is a semantic search engine for book recommendations.  It finds books based on &#10024;vibe&#10024;. This is in contrast to traditional search engines, which work by performing lexical keyword
-matching on terms like rather than exact
+Viberary is a semantic search engine for books.  It finds books based on &#10024;vibe&#10024;. This is in contrast to traditional search engines, which work by performing lexical keyword
+matching on terms like exact
 keyword matches by genre, author, and title - as an example, if you type in "Nutella" into the search engine, it will try to find all documents that specifically have the word "Nutella" in the document.
 
-Traditional search engines, including Elasticsearch/OpenSearch do this lookup quickly by building [an inverted
+Traditional search engines, including Elasticsearch/OpenSearch do this lookup efficiently by building [an inverted
 index](https://en.wikipedia.org/wiki/Inverted_index), a data structure that creates a
 key/value pair where the key is the term and the value is a collection of all the documents that match the term and performing retrieval from the inverted index. Retrieval performance from an inverted index can vary depending on how it's implemented, but it is `O(1)` in the best case, making it an efficient data structure.
 
-A commonc classic retrieval method from an inverted index is BM25, which is based on TF-IDF and calculates a relevance score for each element in an inverted index. The retrieval mechanism first selects all the documents with the keyword from the index, the calculates a relevance score, then ranks the documents based on the relevance score.
+A commonc classic retrieval method from an inverted index is [BM25](https://en.wikipedia.org/wiki/Okapi_BM25), which is based on [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) and calculates a relevance score for each element in the inverted index. The retrieval mechanism first selects all the documents with the keyword from the index, the calculates a relevance score, then ranks the documents based on the relevance score.
 
 <img src="static/assets/img/inverted_index.png" alt="drawing" class="img-fluid" width="400"/>
 
@@ -57,7 +57,7 @@ Semantic search, in contrast, looks for near-meanings based on, as ["AI-Powered 
 Semantic search is a vibe. A vibe can be hard to define, but generally it's more of a feeling of association
 than something concrete: a mood, a color, or a phrase. Viberary will not give you exact matches for "Nutella", but if you type in "chocolately hazlenut goodness", the expectation is that you'd get back Nutella, and probably also "cake" and "Ferrerro Rocher". Semantic search methods include and semantic similarity measures, semantic query expansion.
 
-Typically today, search engines will try a number of both keyword-based and semantic approaches in a solution known as hybrid search. Semantic search includes methods like learning to rank, belnding several retrieval models, query expansion which looks to enhance search results by adding synonyms to the original query, contextual search based on the user's history and location, and vector similarity search, which looks to use NLP to help project the user's query in a vector space.
+Typically today, search engines will implement a number of both keyword-based and semantic approaches in a solution known as hybrid search. Semantic search includes methods like learning to rank, belnding several retrieval models, query expansion which looks to enhance search results by adding synonyms to the original query, contextual search based on the user's history and location, and vector similarity search, which looks to use NLP to help project the user's query in a vector space.
 
 <img src="static/assets/img/search_tree.png" alt="drawing" class="img-fluid" width="600"/>
 
@@ -109,9 +109,9 @@ Biblioracle](https://themorningnews.org/article/greetings-from-the-biblioracle),
 send John Warner, an extremely well-read novelist, a list of the last five books they've read and he recommends their next read
 based on their reading preferences.
 
-Given the recent rise in interest of semantic search and vector databases, as well as [the paper I just finished on embeddings](http://vickiboykis.com/what_are_embeddings/), I thought it would interesting if I could create a book recommendation engine that gets at least somewhat close to what book nerd humans can provide out of the box.
+Given the recent rise in interest of semantic search and vector databases, as well as [the paper I just finished on embeddings](http://vickiboykis.com/what_are_embeddings/), I thought it would interesting if I could create a book search engine that gets at least somewhat close to what book nerd recommending humans can provide out of the box.
 
-I started by formulating the machine learning task as a recommendation problem: given that you know something about either a user or the item, can you generate a list of similar items that other users like the user has liked? We can either do this through collaborative filtering, which looks at previous user-item interactions, or content filtering, which looks purely at metadata of the items and returns similar items. Given that  I have no desire to get deep into user data collection, with the exception of search queries and search query result lists, which I currently do log to see if I can fine-tune the model or offer suggestions at query time, collaborative filtering was off the table from the start.
+I started out by formulating the machine learning task as a recommendation problem: given that you know something about either a user or the item, can you generate a list of similar items that other users like the user has liked? We can either do this through collaborative filtering, which looks at previous user-item interactions, or content filtering, which looks purely at metadata of the items and returns similar items. Given that  I have no desire to get deep into user data collection, with the exception of search queries and search query result lists, which I currently do log to see if I can fine-tune the model or offer suggestions at query time, collaborative filtering was off the table from the start.
 
 Content-based filtering, i.e. looking at a book's metadata rather than particular actions around a piece of content,  would work well here for books. However, for content-based filtering, we also need information about the user's preferences, which, again, I'm not storing.
 
@@ -134,18 +134,18 @@ Their problem was more complicated in that, in addition to semantic search they 
 # Architecting Semantic Search
 
 ---
-There are several stages to building semantic search that overlap closely with the classical stages of [a four-stage recommender system](https://medium.com/nvidia-merlin/recommender-systems-not-just-recommender-models-485c161c755e):
+There are several stages to building semantic search that are related to some of the stages in [a traditional four-stage recommender system](https://medium.com/nvidia-merlin/recommender-systems-not-just-recommender-models-485c161c755e):
 
 <img src="static/assets/img/model_steps.png" alt="drawing" class="img-fluid" width="600"/>
 
 1. Data Collection
 2. Modeling and generating embeddings
 3. Indexing the embeddings
-4. Model Inference, inclduing filtering,
+4. Model Inference, inclduing filtering
 
 and a fifth stage that's often not included in search/recsys architectures but that's just as important, Search/Conversational UX design.
 
-Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities that we've been developing for years. It's interesting to note that [Tapestry](https://dl.acm.org/doi/pdf/10.1145/138859.138867), one of the first industrial recommender systems created in the 1990s to collaboratively filter newsletters, has an extremely similar structure to any search and recommendation system today, including components for indexing and filtering.
+Most [search and recommendation architectures](https://eugeneyan.com/writing/system-design-for-discovery/) share a foundational set of commonalities that we've been developing for years. It's interesting to note that [Tapestry](https://dl.acm.org/doi/pdf/10.1145/138859.138867), one of the first industrial recommender systems created in the 1990s to collaboratively filter emails, has an extremely similar structure to any search and recommendation system today, including components for indexing and filtering.
 
 <img src="static/assets/img/tapestry.png" alt="drawing" class="img-fluid" width="600"/>
 
@@ -168,14 +168,14 @@ Second, I wanted to explore new technologies while also being careful of not was
 
 The third factor was to try to ignore [the hype blast of the current ML ecsystem](https://vickiboykis.com/2022/11/10/how-i-learn-machine-learning/), which comes out with a new model and a new product and a new wrapper for the model for the product every day. It wasn't easy. It is extremely hard to ignore the noise and just build, particularly given all the discourse around LLMs and now in society at large.
 
-Finally, I wanted to build everything as a traditional self-contained app with various components that were [easy to understand by their names](https://vickiboykis.com/2023/06/29/naming-things/), and reusable components across the app. The architecture as it stands looks like this:
+Finally, I wanted to build everything as a traditional self-contained app with various components that were [easy to understand](https://vickiboykis.com/2023/06/29/naming-things/), and reusable components across the app. The architecture as it stands looks like this:
 
 <script src="https://gist.github.com/veekaybee/0b2974c18b11f6b436b7fc620234c98a.js"></script>
 
 
-I wish I could say that I planned all of this out in advance, and the project that I eventually shipped was exactly what I had envisioned. But, like with any engineering effort, I had a bunch of false starts and dead ends. I started out [using Big Cloud](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/), a strategic mistake that cost me a lot of time and frustration because I couldn't see inside the cloud components and slowed down development cycles.  I eventually moved to data processing using DuckDB, but [it still look a long time to make this change](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/), as is typically the case in any data-centric project.
+I wish I could say that I planned all of this out in advance, and the project that I eventually shipped was exactly what I had envisioned. But, like with any engineering effort, I had a bunch of false starts and dead ends. I started out [using Big Cloud](https://vickiboykis.com/2022/12/05/the-cloudy-layers-of-modern-day-programming/), a strategic mistake that cost me a lot of time and frustration because I couldn't easily introspect the cloud components. This slowed down development cycles.  I eventually moved to local data processing using DuckDB, but [it still look a long time to make this change and get to data understanding](https://vickiboykis.com/2023/01/17/welcome-to-the-jungle-we-got-fun-and-frames/), as is typically the case in any data-centric project.
 
-Then, I spent a long time [working through creating baseline models in Word2Vec](https://github.com/veekaybee/viberary/releases/tag/v0.0.1) so I could get some context for baseline text retrieval methods in the pre-Transformer era.  Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and correctly routing Nginx.
+Then, I spent a long time [working through creating baseline models in Word2Vec](https://github.com/veekaybee/viberary/releases/tag/v0.0.1) so I could get some context for baseline text retrieval methods in the pre-Transformer era.  Finally, in going from local development to production, I hit [a bunch of different snags](https://vickiboykis.com/2023/07/18/what-we-dont-talk-about-when-we-talk-about-building-ai-apps/), most of them related to making Docker images smaller, thinking about the size of the machine I'd need for infrence, Docker networking, load testing traffic, and, a long time on correctly routing Nginx behind a load balancer.
 
 Generally, though, I'm really happy with this project, [guided by the spirit of Normconf](https://normconf.com/) and all the great normcore ML engineering ideas [I both put in and took away from](https://vickiboykis.com/2022/12/22/everything-i-learned-about-accidentally-running-a-successful-tech-conference/) people in the field looking to build practical solutions.
 
@@ -255,7 +255,7 @@ Viberary uses [Sentence Transformers](https://www.sbert.net/), a modified versio
 
 This fits our use case because our input documents are several sentences long, and our query will be a keyword like search of at most 10 or 11 words, much like a short sentence.
 
-BERT stands for Bi-Directional Encoder and was released 2018, based on a paper written by Google as a way to solve common natural language tasks like sentiment analysis, question-answering, and text summarization. BERT is a transformer model, also based on the attention mechanism, but its architecture is such that it only includes the encoder piece. Its most prominent usage is in Google Search, where it’s the algorithm powering surfacing relevant search results. In the blog post they released on including BERT in search ranking in 2019, Google specifically discussed adding context to queries as a replacement for keyword-based methods as a reason they did this. BERT works as a masked language model, which means it works by removing words in the middle of sentences and guessing the probability that a given word fills in the gap. The B in Bert is for bi- directional, which means it pays attention to words in both ways through scaled dot-product attention. BERT has 12 transformer layers. It starts by using WordPiece, an algorithm that segments words into subwords, into tokens. To train BERT, the goal is to predict a token given its context.
+BERT stands for Bi-Directional Encoder and was released 2018, based on a paper written by Google as a way to solve common natural language tasks like sentiment analysis, question-answering, and text summarization. BERT is a transformer model, also based on the attention mechanism, but its architecture is such that it only includes the encoder piece. Its most prominent usage is in Google Search, where it’s the algorithm powering surfacing relevant search results. In the blog post they released on including BERT in search ranking in 2019, Google specifically discussed adding context to queries as a replacement for keyword-based methods as a reason they did this. BERT works as a masked language model, which means it works by removing words in the middle of sentences and guessing the probability that a given word fills in the gap. The B in Bert is for bi- directional, which means it pays attention to words in both ways through scaled dot-product attention. BERT has 12 transformer layers. It uses WordPiece, an algorithm that segments words into subwords, into tokens. To train BERT, the goal is to predict a token given its context, or the tokens surrounding it.
 
 The output of BERT is latent representations of words and their context — a set of embeddings. BERT is, essentially, an enormous parallelized Word2Vec that remembers longer context windows. Given how flexible BERT is, it can be used for a number of tasks, from translation, to summarization, to autocomplete. Because it doesn’t have a decoder component, it can’t generate text, which paved the way for GPT models to pick up where BERT left off.
 
