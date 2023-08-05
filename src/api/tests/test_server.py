@@ -20,7 +20,6 @@ def redis_mock():
 
 @pytest.fixture
 def mock_knn_search():
-    # Create a mock for the KNNSearch class
     return Mock(spec=KNNSearch)
 
 
