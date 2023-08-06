@@ -1,5 +1,5 @@
 import markdown2
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 
 from conf.config_manager import ConfigManager
 from conf.redis_conn import RedisConnection
@@ -32,13 +32,18 @@ def render_template_from_markdown():
     return render_template("how_markdown.html", markdown_content=html_content)
 
 
-@app.route("/search", methods=["POST", "GET"])
+@app.route("/search", methods=["GET", "POST"])
 def search() -> str:
-    word = None
-
     if request.method == "POST":
-        word = request.form.get("query", "")
-    elif request.method == "GET":
-        word = request.args.get("query", "")
+        query = request.form.get("query")
+        # Redirect to the URL with the query parameter in the response
+        return redirect(url_for("search_results", query=query))
+    else:
+        query = request.args.get("query")
+        return get_model_results(query, retriever)
 
-    return get_model_results(word, retriever)
+
+@app.route("/search/results")
+def search_results():
+    query = request.args.get("query")
+    return get_model_results(query, retriever)

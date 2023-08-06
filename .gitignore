@@ -3,6 +3,7 @@ bin/*
 lib/
 .DS_Store
 .ipynb_checkpoints
+output*
 
 # Docker Compose Override for arm64 arch
 docker-compose.override.yml
