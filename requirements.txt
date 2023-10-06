@@ -5,7 +5,7 @@ evaluate
 fakeredis
 gitdb==4.0.10
 gunicorn
-locust==2.15.1
+locust==2.16.1
 markdown2
 mkl
 mkl-include
