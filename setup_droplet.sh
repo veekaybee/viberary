@@ -4,13 +4,19 @@ sudo apt-get update
 # web app goes in www
 cd /var/www
 
-# Add Github keys
 # Sync with Github using key
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
 # Install nginx https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04
 sudo apt update
 sudo apt install nginx
+
+#
+sudo vi /etc/nginx/sites-available/viberary
+sudo systemctl reload nginx
+sudo systemctl restart nginx
+sudo ufw allow 'Nginx Full'
+sudo nginx -s reload
 
 ```
 server {
@@ -24,7 +30,7 @@ server {
     }
 
 }
-`
+```
 
 # Install docker
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
@@ -35,16 +41,21 @@ sudo apt install docker-ce
 sudo systemctl status docker
 sudo apt-get install docker-compose-plugin
 
+# Clone repo
+
 
 # set up app
 make build
 
-#ssh over transformer model
+# copy transformer model
 scp
 make up-intel
 make embed
 
-voila
+# Set Up Certificate:
+sudo vi /etc/nginx/sites-available/viberary
+sudo ufw allow 443
+sudo certbot certonly --standalone --preferred-challenges https -d viberary.pizza
 
 # Metrics and alerting agent
 curl -sSL https://repos.insights.digitalocean.com/install.sh | sudo bash
@@ -52,3 +63,6 @@ ps aux | grep do-agent
 
 # Mount formatted volume for log backup
 https://docs.digitalocean.com/products/volumes/how-to/mount/
+
+# Where to find logs:
+cd /mnt/viberary

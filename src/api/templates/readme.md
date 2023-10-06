@@ -3,7 +3,7 @@
 
 ### August 5, 2023
 
-*TL;DR*: Viberary is a side project that I created to find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade compliment to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
+*TL;DR*: Viberary is a side project that I created to find books by __vibe__. I built it to satisfy an itch to do [ML side projects](https://vickiboykis.com/2020/06/09/getting-machine-learning-to-production/)  and navigate the current boundary between search and recommendations. It's a production-grade complement to [my recent deep dive into embeddings.](http://vickiboykis.com/what_are_embeddings/)
 
 <div class="alert alert-primary" role="alert">
 			The GitHub <a href="https://github.com/veekaybee/viberary/issues">repo is here  </a>
@@ -55,9 +55,9 @@ Semantic search, in contrast, looks for near-meanings based on, as ["AI-Powered 
 <img src="static/assets/img/semantic_search.png" alt="drawing" class="img-fluid" width="400"/>
 
 Semantic search is a vibe. A vibe can be hard to define, but generally it's more of a feeling of association
-than something concrete: a mood, a color, or a phrase. Viberary will not give you exact matches for "Nutella", but if you type in "chocolately hazlenut goodness", the expectation is that you'd get back Nutella, and probably also "cake" and "Ferrerro Rocher". Semantic search methods include and semantic similarity measures, semantic query expansion.
+than something concrete: a mood, a color, or a phrase. Viberary will not give you exact matches for "Nutella", but if you type in "chocolately hazlenut goodness", the expectation is that you'd get back Nutella, and probably also "cake" and "Ferrerro Rocher".
 
-Typically today, search engines will implement a number of both keyword-based and semantic approaches in a solution known as hybrid search. Semantic search includes methods like learning to rank, belnding several retrieval models, query expansion which looks to enhance search results by adding synonyms to the original query, contextual search based on the user's history and location, and vector similarity search, which looks to use NLP to help project the user's query in a vector space.
+Typically today, search engines will implement a number of both keyword-based and semantic approaches in a solution known as hybrid search. Semantic search includes methods like learning to rank, blending several retrieval models, query expansion which looks to enhance search results by adding synonyms to the original query, contextual search based on the user's history and location, and vector similarity search, which looks to use NLP to help project the user's query in a vector space.
 
 <img src="static/assets/img/search_tree.png" alt="drawing" class="img-fluid" width="600"/>
 
@@ -69,7 +69,7 @@ The problem of semantic search  is one researchers and companies have been grapp
 </blockquote>
 The tension of the ability to make search engines work effectively in the space between [query understanding](https://queryunderstanding.com/) through human enrichment and getting machines to better understand user intent has always been present.
 
-Netflix was one of the first companies that started doing vibe-based content exploration when it [came up with a list of over 36, 00
+Netflix was one of the first companies that started doing vibe-based content exploration when it [came up with a list of over 36,000
 genres](https://www.netflix.com/tudum/articles/netflix-secret-codes-guide) like "Gentle British
 Reality TV" and "WitchCraft and the Dark Arts" in the 2010s. They [used large teams of people](https://www.theatlantic.com/technology/archive/2014/01/how-netflix-reverse-engineered-hollywood/282679/) to watch
 movies and tag them with metadata. The process was so detailed that taggers received a 36-page document that "taught them how to rate movies on their sexually suggestive content, goriness, romance levels, and even narrative elements like plot conclusiveness."
@@ -259,7 +259,7 @@ BERT stands for Bi-Directional Encoder and was released 2018, based on a paper w
 
 The output of BERT is latent representations of words and their context — a set of embeddings. BERT is, essentially, an enormous parallelized Word2Vec that remembers longer context windows. Given how flexible BERT is, it can be used for a number of tasks, from translation, to summarization, to autocomplete. Because it doesn’t have a decoder component, it can’t generate text, which paved the way for GPT models to pick up where BERT left off.
 
-However, this architecture doesn't work well for parallelizing sentence similarity, whcih is where sentence transformers comes in.
+However, this architecture doesn't work well for parallelizing sentence similarity, which is where sentence-transformers comes in.
 
 Given a sentence, `a`, and a second sentence, `b`, from an input, upstream model with BERT or similar variations as its source data and model weights, we'd like to learn a model whose output is a similarity score for two sentences. In the process of generating that score, the intermediate layers of that model give us embeddings for subsentences and words that we can then use to encode our query and corpus and do semantic similarity matching.
 
@@ -273,7 +273,7 @@ The initial results of this model were [just so-so](https://github.com/veekaybee
 
 I chose `msmarco-distilbert-base-v3`, which is middle of the pack in terms of performance, and critically, is also tuned for cosine similarity lookups, instead of dot product, another similarity measure that takes into account both magnitude and direction.  Cosine similarity only considers direction rather than size, making cosine similarity more suited for information retrieval with text because it's not as affected by text length, and additionally, it's more efficent at handling sparse representations of data.
 
-There was a problem, however, because the vectors for this series of models was twice as long, at `768` dimensions per embedding vector. The longer a vector is, the more computationally intensive it is to work with, increasing,  with the runtime and the memory requirement grows quadratic with the input length. However, the logner it is,  the more information about the original input it compresses, so there is always a fine-lined tradeoff between being able to encode more information and faster inference, which is critical in search applications.
+There was a problem, however, because the vectors for this series of models was twice as long, at `768` dimensions per embedding vector. The longer a vector is, the more computationally intensive it is to work with, increasing,  with the runtime and the memory requirement grows quadratic with the input length. However, the longer it is,  the more information about the original input it compresses, so there is always a fine-lined tradeoff between being able to encode more information and faster inference, which is critical in search applications.
 
 Learning embeddings was tricky not only in selecting the correct model, but also because everyone in the entire universe is using GPUs right now.
 
@@ -327,7 +327,7 @@ that data gets passed into the model through a KNN Search object which takes a R
 
 The [search class](https://github.com/veekaybee/viberary/blob/main/src/search/knn_search.py#L13) is where most of the real work happens. First, the user query string is parsed and sanitized, although in theory, in BERT models, you should be able to send the text as-is, since BERT was originally trained on data that does not do text clean-up and parsing, like traditional NLP does.
 
-Then, that data is rewritten into the Python dialect for the Redis query syntax. The search syntax is can be a little hard to work with  originally, both in the Python API and on the Redis CLI, so I spent a lot of time playing aorund with this and figuring out what works best, as well as tuning the hyperparameters passed in [from the config file](https://github.com/veekaybee/viberary/blob/9f55493e0c8f77c0727df9c0e9191033469e468a/config.yml#L24), such as the number of results, the vector size, and the float type (very important to make sure all these hyperparameters are correct given the model and vector inputs, or none of this works correctly.)
+Then, that data is rewritten into the Python dialect for the Redis query syntax. The search syntax is can be a little hard to work with  originally, both in the Python API and on the Redis CLI, so I spent a lot of time playing around with this and figuring out what works best, as well as tuning the hyperparameters passed in [from the config file](https://github.com/veekaybee/viberary/blob/9f55493e0c8f77c0727df9c0e9191033469e468a/config.yml#L24), such as the number of results, the vector size, and the float type (very important to make sure all these hyperparameters are correct given the model and vector inputs, or none of this works correctly.)
 
 <script src="https://gist.github.com/veekaybee/fdd340a2d1362d33166b402529af3dec.js"></script>
 
@@ -335,7 +335,7 @@ Then, that data is rewritten into the Python dialect for the Redis query syntax.
 
 It then returns the closest elements, ranked by cosine similarity. In our case, it returns the document whose 768-dimension vector most closely matches the 768-dimension vector generated by our model at query time.
 
-The final piece of this is filtering and ranking. We sort by cosine similarity descending, but then also by the number of reviews - we want to return not only books that are relevant to the query, but books that are high-quality, where number of reviews is (questionably) a proxy for the fact that people have read them. If we wanted to experiment with this, we could return by cosine similarity and then by nubmer of stars, etc. There are nermous ways to fine-tune.
+The final piece of this is filtering and ranking. We sort by cosine similarity descending, but then also by the number of reviews - we want to return not only books that are relevant to the query, but books that are high-quality, where number of reviews is (questionably) a proxy for the fact that people have read them. If we wanted to experiment with this, we could return by cosine similarity and then by nubmer of stars, etc. There are numerous ways to fine-tune.
 
 # Getting the UI Right
 
