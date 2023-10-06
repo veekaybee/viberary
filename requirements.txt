@@ -1,11 +1,11 @@
-Flask==2.2.3
+Flask==2.2.2
 GitPython==3.1.32
 duckdb==0.7.1
 evaluate
 fakeredis
 gitdb==4.0.10
 gunicorn
-locust
+locust==2.15.1
 markdown2
 mkl
 mkl-include
