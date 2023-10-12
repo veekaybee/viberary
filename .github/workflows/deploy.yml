@@ -33,6 +33,7 @@ jobs:
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py39 .
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py39 .
+
       - name: Test with pytest
         run: |
           pytest
@@ -41,7 +42,7 @@ jobs:
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} ${{ secrets.SSH_HOST_VIBERARY_BETA }} > ~/.ssh/known_hosts
+          ssh-keyscan -t rsa -H ${{ secrets.SSH_HOST }} ${{ secrets.SSH_HOST_VIBERARY_BETA }} >> ~/.ssh/known_hosts
 
       - name: connect to viberary_alpha and pull
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull origin main && exit"
