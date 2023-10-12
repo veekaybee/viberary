@@ -65,7 +65,7 @@ The artifact is generated through GitHub actions on the main branch of the repo 
     + `conf` - There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
       into Redis for easy retrieval by the application
     + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource
-      there [is this notebook](https://github.com/veekaybee/viberary/blob/main/notebooks/05_duckdb_0.7.1.ipynb), which
+      there [is this notebook](https://github.com/veekaybee/viberary/blob/main/src/notebooks/05_duckdb_0.7.1.ipynb), which
       covers the end-to-end workflow of starting with raw data, processing in DuckDB, learning a Word2Vec embeddings
       model, ([Annotated output is here.](https://colab.research.google.com/gist/veekaybee/a40d8f37dd99eda2e6d03f4c10671674/cbow.ipynb)) and storing and querying those embeddings in Redis Search. This is the solution I eventually turned into
       the application directory structure.
