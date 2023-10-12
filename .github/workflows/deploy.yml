@@ -37,22 +37,20 @@ jobs:
         run: |
           pytest
 
-      - name: install ssh keys viberary_alpha
+      - name: install ssh keys on viberary_alpha and viberary_beta
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} ${{ secrets.SSH_HOST_VIBERARY_BETA }} > ~/.ssh/known_hosts
+
       - name: connect to viberary_alpha and pull
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull origin main && exit"
-      - name: cleanup
+
+      - name: cleanup viberary alpha
         run: rm -rf ~/.ssh
 
-      - name: install ssh keys viberary_beta
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST_VIBERARY_BETA }} > ~/.ssh/known_hosts
       - name: connect to viberary_beta and pull
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_VIBERARY_BETA }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull origin main && exit"
-      - name: cleanup (second server)
+
+      - name: cleanup (viberary beta)
         run: rm -rf ~/.ssh
