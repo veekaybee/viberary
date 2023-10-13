@@ -1,11 +1,13 @@
 # update machine
 sudo apt-get update
 
+
 # web app goes in www
 cd /var/www
 
 # Sync with Github using key
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
 
 # Install nginx https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04
 sudo apt update
@@ -41,13 +43,10 @@ sudo apt install docker-ce
 sudo systemctl status docker
 sudo apt-get install docker-compose-plugin
 
-# Clone repo
-
-
 # set up app
 make build
 
-# copy transformer model
+# copy model
 scp
 make up-intel
 make embed
@@ -65,4 +64,18 @@ ps aux | grep do-agent
 https://docs.digitalocean.com/products/volumes/how-to/mount/
 
 # Where to find logs:
-cd /mnt/viberary
+`cd /mnt/viberary`
+
+# Back up logs to Spaces
+```
+sudo apt-get update && sudo apt-get install s3cmd
+sudo apt-get install s3cmd
+s3cmd --configure
+s3cmd ls
+s3cmd put mnt/viberary s3://viberary-beta
+```
+
+# Add Droplet to GH Actions for CI
+```
+https://github.com/veekaybee/viberary/blob/e07c72bcfa6fa4c23e9005761f8a19e18f6d8c57/.github/workflows/deploy.yml#L41
+```
