@@ -32,21 +32,33 @@ The training data is generated locally in DuckDB and the model is converted to O
 
 <img src="https://raw.githubusercontent.com/veekaybee/viberary/main/src/api/static/assets/img/physical_arch.png" alt="drawing" width="600"/>
 
-It's served from two Digital Ocean droplets behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between a web server and Redis image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with AWS Route53 serving as the domain registrar and load balancer router.
+It's served from one Digital Ocean droplets behind a [Digital Ocean load balancer](https://www.digitalocean.com/products/load-balancer) and [Nginx](https://vicki.substack.com/p/when-you-write-a-web-server-but-you), as a Dockerized application with networking spun up through Docker compose between a web server and Redis image, with data persisted to [external volumes in DigitalOcean](https://docs.digitalocean.com/products/volumes/),  with AWS Route53 serving as the domain registrar and load balancer router.
 
-The artifact is generated through GitHub actions on the main branch of the repo and then I manually refresh the docker image on the droplets through a set of Makefile commands.
+The artifact is generated through GitHub actions on the main branch of the repo.  I manually pull the new docker image on the droplet.
 
 # Running the project
 
+## If you don't have the model (start from training data)
 1. Fork/clone the repo
 2. Go to the project root (`viberary`)
-3. Donwload the [corpus embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) to
+3. Download the [corpus embeddings file](https://github.com/veekaybee/viberary/releases/tag/v0.0.2) to
 `/viberary/src/training_data`.
 4. Go to the root of the repo and run `make onnx` to generate the runnable model artifact.
-5. `make build-arm (or make build-intel)` - Builds the docker image depending on your architecture
-4. `make up` - Docker compose running in background
-5. `make embed` - indexes the embeddings once the web server is running
-7. `localhost:8000` - Loads the web server
+5. `make build ` - Builds the docker image
+6. `make up-arm(or make up-intel)` - Docker compose running in background depending on your system architecture
+7. `make embed` - indexes the embeddings once the web server is running
+8. `localhost:8000` - Loads the web server
+
+## If you have the model: (Get from DigitalOcean Spaces)
+1. Get model artifacts from here: https://github.com/veekaybee/viberary_model and add them to `sentence_transformers`
+2. `make build ` - Builds the docker image
+3. `make up-arm( or make up-intel)` - Docker compose running in background depending on your system architecture
+4. `make embed` - indexes the embeddings once the web server is running
+5. `localhost:8000` - Loads the web server
+
+## Running Evaluation
+
+1.
 
 # Monitoring the project
 
@@ -158,12 +170,11 @@ Note these are all encoded as strings!
 
 ## Roadmap
 
-Here's a list of refinements I'd like to make to this project:
-
-1. Include a "I'm Feeling Lucky" type button that generates one good vibe-y recommendation at random.
-2. Build out [a feature/model store](https://github.com/veekaybee/viberary/issues/73) for the model and the training data, will likely just be hosted in DigitalOcean as well, nothing super fancy, but right now it's annoying to move these artifacts around, but not annoying enough where I had enough time to build one.
-3. If model performance becomes an issue, migrate the API to Java ([Go was my first choice](https://github.com/veekaybee/viberary/issues/15) but it doens't have a very good ONNX story at the moment)
-4. Add Prometheus and Grafana. I had these initially but they created too much overhead and Digital Ocean default monitoring is good enough.
+1. [A model store](https://github.com/veekaybee/viberary/issues/73)
+2. Model evaluation framework so I can update and compare models
+3. [Refactor Flask for dependency injection](https://github.com/veekaybee/viberary/issues/100)
+4. Add Prometheus and Grafan for monitoring
 5. [Query autocompletion](https://github.com/veekaybee/viberary/issues/70) in the search bar
 6. [Chart of most recommended books](https://github.com/veekaybee/viberary/issues/65) based on log data on the site
-7. Include a toggle for multi-lingual search. I haven't tried this out well at all, and most of the books are in English, but I'd like to see if it's a possibility, as well as investigate how well this model handles it.
+7. Include a "I'm Feeling Lucky" type button that generates one good vibe-y recommendation at random.
+8. Add image cover art for books to results

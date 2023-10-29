@@ -32,6 +32,10 @@ search:
   float_type: "FLOAT64"
   index_type: "HNSW"
 
+# Modelstore config
+
+
+
 
 
 # SBERT Model Config
