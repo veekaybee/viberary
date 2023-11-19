@@ -32,9 +32,14 @@ search:
   float_type: "FLOAT64"
   index_type: "HNSW"
 
-
-
-# SBERT Model Config
+# Model Config
 model:
   name: "sentence-transformers/msmarco-distilbert-base-v3"
   onnx_path: "sentence-transformers/msmarco-distilbert-base-v3_onnx/"
+
+# Spaces Config
+
+spaces:
+  endpoint_url: "https://nyc3.digitaloceanspaces.com"
+  region_name: "nyc3"
+  bucket_name: "viberary-onnx"
