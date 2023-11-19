@@ -8,7 +8,6 @@ gunicorn==21.2.0
 markdown2==2.4.10
 mkl==2023.2.0
 mkl-include==2023.2.0
-modelstore==0.0.80
 onnx==1.14.1
 optimum[exporters,onnxruntime]==1.9.1
 pandas==1.5.3
