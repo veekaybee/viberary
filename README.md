@@ -1,8 +1,5 @@
 # Viberary
 
-![]()
-
-
 🚧 <img src="https://img.shields.io/badge/under%20construction-FF8C00" /> <img src="https://img.shields.io/badge/beta-blue"/> 🚧
 
 <p align="center"><img src="https://github.com/veekaybee/viberary/blob/main/docs/assets/img/vibe_book.png" width="400" height="400" /></p>
@@ -17,7 +14,9 @@ So you don't put in "I want science fiction", you'd but in "atmospheric, female 
 and get back a list of books. This project came out of experiences I had where recommendations for movies, TV, and music
 have fairly been good, but book recommendations are always a problem.
 
-For much, much more detail see the [how page on the project website.](http://staging.viberary.pizza/how)
+[Viberary is now in maintenance mode!](https://vickiboykis.com/2024/01/05/retro-on-viberary/)
+
+For much, much more detail see the [how page on the project website.](http://viberary.pizza/how)
 
 ## App Architecture
 
@@ -45,7 +44,7 @@ The artifact is generated through GitHub actions on the main branch of the repo.
 `/viberary/src/training_data`.
 4. Go to the root of the repo and run `make onnx` to generate the runnable model artifact.
 5. `make build ` - Builds the docker image
-6. `make up-arm(or make up-intel)` - Docker compose running in background depending on your system architecture
+6. `make up-arm (or make up-intel)` - Docker compose running in background depending on your system architecture
 7. `make embed` - indexes the embeddings once the web server is running
 8. `localhost:8000` - Loads the web server
 
@@ -58,7 +57,8 @@ The artifact is generated through GitHub actions on the main branch of the repo.
 
 ## Running Evaluation
 
-1.
+1. cd `eval`
+2.
 
 # Monitoring the project
 
@@ -74,6 +74,7 @@ The artifact is generated through GitHub actions on the main branch of the repo.
     + `index` includes an indexer which indexes embeddings generated in `model` into a Redis instance. Redis and the Flask app talk to each
           other through an app running via `docker-compose` and the `Dockerfile` for the main app instance.
     + `search` - performs the search calls from api
+    + `store` - Small model store to interface with DO Spaces
     + `conf` - There are some utilities such as data directory access, io operations and a separate indexer that indexes titles
       into Redis for easy retrieval by the application
     + `notebooks` - Exploration and development of the input data, various concepts, algorithms, etc. The best resource
@@ -85,7 +86,7 @@ The artifact is generated through GitHub actions on the main branch of the repo.
 
 # CONTRIBUTING
 
-Happy to take contributions, please follow instructions above for building and testing locally, make sure all unit tests pass and your branch passes locally before issuing a PR.
+Please follow instructions above for building and testing locally, make sure all unit tests pass and your branch passes locally before issuing a PR.
 
 ## Relevant Literature and Bibliography
 
@@ -170,11 +171,4 @@ Note these are all encoded as strings!
 
 ## Roadmap
 
-1. [A model store](https://github.com/veekaybee/viberary/issues/73)
-2. Model evaluation framework so I can update and compare models
-3. [Refactor Flask for dependency injection](https://github.com/veekaybee/viberary/issues/100)
-4. Add Prometheus and Grafan for monitoring
-5. [Query autocompletion](https://github.com/veekaybee/viberary/issues/70) in the search bar
-6. [Chart of most recommended books](https://github.com/veekaybee/viberary/issues/65) based on log data on the site
-7. Include a "I'm Feeling Lucky" type button that generates one good vibe-y recommendation at random.
-8. Add image cover art for books to results
+See [issues.](https://github.com/veekaybee/viberary/issues)
